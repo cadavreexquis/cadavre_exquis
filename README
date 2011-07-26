@@ -1,24 +1,4 @@
 - Coder maximum une soirée (peut être seulement 25 minute))
-- Mettre le marqueur en face du suivant dans la liste Disponible sur xp-france (Cf. plus bas)
-- (*) est le marqueur de la personne qui détient le cadavre exquis  
--_Envoyer un mail au suivant
-- Si on est le dernier de la liste, on renvoit au premier.
-- Ne pas garder un copie locale
+-_Envoyer un mail au suivant généré par le script next.sh
+- commit la copie sur github (git@github.com:cadavreexquis/cadavre_exquis.git)
 - Pas de commentaires (toute la communication doit passer par l'expressivité du code : même pour se dire des choses entre nous)
-
-Participants : 
-luc@mazardo.com
-etienne.charignon@gmail.com
-pascal@grange.nom.fr
-
-Anciens participants :
-ggdx@laposte.net
-
-
-Règles aussi accessible sur à l'URL suivante : 
-http://xp-france.net/cgi-bin/wiki.pl?cadavreExquis
-
-
-Le 7/06/2010 :
-- timeboxer à 30 minutes la phase de coding et à 1 semaine la phase de passage du cadavre 
-
