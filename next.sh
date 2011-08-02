@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 
-coders=" cbegot@gmail.com ggdx@laposte.net etienne.charignon@gmail.com pascal@grange.nom.fr luc@mazardo.com"
+coders=" etienne.charignon@gmail.com pascal@grange.nom.fr luc@mazardo.com cbegot@gmail.com
 
 i=0
 for coder in ${coders}
