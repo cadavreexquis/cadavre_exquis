@@ -1,21 +1,20 @@
 #!/bin/bash 
 #
 
-coders=" pascal@grange.nom.fr luc@mazardo.com cbegot@gmail.com etienne.charignon@gmail.com"
+source .coders
 
-i=0
-for coder in ${coders}
-do
-   if [ ${i} -eq 0 ]; 
-   then
-     echo "next is ${coder}"
-     first=${coder}
-     i=$((${i} + 1))
-   else
-     new_order="${new_order} ${coder}"
-   fi
-done
-new_order="${new_order} $first"
-echo ${new_order}
+head=$(echo $coders | sed -e 's: .*::')
+tail=$(echo $coders | sed -e 's:[^ ]* ::')
 
-sed -i .back "s/${coders}/${new_order}/g" $0 
+echo "coders=\"${tail} ${head}\"" > .coders
+
+cat << EOF
+
+Congratulations !!!
+1. Commit what you have done (and what this script just did)
+2. Push you local copy on github: git@github.com:cadavreexquis/cadavre_exquis.git
+3. Send a kind mail to the next player to notify it is his turn : 
+
+	${head}
+
+EOF
