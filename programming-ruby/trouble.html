@@ -1,0 +1,721 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_threads.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="rubyworld.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>When Trouble Strikes</h1>
+    <hr>
+    <br>
+<P></P>
+Sad to say, it is possible to write buggy programs using Ruby.  Sorry
+about that.
+<P></P>
+But not to worry!  Ruby has several features that will help debug your
+programs.  We'll look at these features, and then we'll show some common
+mistakes you can make in Ruby and how to fix them.
+<h2><a name="S1">Ruby Debugger</a></h2>
+<P></P>
+Ruby comes with a debugger,
+which is conveniently built into the base
+system.  You can run the debugger by invoking the interpreter with the
+<code>-r&nbsp;debug</code> option, along with any other Ruby options and the name of
+your script:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+ruby -r debug <i>[</i>
+            <i>options</i>
+            <i>]</i> <i>[</i>
+            <i>programfile</i>
+            <i>]</i> <i>[</i>
+            <i>arguments</i>
+            <i>]</i>
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+The debugger supports the usual range of features you'd expect,
+including the ability to set breakpoints, to step into and step over
+method calls, and to display stack frames and variables.
+<P></P>
+It can also list the instance methods defined for a particular object
+or class, and allows you to list and control separate threads within
+Ruby.  Table 12.1 on page 131 lists all of
+the commands that are available under the debugger.
+<P></P>
+If your Ruby has <code>readline</code> support enabled, you can use cursor
+keys to
+move back and forth in command history and use line editing commands to
+amend previous input.
+<P></P>
+To give you an idea of what the Ruby debugger is like, here
+is a sample session.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+% <code>
+              <b>ruby -rdebug t.rb</b>
+            </code>
+Debug.rb
+Emacs support available.
+t.rb:1:def fact(n)
+(rdb:1) <code>
+              <b>list 1-9</b>
+            </code>
+[1, 10] in t.rb
+=&gt; 1  def fact(n)
+   2    if n &lt;= 0
+   3      1
+   4    else
+   5      n * fact(n-1)
+   6    end
+   7  end
+   8
+   9  p fact(5)
+(rdb:1) <code>
+              <b>b 2</b>
+            </code>
+Set breakpoint 1 at t.rb:2
+(rdb:1) <code>
+              <b>c</b>
+            </code>
+breakpoint 1, fact at t.rb:2
+t.rb:2:  if n &lt;= 0
+(rdb:1) <code>
+              <b>disp n</b>
+            </code>
+  1: n = 5
+(rdb:1) <code>
+              <b>del 1</b>
+            </code>
+(rdb:1) <code>
+              <b>watch n==1</b>
+            </code>
+Set watchpoint 2
+(rdb:1) <code>
+              <b>c</b>
+            </code>
+watchpoint 2, fact at t.rb:fact
+t.rb:1:def fact(n)
+1: n = 1
+(rdb:1) <code>
+              <b>where</b>
+            </code>
+--&gt; #1  t.rb:1:in `fact'
+    #2  t.rb:5:in `fact'
+    #3  t.rb:5:in `fact'
+    #4  t.rb:5:in `fact'
+    #5  t.rb:5:in `fact'
+    #6  t.rb:9
+(rdb:1) <code>
+              <b>del 2</b>
+            </code>
+(rdb:1) <code>
+              <b>c</b>
+            </code>
+120
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S2">Interactive Ruby</a></h2>
+<P></P>
+If you want to play with Ruby, there is a facility called Interactive
+Ruby---irb, for short.
+irb is essentially a Ruby ``shell'' similar in
+concept to an operating system shell (complete with job control). It
+provides an environment where you can ``play around'' with the
+language in real time.  You launch irb at the command prompt:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+irb <i>[</i>
+            <i>irb-options</i>
+            <i>]</i> <i>[</i>
+            <i>ruby_script</i>
+            <i>]</i> <i>[</i>
+            <i>options</i>
+            <i>]</i>
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+irb will display the value of each expression as you complete it. For
+instance:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+% irb
+irb(main):001:0&gt; <code>
+              <b>a = 1 +</b>
+            </code>
+irb(main):002:0* <code>
+              <b>2 * 3 /</b>
+            </code>
+irb(main):003:0* <code>
+              <b>4 % 5</b>
+            </code>
+2
+irb(main):004:0&gt; <code>
+              <b>2+2</b>
+            </code>
+4
+irb(main):005:0&gt; <code>
+              <b>def test</b>
+            </code>
+irb(main):006:1&gt; <code>
+              <b>puts "Hello, world!"</b>
+            </code>
+irb(main):007:1&gt; <code>
+              <b>end</b>
+            </code>
+nil
+irb(main):008:0&gt; <code>
+              <b>test</b>
+            </code>
+Hello, world!
+nil
+irb(main):009:0&gt; 
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+irb also allows you to create subsessions, each one of which may have
+its own context.  For example, you can create a subsession with the
+same (top-level) context as the original session, or create a
+subsession in the context of a particular class or instance.  The
+sample session shown in Figure 12.1 on page 126 is a bit longer,
+but shows how you can create subsessions and switch between them.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+For a full description of all the commands that irb supports, see 
+the reference beginning on page 517.
+<P></P>
+As with the debugger, if your version of Ruby was built with GNU
+Readline support, you can use arrow keys (as with Emacs) or vi-style
+key bindings to edit individual lines or to go back and reexecute or
+edit a previous line---just like a command shell.
+<P></P>
+irb is a great learning tool: it's very handy if you want to try out
+an idea quickly and see if it works.
+<h3><a name="UA">Editor Support</a></h3>
+<P></P>
+Ruby is designed to read a program in one pass; this means you can
+pipe an entire program to Ruby's standard input and it will work just
+fine.
+<P></P>
+We can take advantage of this feature to run Ruby code from inside an
+editor.  In Emacs, for instance, you can select a region of Ruby text
+and use the command <code>Meta-|</code> to execute Ruby.  The Ruby interpreter
+will use the selected region as standard input and output will go to a
+buffer named ``<code>*Shell Command Output*</code>.''  This feature has come in
+quite handy for us while writing this book---just select a few lines
+of Ruby in the middle of a paragraph and try it out!
+<P></P>
+You can do something similar in the vi editor using ``<code>:!ruby</code>''
+which <em>replaces</em> the program text with its output, or
+``<code>:w<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">!ruby</code>'', which displays the output without
+affecting the buffer. Other editors have similar features.
+<P></P>
+While we are on the subject, this would probably be a good place to
+mention that there is a Ruby mode for Emacs included in the
+distribution as <code>misc/ruby-mode.el</code>.  There are also several
+syntax-highlighting modules for vim (an enhanced version of the vi
+editor), jed, and other editors available on the net as well. Check
+the Ruby FAQ for current locations and availability.
+<h2><a name="S3">But It Doesn't Work!</a></h2>
+<P></P>
+So you've read through enough of the book, you start to write your
+very own Ruby program, and it doesn't work.  Here's a list of common
+gotchas and other tips.
+<P></P>
+<ul>
+<li> Attribute setter not being called.  
+  Within an object, Ruby will
+  parse <code>setter=</code> as an assignment to a local variable, not as a
+  method call.  Use <code>self.setter=</code> to indicate the method call.
+<P></P>
+ </li>
+      <li> A parse error   
+   at the last line of the source often
+   indicates a missing <code>end</code> keyword.
+<P></P>
+ </li>
+      <li> Make sure that the type of the object you are using is what you
+   think it is.  If in doubt, use <a href="ref_c_object.html#Object.type">
+          <code>Object#type</code>
+        </a> to check the type
+   of an object.
+<P></P>
+ </li>
+      <li> Make sure that your methods start with a lowercase letter and
+   that classes and constants start with an uppercase letter.
+<P></P>
+ </li>
+      <li> If you happen to forget a ``,'' in an argument
+   list---especially to print---you can produce some very odd error messages.
+<P></P>
+ </li>
+      <li> Block parameters are actually local variables. If an existing
+   local of the same name exists when the block executes, that
+   variable will be modified by the call to the block. This may or may
+   not be a good thing.
+<P></P>
+ </li>
+      <li> Watch out for precedence, especially when using <code>{}</code>
+   instead of <code>do</code>/<code>end</code>.
+<P></P>
+ </li>
+      <li> Make sure that the open parenthesis of a method's parameter
+   list butts up against the end of the method name with no
+   intervening spaces.
+<P></P>
+ </li>
+      <li> Output written to a terminal may be buffered. This means that
+   you may not see a message you write immediately.      
+   In addition, if you write
+   messages to both <code>$stdout</code> and <code>$stderr</code>, the output may
+   not appear in the order you were expecting.  Always use nonbuffered
+   I/O (set <code>sync=true</code>) for debug messages.
+<P></P>
+ </li>
+      <li> If numbers don't come out right, perhaps they're strings.  Text
+   read from a file will be a <code>String</code>, and will not be
+   automatically converted to a number by Ruby.  A call to <code>to_i</code>
+   will work wonders.  A
+   common mistake Perl programmers make is:   
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+while&nbsp;gets
+&nbsp;&nbsp;num1,&nbsp;num2&nbsp;=&nbsp;split&nbsp;/,/
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+ </li>
+      <li> Unintended aliasing---if you are using an object as the key of
+   a hash, make sure it doesn't change its hash value (or arrange to
+   call <a href="ref_c_hash.html#Hash.rehash">
+          <code>Hash#rehash</code>
+        </a> if it does).
+<P></P>
+ </li>
+      <li> Use <code>trace_var</code> to watch when a variable changes value.
+<P></P>
+ </li>
+      <li> Use the debugger.
+<P></P>
+ </li>
+      <li> Use <a href="ref_c_object.html#Object.freeze">
+          <code>Object#freeze</code>
+        </a>.  If you suspect that some unknown
+   portion of code is setting a variable to a bogus value, try
+   freezing the variable.  The culprit will then be caught during the
+   attempt to modify the variable.
+</li>
+    </ul>
+<P></P>
+There's one major technique that makes writing Ruby code both easier
+and more fun. <em>Develop your applications incrementally.</em>
+Write a
+few lines of code, then run them. Write a few more, then run those.
+One of the major benefits of an untyped language is that things don't
+have to be complete before you use them.
+<h2><a name="S4">But It's Too Slow!</a></h2>
+<P></P>
+Ruby is an interpreted, high-level language, and as such it may not
+perform as fast as a lower-level language such as C.  In this section,
+we'll list some basic things you can do to improve performance; also
+have a look in the index
+under <em>Performance</em> for other pointers.
+<h3><a name="UB">Create Locals Outside Blocks</a></h3>
+<P></P>
+Try defining the variables used in a block before the block executes.
+When iterating over a very large set of elements, you can improve
+execution speed somewhat by predeclaring any iterator variables.  In
+the first example below, Ruby has to create new <code>x</code> and <code>y</code>
+variables
+on each
+iteration, but in the second version it doesn't.  We'll use the
+<code>benchmark</code> package from the Ruby Application Archive to compare
+the loops:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"benchmark"
+include&nbsp;Benchmark
+n&nbsp;=&nbsp;1000000
+bm(12)&nbsp;do&nbsp;|test|
+&nbsp;&nbsp;test.report("normal:")&nbsp;&nbsp;&nbsp;&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;n.times&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;test.report("predefine:")&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;=&nbsp;y&nbsp;=&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;n.times&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real
+normal:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.450000&nbsp;&nbsp;&nbsp;0.020000&nbsp;&nbsp;&nbsp;2.470000&nbsp;(&nbsp;&nbsp;2.468109)
+predefine:&nbsp;&nbsp;&nbsp;&nbsp;2.140000&nbsp;&nbsp;&nbsp;0.020000&nbsp;&nbsp;&nbsp;2.160000&nbsp;(&nbsp;&nbsp;2.155307)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UC">Use the Profiler</a></h3>
+<P></P>
+Ruby comes with a code profiler (documentation begins on
+on page 454).  In and of itself, that isn't too surprising,
+but when you realize that the profiler is written in just about 50
+lines of Ruby, that makes
+for a pretty impressive language.
+<P></P>
+You can add profiling to your code using the command-line option
+<code>-r</code>
+    <code>&nbsp;profile</code>, or from within the code using <code>require
+  "profile"</code>. For example:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"profile"
+class&nbsp;Peter
+&nbsp;&nbsp;def&nbsp;initialize(amt)
+&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;=&nbsp;amt
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;rob(amt)
+&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;-=&nbsp;amt
+&nbsp;&nbsp;&nbsp;&nbsp;amt
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;Paul
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;=&nbsp;0
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;pay(amt)
+&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;+=&nbsp;amt
+&nbsp;&nbsp;&nbsp;&nbsp;amt
+&nbsp;&nbsp;end
+end
+<P></P>
+peter&nbsp;=&nbsp;Peter.new(1000)
+paul&nbsp;=&nbsp;Paul.new
+1000.times&nbsp;do
+&nbsp;&nbsp;paul.pay(peter.rob(10))
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Run this, and you'll get something like the following.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 32.14     0.27      0.27        1   270.00   840.00  Fixnum#times
+ 30.95     0.53      0.26     1000     0.26     0.27  Paul#pay
+ 29.76     0.78      0.25     1000     0.25     0.30  Peter#rob
+  5.95     0.83      0.05     1000     0.05     0.05  Fixnum#-
+  1.19     0.84      0.01     1000     0.01     0.01  Fixnum#+
+  0.00     0.84      0.00        1     0.00     0.00  Paul#initialize
+  0.00     0.84      0.00        2     0.00     0.00  Class#inherited
+  0.00     0.84      0.00        4     0.00     0.00  Module#method_added
+  0.00     0.84      0.00        1     0.00     0.00  Peter#initialize
+  0.00     0.84      0.00        1     0.00   840.00  #toplevel
+  0.00     0.84      0.00        2     0.00     0.00  Class#new
+</pre>
+        </td>
+      </tr>
+    </table>
+With the profiler, you can quickly identify and fix bottlenecks.
+Remember to check the code without the profiler afterward,
+though---sometimes the slowdown the profiler introduces can mask other
+problems.
+<P></P>
+Ruby is a wonderfully transparent and expressive language, but it does
+not relieve the programmer of the need to apply common sense: creating
+unnecessary objects, performing unneeded work, and creating generally
+bloated code are wasteful in any language.
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>Debugger commands</b>  
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">b[reak] [file:]line</td>
+  <td valign="top">Set breakpoint at given line in <i>file</i>
+                      (default current file).</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">b[reak] [file:]name</td>
+  <td valign="top">Set breakpoint at <i>method</i> in <i>file</i>.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">b[reak]</td>
+  <td valign="top">Display breakpoints and watchpoints.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">wat[ch] expr</td>
+  <td valign="top">Break when expression becomes true.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">del[ete] [nnn]</td>
+  <td valign="top">Delete breakpoint <i>nnn</i> (default all).</td>
+</tr>
+<tr>
+  <td valign="top">disp[lay] expr</td>
+  <td valign="top">Display value of <i>nnn</i> every time debugger gets control.</td>
+</tr>
+<tr>
+  <td valign="top">disp[lay]</td>
+  <td valign="top">Show current displays.</td>
+</tr>
+<tr>
+  <td valign="top">undisp[lay] [nnn]</td>
+  <td valign="top">Remove display (default all).</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">c[ont]</td>
+  <td valign="top">Continue execution.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">s[tep]  nnn=1</td>
+  <td valign="top">Execute next <i>nnn</i> lines, stepping into methods.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">n[ext]  nnn=1</td>
+  <td valign="top">Execute next <i>nnn</i> lines, stepping over methods.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">fi[nish]</td>
+  <td valign="top">Finish execution of the current function.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">q[uit]</td>
+  <td valign="top">Exit the debugger.</td>
+</tr>
+<tr>
+  <td valign="top">w[here]</td>
+  <td valign="top">Display current stack frame.</td>
+</tr>
+<tr>
+  <td valign="top">f[rame]</td>
+  <td valign="top">Synonym for <code>where</code>.</td>
+</tr>
+<tr>
+  <td valign="top">l[ist] [start--end]</td>
+  <td valign="top">List source lines from start to end.</td>
+</tr>
+<tr>
+  <td valign="top">up  nnn=1</td>
+  <td valign="top">Move up <i>nnn</i> levels in the stack frame.</td>
+</tr>
+<tr>
+  <td valign="top">down nnn=1</td>
+  <td valign="top">Move down <i>nnn</i> levels in the stack frame.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">v[ar] g[lobal]</td>
+  <td valign="top">Display global variables.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">v[ar] l[ocal]</td>
+  <td valign="top">Display local variables.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">v[ar] i[stance] <i>obj</i>
+              </td>
+  <td valign="top">Display instance variables of <i>obj</i>.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">v[ar] c[onst] Name</td>
+  <td valign="top">Display constants in class or module name.</td>
+</tr>
+<tr>
+  <td valign="top">m[ethod] i[nstance] <i>obj</i>
+              </td>
+  <td valign="top">Display instance methods of
+                                    <i>obj</i>.</td>
+</tr>
+<tr>
+  <td valign="top">m[ethod] Name</td>
+  <td valign="top">Display instance methods of the class or module name.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">th[read] l[ist]</td>
+  <td valign="top">List all threads.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">th[read] [c[ur[rent]]]</td>
+  <td valign="top">Display status of current thread.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">th[read] [c[ur[rent]]] nnn</td>
+  <td valign="top">Make thread <i>nnn</i> current and
+                                   stop it.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">th[read] stop nnn</td>
+  <td valign="top">Make thread <i>nnn</i> current and stop it.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">th[read] resume nnn</td>
+  <td valign="top">Resume thread <i>nnn</i>.</td>
+</tr>
+<tr>
+  <td valign="top">[p] expr</td>
+  <td valign="top">Evaluate <i>expr</i> in the current context. <i>expr</i> may
+               include assignment to variables and method invocations.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <i>empty</i>
+              </td>
+  <td valign="top">A null command repeats the last command.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_threads.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="rubyworld.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

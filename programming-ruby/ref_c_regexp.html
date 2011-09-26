@@ -1,0 +1,682 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_range.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_string.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Regexp</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Regexp.compile">compile</a> 
+     <a href="#Regexp.escape">escape</a> 
+     <a href="#Regexp.last_match">last_match</a> 
+     <a href="#Regexp.new">new</a> 
+     <a href="#Regexp.quote">quote</a> 
+     <i>
+      <a href="#Regexp._eq_eq">==</a>
+    </i> <i>
+      <a href="#Regexp._eq_eq_eq">===</a>
+    </i> <i>
+      <a href="#Regexp._eq_sd">=~</a>
+    </i> <i>
+      <a href="#Regexp._sd">~</a>
+    </i> <i>
+      <a href="#Regexp.casefold_qm">casefold?</a>
+    </i> <i>
+      <a href="#Regexp.kcode">kcode</a>
+    </i> <i>
+      <a href="#Regexp.match">match</a>
+    </i> <i>
+      <a href="#Regexp.source">source</a>
+    </i> <p></p>
+    <hr>
+    A <code>Regexp</code> holds a regular expression, used to match a pattern against
+  strings. Regexps are created using the <code>/.../</code> and <code>%r{...}</code>
+  literals, and by the <a href="ref_c_regexp.html#Regexp.new">
+      <code>Regexp.new</code>
+    </a> constructor.  
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="Regexp.EXTENDED">
+                <code>EXTENDED</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Ignore spaces and newlines in regexp.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Regexp.IGNORECASE">
+                <code>IGNORECASE</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Matches are case insensitive.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Regexp.MULTILINE">
+                <code>MULTILINE</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Newlines treated as any other character.</td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.compile">compile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                Regexp.compile( <i>pattern</i>
+         <i>[</i>, <i>options</i> <i>[</i>
+          <i>lang</i>
+          <i>]</i>
+          <i>]</i> )
+         -&gt; <i>aRegexp</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Regexp.new</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.escape">escape</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Regexp.escape( <i>aString</i> )
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Escapes any characters that would have special meaning in a
+      regular expression. For any string,
+      <code>Regexp.escape(<i>str</i>)=~<i>str</i>
+        </code> will be true.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Regexp.escape('\\*?{}.')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>\\\\\*\?\{\}\.</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.last_match">last_match</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Regexp.last_match
+        -&gt; <i>aMatchData</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the <code>MatchData</code> object generated by the last
+      successful pattern match. Equivalent to reading the global
+      variable <code>$~</code>. <code>MatchData</code> is described
+      on page 336.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Regexp.new( <i>pattern</i>
+                                    <i>[</i>, <i>options</i> <i>[</i>
+          <i>lang</i>
+          <i>]</i>
+          <i>]</i> )
+        -&gt; <i>aRegexp</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Constructs a new regular expression from <i>pattern</i>, which can 
+      be either a <code>String</code> or a <code>Regexp</code> (in which case that
+      regexp's options are not propagated). If <i>options</i> is
+      a <code>Fixnum</code>, it should be one or more of the constants
+      <code>Regexp::EXTENDED</code>, <code>Regexp::IGNORECASE</code>, and
+      <code>Regexp::POSIXLINE</code>, <em>or</em>-ed together.
+      Otherwise, if <i>options</i> is not
+      <code>nil</code>, the regexp will be case insensitive. The <i>lang</i>
+      parameter enables multibyte support for the regexp: `n', `N' = none,
+      `e', `E' =  EUC, `s', `S' = SJIS, `u',
+      `U' = UTF-8.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>r1&nbsp;=&nbsp;Regexp.new('^a-z+:\\s+\w+')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>/^a-z+:\s+\w+/</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>r2&nbsp;=&nbsp;Regexp.new(r1,&nbsp;true)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>/^a-z+:\s+\w+/i</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>r3&nbsp;=&nbsp;Regexp.new(r2,&nbsp;Regexp::EXTENDED)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>/^a-z+:\s+\w+/x</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.quote">quote</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Regexp.quote( <i>aString</i> )
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Regexp.escape</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp._eq_eq">==</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i> == <i>aRegexp</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equality---Two regexps are equal if their patterns are identical, they have 
+      the same character set code, and their <code>casefold?</code> values are 
+      the same.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>/abc/&nbsp;&nbsp;==&nbsp;/abc/x</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>/abc/&nbsp;&nbsp;==&nbsp;/abc/i</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>/abc/u&nbsp;==&nbsp;/abc/n</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp._eq_eq_eq">===</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i> === <i>aString</i> -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Case Equality---Synonym for <a href="ref_c_regexp.html#Regexp._eq_sd">
+          <code>Regexp#=~</code>
+        </a> used in case statements.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;"HELLO"
+case&nbsp;a
+when&nbsp;/^a-z*$/;&nbsp;print&nbsp;"Lower&nbsp;case\n"
+when&nbsp;/^A-Z*$/;&nbsp;print&nbsp;"Upper&nbsp;case\n"
+else;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Mixed&nbsp;case\n"
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Upper&nbsp;case
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp._eq_sd">=~</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i> =~ <i>aString</i>
+        -&gt; <i>anInteger</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Match---Matches <i>rxp</i> against <i>aString</i>, returning the offset 
+      of the start of the match or <code>nil</code> if the match failed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>/SIT/&nbsp;&nbsp;=~&nbsp;"insensitive"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>/SIT/i&nbsp;=~&nbsp;"insensitive"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp._sd">~</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        ~ <i>rxp</i>
+        -&gt; <i>anInteger</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Match---Matches <i>rxp</i> against the contents of <code>$_</code>. Equivalent to
+      <code>
+          <i>rxp</i>&nbsp;=~&nbsp;$_</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;"input&nbsp;data"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>~&nbsp;/at/</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>7</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.casefold_qm">casefold?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i>.casefold? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the value of the case-insensitive flag.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.kcode">kcode</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i>.kcode -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the  character set code for the regexp.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.match">match</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i>.match(<i>aString</i>)
+        -&gt; <i>aMatchData</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a <code>MatchData</code> object (see page 336)
+        describing the match, or <code>nil</code> if there was no match. This
+        is equivalent to retrieving the value of the special variable
+        <code>$~</code> following a normal match.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>/(.)(.)(.)/.match("abc")[2]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"b"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Regexp.source">source</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rxp</i>.source -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the original string of the pattern.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>/ab+c/ix.source</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ab+c"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_range.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_string.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

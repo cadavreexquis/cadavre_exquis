@@ -1,0 +1,463 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_windows.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="irb.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Embedded Documentation</h1>
+    <hr>
+    <br>
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+So you've written a masterpiece, a class in a class of its own, and
+you'd like to share it with the world. But, being a responsible
+developer, you feel the need to document your creation. What do you
+do?  The simplest solution is to use Ruby's built-in documentation
+format, RD, and <code>rdtool</code>, a Ruby utility suite that converts this
+documentation into a variety of output formats.
+<P></P>
+<code>rdtool</code> scans a file for <code>=begin</code> and <code>=end</code>{=begin...=end@<code></code>{=begin
+pairs, and
+extracts the text between them all. This text is assumed to be
+documentation in RD format. The text is then processed according to a
+simple set of rules:
+<P></P>
+<ul>
+<li> Lines of text flush to the left margin are converted to
+  paragraphs.
+</li>
+      <li> Lines starting with one to four equals signs are headings. ``=''
+  is a first-level heading, ``=='' a second-level heading, and so
+  on. ``+'' and ``++'' can be used to signal fifth- and sixth-level
+  headings if you really want to go that deep.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+=&nbsp;Top&nbsp;Level&nbsp;Heading
+==&nbsp;Second&nbsp;Level&nbsp;Heading
+...
+</pre>
+            </td>
+          </tr>
+        </table>
+
+</li>
+      <li> Lines in which the first nonspace is an asterisk indicate the
+  beginnings of bullet lists. Continuation lines for each bullet item
+  should line up with the text on the first line. Lists may be nested.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+This&nbsp;is&nbsp;normal&nbsp;text
+*&nbsp;start&nbsp;of&nbsp;a
+&nbsp;&nbsp;multiline&nbsp;bullet&nbsp;item
+*&nbsp;and&nbsp;another
+&nbsp;&nbsp;*&nbsp;nested&nbsp;item
+&nbsp;&nbsp;*&nbsp;second&nbsp;nested
+*&nbsp;third&nbsp;item&nbsp;at&nbsp;top&nbsp;level
+</pre>
+            </td>
+          </tr>
+        </table>
+
+</li>
+      <li> Lines where the first nonspace characters are digits between
+  parentheses indicate numbered lists. The actual digits used are
+  ignored. Again, lists may be nested.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+(1)&nbsp;A&nbsp;numbered&nbsp;item
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;subitem&nbsp;in&nbsp;a&nbsp;bulleted&nbsp;list
+&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;subitem
+(2)&nbsp;Second&nbsp;numbered&nbsp;item
+(9)&nbsp;This&nbsp;will&nbsp;actually&nbsp;be&nbsp;labeled&nbsp;'3.'
+</pre>
+            </td>
+          </tr>
+        </table>
+
+</li>
+      <li> Lines starting with a colon indicate labeled lists. The text on
+  the colon line is the label. The immediately following text (which
+  may not be indented less than the label) is the descriptive
+  text. Again, each type of list may be nested.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+:&nbsp;red
+&nbsp;&nbsp;when&nbsp;the&nbsp;light&nbsp;is&nbsp;red,&nbsp;you
+&nbsp;&nbsp;must&nbsp;stop
+:&nbsp;amber
+&nbsp;&nbsp;the&nbsp;amber&nbsp;light&nbsp;means&nbsp;that&nbsp;things&nbsp;are&nbsp;about&nbsp;to&nbsp;change.&nbsp;Either:
+&nbsp;&nbsp;*&nbsp;step&nbsp;on&nbsp;the&nbsp;gas,&nbsp;or
+&nbsp;&nbsp;*&nbsp;slam&nbsp;on&nbsp;the&nbsp;brakes
+:&nbsp;green
+&nbsp;&nbsp;green&nbsp;means&nbsp;GO
+</pre>
+            </td>
+          </tr>
+        </table>
+
+</li>
+      <li> Lines starting with three minus signs are a special kind of
+  labeled list, when the labels are method names and signatures. The
+  source in Figure A.1 on page 512 shows a handful of these in
+  action.
+</li>
+    </ul>
+<P></P>
+Indented text that isn't part of a list is set verbatim (such as the
+stuff under ``Synopsis'' in Figures A.1 and A.2).
+<h2><a name="S1">Inline Formatting</a></h2>
+<P></P>
+Within blocks of text and headings, you can use special <em>inline
+  sequences</em> to control text formatting. All sequences are nested
+within a set of double parentheses.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>Sequence</b>
+        </td>
+  <td valign="top">
+          <b>Example</b>
+        </td>
+  <td valign="top">
+          <b>Intended Use</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">((*emphasis*))</td>
+  <td valign="top">
+          <em>emphasis</em>
+        </td>
+  <td valign="top">Emphasis (normally italic)</td>
+</tr>
+<tr>
+  <td valign="top">(({code stuff}))</td>
+  <td valign="top">
+          <code>code stuff</code>
+        </td>
+  <td valign="top">Code</td>
+</tr>
+<tr>
+  <td valign="top">((|variable|))</td>
+  <td valign="top">
+          <em>variable</em>
+        </td>
+  <td valign="top">Variable name</td>
+</tr>
+<tr>
+  <td valign="top">((%type me%))</td>
+  <td valign="top">
+          <code>type me</code>
+        </td>
+  <td valign="top">Keyboard input</td>
+</tr>
+<tr>
+  <td valign="top">((:index term:))</td>
+  <td valign="top">index term</td>
+  <td valign="top">Something to be indexed</td>
+</tr>
+<tr>
+  <td valign="top">((&lt;reference&gt;))</td>
+  <td valign="top">
+          <u>reference</u>
+        </td>
+  <td valign="top">Hyperlink reference</td>
+</tr>
+<tr>
+  <td valign="top">((-footnote-))</td>
+  <td valign="top">text.<sup>4</sup>
+        </td>
+  <td valign="top">Footnote text. A reference is placed
+inline, and the text of the footnote appears at the bottom of the
+page.</td>
+</tr>
+<tr>
+  <td valign="top">(('verb'))</td>
+  <td valign="top">verb</td>
+  <td valign="top">Verbatim text</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+<h2><a name="S2">Cross References</a></h2>
+<P></P>
+The content of headings, the labels of labeled lists, and the names of
+methods are automatically
+made into potential cross reference targets.  You make links to these
+targets from elsewhere in the document by citing their contents in the
+<code>((&lt;...&gt;))</code> construct.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+=&nbsp;Synopsis
+...
+See&nbsp;((&lt;Return&nbsp;Codes&gt;))&nbsp;for&nbsp;details.
+..
+==&nbsp;Instance&nbsp;Methods
+<P></P>
+---&nbsp;Tempfile.open(&nbsp;filename&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;Opens&nbsp;the&nbsp;file...
+<P></P>
+==&nbsp;Return&nbsp;Codes
+..
+The&nbsp;method&nbsp;((&lt;Tempfile.open&gt;))&nbsp;raises&nbsp;an&nbsp;(({IOException}))...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If a reference starts with ``URL:'', <code>rdtool</code> attempts to format it as an
+external hyperlink.
+<P></P>
+The reference  <code>((&lt;display part|label&gt;))</code> generates a link to
+<code>label</code> but places the text ``display part'' in the output
+document. This is used in the description section of the example in
+Figure A.1 on page 512 to generate references to the method names:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+perspective,&nbsp;apart&nbsp;from&nbsp;the&nbsp;unusual&nbsp;((&lt;(({new}))|Tempfile.new&gt;)),
+...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This construct displays the word ``new'' in code font but uses it as
+a hyperlink to the method <code>Tempfile.new</code>.
+<h2><a name="S3">Method Names</a></h2>
+<P></P>
+<code>rdtool</code> makes certain assumptions about the format of method
+names. Class or module methods should appear as <code>Class.method</code>, 
+instance methods as <code>Class#method</code>, and class or module
+constants as <code>Class::Const</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+---&nbsp;Tempfile::IOWRITE
+&nbsp;&nbsp;&nbsp;&nbsp;Open&nbsp;the&nbsp;file&nbsp;write-only.
+&nbsp;&nbsp;&nbsp;&nbsp;...
+---&nbsp;Tempfile.new(&nbsp;filename&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;Constructs&nbsp;a&nbsp;temporary&nbsp;file&nbsp;in&nbsp;the&nbsp;given&nbsp;directory.&nbsp;The&nbsp;file
+&nbsp;&nbsp;&nbsp;&nbsp;...
+---&nbsp;Tempfile#open
+&nbsp;&nbsp;&nbsp;&nbsp;Reopens&nbsp;((|aTempfile|))&nbsp;using&nbsp;mode&nbsp;``r+'',&nbsp;which&nbsp;allows&nbsp;reading
+&nbsp;&nbsp;&nbsp;&nbsp;..
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S4">Including Other Files</a></h2>
+<P></P>
+The contents of <em>filename</em> will be inserted  wherever the
+document contains
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+&lt;&lt;&lt; <i>filename</i>
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+If the file is specified with an <code>.rd</code> or <code>.rb</code> extension, it
+will be interpreted as RD documentation.
+<P></P>
+If the filename has no extension, <code>rdtool</code> will look for a file with an
+extension that matches the type of output being produced (<code>.html</code>
+for HTML files, <code>.man</code> for man files, and so on) and interpolate
+that file's contents in the <code>output</code> stream. Thus, a line such as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+&lt;&lt;&lt;&nbsp;header
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+could be used to add an output-dependent header to a document.
+<h2><a name="S5">Using rdtool</a></h2>
+<P></P>
+RD documentation can be included directly in a Ruby source program or 
+written into a separate file (which by convention will have the
+extension <code>.rd</code>). These files are processed using the <code>rd2</code>
+command to produce appropriately formatted output.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+rd2  <i>[</i>
+            <i>options</i>
+            <i>]</i>  <i>inputfile</i>   <i>[</i> &gt;<i>outputfile</i> <i>]</i>
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+Some common options include:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">
+          <code>-r</code>
+          <em>format</em>
+        </td>
+  <td valign="top">Select an output
+  format. <code>-rrd/rd2html-lib.rb</code> produces HTML output (the
+  default). <code>-rrd/rd2man-lib.rb</code> produces Unix man page output.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>-o</code>
+          <em>name</em>
+        </td>
+  <td valign="top">Set the base part of the output filename.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>--help</code>
+        </td>
+  <td valign="top">List the full set of options.</td>
+</tr>
+</table>
+<P></P>
+<h2><a name="S6">Mandatory Disclaimer</a></h2>
+<P></P>
+As we are writing this, RD and <code>rdtool</code> are undergoing continuous
+development. It is likely that some of the details we give here will
+be out of date (or just plain wrong) by the time you read this.
+<P></P>
+Included with the <code>rdtool</code> distribution is the file <code>README.rd</code>. We
+suggest you do so, as it will give you the current scoop on producing
+Ruby documentation.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_windows.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="irb.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

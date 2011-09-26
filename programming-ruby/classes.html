@@ -1,0 +1,1343 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="language.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="taint.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Classes and Objects</h1>
+    <hr>
+    <br>
+<P></P>
+Classes and objects are obviously central to Ruby, but at first sight
+they can seem a little confusing. There seem to be a lot of concepts:
+classes, objects, class objects, instance methods, class methods, and
+singleton classes. In reality, however, Ruby has just a single
+underlying class and object structure, which we'll discuss in this
+chapter. In fact, the basic model is so simple, we can describe it in
+a single paragraph.
+<P></P>
+A Ruby object has three components: a set of flags,
+some instance variables, and an associated class. A Ruby class is an
+object of class <code>Class</code>, which contains all the object things plus a
+list of methods and a reference to a superclass (which is itself
+another class). All method calls in Ruby nominate a receiver (which is
+by default <code>self</code>, the current object).
+Ruby finds the method to
+invoke by looking at the list of methods in the receiver's class. If
+it doesn't find the method there, it looks in the superclass, and then 
+in the superclass's
+superclass, and so on. If the method cannot be found in the receiver's
+class or any of its ancestors, Ruby invokes the method
+<code>method_missing</code> on the original receiver.
+<P></P>
+And that's it---the entire explanation. On to the next chapter.
+<P></P>
+``But wait,'' you cry, ``I spent good money on this chapter. What
+about all this other stuff---singleton classes, class methods, and so
+on. How do they work?''
+<P></P>
+Good question.
+<h2><a name="S1">How Classes and Objects Interact</a></h2>
+<P></P>
+All class/object interactions are explained using the simple model
+given above: objects reference classes, and
+classes reference zero or more superclasses. However, the
+implementation details can get a tad tricky.
+<P></P>
+We've found that the simplest way of visualizing all this is to draw
+the actual objects that Ruby implements. So, in the following pages
+we'll look at all the possible combinations of classes and
+objects. Note that these are not class diagrams in the UML sense;
+we're showing structures in memory and pointers between them.
+<h3><a name="UA">Your Basic, Everyday Object</a></h3>
+<P></P>
+Let's start by looking at an object created from a simple
+class. Figure 19.1 on page 239 shows
+an object referenced by a variable, <code>lucille</code>, the object's class,
+<code>Guitar</code>, and that class's superclass, <code>Object</code>. Notice how the
+object's class reference (called <code>klass</code> for historical reasons
+that really bug Andy) points to the class object, and how the
+<code>super</code> pointer from that class references the parent class.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+When Ruby executes <code>Guitar.strings()</code>, it follows the same process
+as before: it goes to the receiver, class <code>Guitar</code>, follows the
+<code>klass</code> reference to class <code>Guitar$'$</code>, and finds the method.
+<P></P>
+Finally, note that an ``S'' has crept into the flags in class
+<code>Guitar$'$</code>. The classes that Ruby creates automatically are
+marked internally as <em>singleton classes</em>.
+Singleton classes are
+treated slightly differently within Ruby. The most obvious difference
+from the outside is that they are effectively invisible: they will
+never appear in a list of objects returned from methods such as
+<a href="ref_c_module.html#Module.ancestors">
+      <code>Module#ancestors</code>
+    </a> or <a href="ref_m_objectspace.html#ObjectSpace.each_object">
+      <code>ObjectSpace::each_object</code>
+    </a>.
+<h3><a name="UB">Object-Specific Classes</a></h3>
+<P></P>
+Ruby allows you to create a class tied to a particular object. In the
+following example, we create two <code>String</code> objects. We then associate 
+an anonymous class with one of them,
+overriding one of the methods in
+the object's base class and adding a new method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"hello"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b&nbsp;=&nbsp;a.dup</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;&lt;&lt;a</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"The&nbsp;value&nbsp;is&nbsp;'#{self}'"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;twoTimes</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;+&nbsp;self</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"The&nbsp;value&nbsp;is&nbsp;'hello'"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.twoTimes</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hellohello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hello"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This example uses the ``<code>class &lt;&lt;</code>
+    <i>obj</i>'' notation, which
+basically says ``build me a new class just for object <i>obj</i>.'' We
+could also have written it as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"hello"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b&nbsp;=&nbsp;a.dup</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;a.to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;"The&nbsp;value&nbsp;is&nbsp;'#{self}'"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;a.twoTimes</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;self&nbsp;+&nbsp;self</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"The&nbsp;value&nbsp;is&nbsp;'hello'"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.twoTimes</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hellohello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hello"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The effect is the same in both cases: a class is added to the object
+``<code>a</code>''. This gives us a strong hint about the Ruby implementation: 
+a singleton class is created and inserted as <code>a</code>'s direct
+class. <code>a</code>'s original class, <code>String</code>, is made this singleton's
+superclass. The before and after pictures are shown in Figure
+19.3 on page 242.
+<P></P>
+Ruby performs a slight optimization with these singleton classes. If
+an object's <code>klass</code> reference already points to a singleton class,
+a new one will not be created. This means that the first of the two
+method definitions in the previous example will create a singleton
+class, but the second will simply add a method to it.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+<h3><a name="UC">Mixin Modules</a></h3>
+<P></P>
+When a class includes a module, that module's instance methods become
+available as instance methods of the class. It's almost as if the
+module becomes a superclass of the class that uses it. Not
+surprisingly, that's about how it works. When you include a module,
+Ruby creates an anonymous proxy class that references that module, and 
+inserts that proxy as the direct superclass of the class that did the 
+including. The proxy class contains references to the instance
+variables and methods of the module. This is important: the same
+module may be included in many different classes, and will appear in
+many different inheritance chains. However, thanks to the proxy
+class,
+there is still only one underlying module: change a method definition
+in that module, and it will change in all classes that include that
+module, both past and future.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>module&nbsp;SillyModule</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;hello</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hello."</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;SillyClass</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;SillyModule</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s&nbsp;=&nbsp;SillyClass.new</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s.hello</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hello."</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>module&nbsp;SillyModule</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;hello</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hi,&nbsp;there!"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s.hello</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hi,&nbsp;there!"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The relationship between classes and the modules they include is shown 
+in Figure 19.4 on page 243. If multiple modules are included, they
+are added to the chain in order.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+If a module itself includes other modules, a chain of proxy classes
+will be added to any class that includes that module, one proxy for
+each module that is directly or indirectly included.
+<h3><a name="UD">Extending Objects</a></h3>
+<P></P>
+Just as you can define an anonymous class for an 
+object using ``<code>class&nbsp;&lt;&lt;<i>obj</i>
+    </code>'', you can mix a module into an
+object using <a href="ref_c_object.html#Object.extend">
+      <code>Object#extend</code>
+    </a>. For example:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>module&nbsp;Humor</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;tickle</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"hee,&nbsp;hee!"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"Grouchy"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a.extend&nbsp;Humor</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.tickle</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hee,&nbsp;hee!"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+There is an interesting trick with <code>extend</code>.
+If you use it
+within a class definition, the module's methods become class
+methods.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>module&nbsp;Humor</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;tickle</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"hee,&nbsp;hee!"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Grouchy</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Humor</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;extend&nbsp;&nbsp;Humor</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Grouchy.tickle</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hee,&nbsp;hee!"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;Grouchy.new</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.tickle</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hee,&nbsp;hee!"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This is because calling <code>extend</code> is equivalent to
+<code>self.extend</code>, so the methods are added to <code>self</code>, which in a
+class definition is the class itself.
+<h2><a name="S2">Class and Module Definitions</a></h2>
+<P></P>
+Having exhausted the combinations of classes and objects, we can
+(thankfully) get back to programming by looking at the nuts and bolts
+of class and module definitions.
+<P></P>
+In languages such as C++ and Java, class definitions are processed at
+compile time: the compiler loads up symbol tables, works out how much
+storage to allocate, constructs dispatch tables, and does all those other
+obscure things we'd rather not think too hard about.
+<P></P>
+Ruby is different. In Ruby, class and module definitions are executable
+code. Although parsed at compile time, the classes and modules are
+created at runtime, when the definition is encountered. (The same is
+also true of method definitions.) This allows you to structure your
+programs far more dynamically than in most conventional languages. 
+You can make decisions once, when the class is being
+defined, rather than each time that objects of the class are
+used. The class in the following example decides as it is being
+defined what version of a decryption routine to create.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;MediaPlayer
+&nbsp;&nbsp;include&nbsp;Tracing&nbsp;if&nbsp;$DEBUGGING
+<P></P>
+&nbsp;&nbsp;if&nbsp;::EXPORT_VERSION
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;decrypt(stream)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;"Decryption&nbsp;not&nbsp;available"
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;decrypt(stream)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+<P></P>
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If class definitions are executable code, this implies that they
+execute in the context of some object: <code>self</code> must reference
+<em>something</em>. Let's find out what it is.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Test
+&nbsp;&nbsp;puts&nbsp;"Type&nbsp;of&nbsp;self&nbsp;=&nbsp;#{self.type}"
+&nbsp;&nbsp;puts&nbsp;"Name&nbsp;of&nbsp;self&nbsp;=&nbsp;#{self.name}"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Type&nbsp;of&nbsp;self&nbsp;=&nbsp;Class
+Name&nbsp;of&nbsp;self&nbsp;=&nbsp;Test
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This means that a class definition is executed with that class as the
+current object. Referring back to the section about metaclasses
+on page 238, we can see that this means that methods in
+the metaclass and its superclasses will be available during the
+execution of the method definition. We can check this out.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Test
+&nbsp;&nbsp;def&nbsp;Test.sayHello
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Hello&nbsp;from&nbsp;#{name}"
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;sayHello
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Hello&nbsp;from&nbsp;Test
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In this example we define a class method, <code>Test.sayHello</code>, and
+then call it in the body of the class definition. Within
+<code>sayHello</code>, we call <code>name</code>, an instance method of class
+<code>Module</code>. Because <code>Module</code> is an ancestor of <code>Class</code>, its instance
+methods can be called without an explicit receiver within a class definition.
+<P></P>
+In fact, many of the directives that you use when defining a class
+or module, things such as <code>alias_method</code>, <code>attr</code>, and
+<code>public</code>, are simply methods in class <code>Module</code>. This opens up 
+some interesting possibilities---you can extend the functionality of
+class and module definitions by writing Ruby code. Let's look at a
+couple of examples.
+<P></P>
+As a first example, let's look at adding a basic documentation
+facility to modules and classes.
+This would allow us to associate a
+string with modules and classes that we write, a string that is
+accessible as the program is running. We'll choose a simple syntax.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Example
+&nbsp;&nbsp;doc&nbsp;"This&nbsp;is&nbsp;a&nbsp;sample&nbsp;documentation&nbsp;string"
+&nbsp;&nbsp;#&nbsp;..&nbsp;rest&nbsp;of&nbsp;class
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We need to make <code>doc</code> available to any module or class, so we
+need to make it an instance method of class <code>Module</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Module
+&nbsp;&nbsp;@@docs&nbsp;=&nbsp;Hash.new(nil)
+&nbsp;&nbsp;def&nbsp;doc(str)
+&nbsp;&nbsp;&nbsp;&nbsp;@@docs[self.name]&nbsp;=&nbsp;str
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;Module::doc(aClass)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;If&nbsp;we're&nbsp;passed&nbsp;a&nbsp;class&nbsp;or&nbsp;module,&nbsp;convert&nbsp;to&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;('&lt;='&nbsp;for&nbsp;classes&nbsp;checks&nbsp;for&nbsp;same&nbsp;class&nbsp;or&nbsp;subtype)
+&nbsp;&nbsp;&nbsp;&nbsp;aClass&nbsp;=&nbsp;aClass.name&nbsp;if&nbsp;aClass.type&nbsp;&lt;=&nbsp;Module
+&nbsp;&nbsp;&nbsp;&nbsp;@@docs[aClass]&nbsp;||&nbsp;"No&nbsp;documentation&nbsp;for&nbsp;#{aClass}"
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;Example
+&nbsp;&nbsp;doc&nbsp;"This&nbsp;is&nbsp;a&nbsp;sample&nbsp;documentation&nbsp;string"
+&nbsp;&nbsp;#&nbsp;..&nbsp;rest&nbsp;of&nbsp;class
+end
+<P></P>
+module&nbsp;Another
+&nbsp;&nbsp;doc&nbsp;&lt;&lt;-edoc
+&nbsp;&nbsp;&nbsp;&nbsp;And&nbsp;this&nbsp;is&nbsp;a&nbsp;documentation&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;a&nbsp;module
+&nbsp;&nbsp;edoc
+&nbsp;&nbsp;#&nbsp;rest&nbsp;of&nbsp;module
+end
+<P></P>
+puts&nbsp;Module::doc(Example)
+puts&nbsp;Module::doc("Another")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+This&nbsp;is&nbsp;a&nbsp;sample&nbsp;documentation&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;And&nbsp;this&nbsp;is&nbsp;a&nbsp;documentation&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;a&nbsp;module
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The second example is a performance enhancement based on Tadayoshi Funaba's
+<code>date</code> module
+(described beginning on page 439). Say we
+have a class that represents some underlying quantity (in this case, a
+date).  The class may have many attributes that present the same
+underlying date in different ways: as a Julian day number, as a
+string, as a [year, month, day] triple, and so on. Each value
+represents the same date and may involve a fairly complex calculation
+to derive. We therefore would like to calculate each attribute only
+once, when it is first accessed.
+<P></P>
+The manual way would be to add a test to each accessor:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;ExampleDate
+&nbsp;&nbsp;def&nbsp;initialize(dayNumber)
+&nbsp;&nbsp;&nbsp;&nbsp;@dayNumber&nbsp;=&nbsp;dayNumber
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;asDayNumber
+&nbsp;&nbsp;&nbsp;&nbsp;@dayNumber
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;asString
+&nbsp;&nbsp;&nbsp;&nbsp;unless&nbsp;@string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;complex&nbsp;calculation
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@string&nbsp;=&nbsp;result
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;@string
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;asYMD
+&nbsp;&nbsp;&nbsp;&nbsp;unless&nbsp;@ymd
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;another&nbsp;calculation
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@ymd&nbsp;=&nbsp;[&nbsp;y,&nbsp;m,&nbsp;d&nbsp;]
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;@ymd
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This is a clunky technique---let's see if we can come up with
+something sexier.
+<P></P>
+What we're aiming for is a directive that indicates that the body of a
+particular method should be invoked only once. The value returned by
+that first call should be cached. Thereafter, calling that same method
+should return the cached value without reevaluating the method body
+again. This is similar to Eiffel's <code>once</code> modifier for routines.
+We'd like to be able to write something like:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;ExampleDate
+&nbsp;&nbsp;def&nbsp;asDayNumber
+&nbsp;&nbsp;&nbsp;&nbsp;@dayNumber
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;asString
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;complex&nbsp;calculation
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;asYMD
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;another&nbsp;calculation
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;y,&nbsp;m,&nbsp;d&nbsp;]
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;once&nbsp;:asString,&nbsp;:asYMD
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We can use <code>once</code> as a directive by writing it as a class method of
+<code>ExampleDate</code>,
+but what should it look like internally?  The trick
+is to have it rewrite the methods whose names it is passed. For each
+method, it creates an alias for the original code, then creates a new
+method with the same name. This new method does two things. First, it
+invokes the original method (using the alias) and stores the resulting
+value in an instance variable. Second, it redefines itself, so that on 
+subsequent calls it simply returns the value of the instance variable
+directly. Here's  Tadayoshi Funaba's code, slightly reformatted.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;ExampleDate.once(*ids)
+&nbsp;&nbsp;for&nbsp;id&nbsp;in&nbsp;ids
+&nbsp;&nbsp;&nbsp;&nbsp;module_eval&nbsp;&lt;&lt;-"end_eval"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alias_method&nbsp;:__#{id.to_i}__,&nbsp;#{id.inspect}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;#{id.id2name}(*args,&nbsp;&amp;block)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;self.#{id.id2name}(*args,&nbsp;&amp;block)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@__#{id.to_i}__
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@__#{id.to_i}__&nbsp;=&nbsp;__#{id.to_i}__(*args,&nbsp;&amp;block)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end_eval
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This code uses <code>module_eval</code> to execute a block of code in the context of
+the calling module (or, in this case, the calling class). The original
+method is renamed <em>__nnn__</em>, where the <em>nnn</em> part is
+the integer representation of the method name's symbol id. The code
+uses the same name for the caching instance variable. The bulk
+of the code is a method that dynamically redefines itself. Note that
+this redefinition uses the fact that methods may contain nested
+singleton method definitions, a clever trick.
+<P></P>
+Understand this code, and you'll be well on the way to true Ruby mastery.
+<P></P>
+However, we can take it further. Look in the <code>date</code> module, and you'll
+see method <code>once</code> written slightly differently.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Date
+&nbsp;&nbsp;class&nbsp;&lt;&lt;&nbsp;self
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;once(*ids)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The interesting thing here is the inner class definition,
+``<code>class&nbsp;&lt;&lt;&nbsp;self</code>''. This defines a class based on the object
+<code>self</code>, and <code>self</code> happens to be the class object for
+<code>Date</code>. The result? Every method within the inner class definition
+is automatically a class method of <code>Date</code>.
+<P></P>
+The <code>once</code> feature is generally
+applicable---it should work for any class. If you took <code>once</code>
+and made it a private instance method of class <code>Module</code>, it would be
+available for use in any Ruby class.
+<h3><a name="UE">Class Names Are Constants</a></h3>
+<P></P>
+We've said that when you invoke a class method, all you're doing is
+sending a message to the <code>Class</code> object itself. When you say
+something such as <code>String.new("gumby")</code>, you're sending the message 
+<code>new</code> to the object that is class <code>String</code>. But how does Ruby 
+know to do this? After all, the receiver of a message should be an
+object reference, which implies that there must be a 
+constant called ``String'' somewhere containing a reference to the
+<code>String</code> object.<em>[It will be a constant, not a variable,
+  because ``String'' starts with an uppercase letter.]</em>
+And in fact, that's exactly what happens. All the built-in classes,
+along with the classes you define, have a corresponding global
+constant with the same name as the class.
+This is both straightforward and subtle. The subtlety comes from the
+fact that there are actually two things named (for example) <code>String</code> in the
+system. There's a <em>constant</em> that references an object of class
+<code>String</code>, and there's the object itself.
+<P></P>
+The fact that class names are just constants means that you can treat
+classes just like any other Ruby object: you can copy them, pass them
+to methods, and use them in expressions.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;factory(klass,&nbsp;*args)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;klass.new(*args)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>factory(String,&nbsp;"Hello")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>factory(Dir,&nbsp;&nbsp;&nbsp;&nbsp;".")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>#&lt;Dir:0x401b51bc&gt;</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>flag&nbsp;=&nbsp;true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(flag&nbsp;?&nbsp;Array&nbsp;:&nbsp;Hash)[1,&nbsp;2,&nbsp;3,&nbsp;4]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[1,&nbsp;2,&nbsp;3,&nbsp;4]</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>flag&nbsp;=&nbsp;false</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(flag&nbsp;?&nbsp;Array&nbsp;:&nbsp;Hash)[1,&nbsp;2,&nbsp;3,&nbsp;4]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>{1=&gt;2,&nbsp;3=&gt;4}</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h2><a name="S3">Top-Level Execution Environment</a></h2>
+<P></P>
+Many times in this book we've claimed that everything in Ruby is an
+object. However, there's one thing that we've used time and time again 
+that appears to contradict this---the top-level Ruby execution environment.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+puts&nbsp;"Hello,&nbsp;World"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Not an object in sight. We may as well be writing some variant of
+Fortran or QW-Basic.  But dig deeper, and you'll come across objects
+and classes lurking in even the simplest code.
+<P></P>
+We know that the literal <code>"Hello, World"</code> generates a Ruby
+<code>String</code>, so there's one object. We also know that the bare method
+call to <code>puts</code> is effectively the same as <code>self.puts</code>. But
+what is ``self''?
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>self.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Object</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+At the top level, we're executing code in the context of some
+predefined object. When we define methods, we're actually creating
+(private) singleton methods for this object. Instance variables belong
+to this object. And because we're in the context of <code>Object</code>, we can 
+use all of <code>Object</code>'s methods (including those mixed-in from <code>Kernel</code>) 
+in function form. This explains why we can call <code>Kernel</code> methods
+such as <code>puts</code> at the top level (and indeed throughout Ruby):
+these methods are part of every object.
+<h2><a name="S4">Inheritance and Visibility</a></h2>
+<P></P>
+There's one last wrinkle to class inheritance, and it's fairly
+obscure.
+<P></P>
+Within a class definition, you can change the visibility of a method
+in an ancestor class. For example, you can do something like:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Base
+&nbsp;&nbsp;def&nbsp;aMethod
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Got&nbsp;here"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;private&nbsp;:aMethod
+end
+<P></P>
+class&nbsp;Derived1&nbsp;&lt;&nbsp;Base
+&nbsp;&nbsp;public&nbsp;:aMethod
+end
+<P></P>
+class&nbsp;Derived2&nbsp;&lt;&nbsp;Base
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In this example, you would be able to invoke <code>aMethod</code> in
+instances of class <code>Derived1</code>, but not via instances of <code>Base</code> or
+<code>Derived2</code>.
+<P></P>
+So how does Ruby pull off this feat of having one method 
+with two different visibilities? Simply put, it cheats.
+<P></P>
+If a subclass changes the visibility of a method in a parent, Ruby
+effectively inserts a hidden proxy method in the subclass that invokes 
+the original method using <code>super</code>. It then sets the visibility
+of that proxy to whatever you requested. This means that the code:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Derived1&nbsp;&lt;&nbsp;Base
+&nbsp;&nbsp;public&nbsp;:aMethod
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+is effectively the same as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Derived1&nbsp;&lt;&nbsp;Base
+&nbsp;&nbsp;def&nbsp;aMethod(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;super
+&nbsp;&nbsp;end
+&nbsp;&nbsp;public&nbsp;:aMethod
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The call to <code>super</code> can access the parent's method regardless of
+its visibility, so the rewrite allows the subclass to override its
+parent's visibility rules. Pretty scary, eh?
+<h2><a name="S5">Freezing Objects</a></h2>
+<P></P>
+There are times when you've worked hard to make your object exactly
+right, and you'll be damned if you'll let anyone just change
+it. Perhaps you need to pass some kind of opaque object between two of 
+your classes via some third-party object, and you want to make sure it 
+arrives unmodified. Perhaps you want to use an object as a hash key, and
+need to make sure that no one modifies it while it's being used.
+Perhaps something is corrupting one of your objects, and you'd like
+Ruby to raise an exception as soon as the change occurs. 
+<P></P>
+Ruby provides a very simple mechanism to help with this. Any object can be
+<em>frozen</em> by invoking <a href="ref_c_object.html#Object.freeze">
+      <code>Object#freeze</code>
+    </a>. A frozen object may
+not be modified: you can't change its instance variables (directly or
+indirectly), you can't associate singleton methods with it, and, if it 
+is a class or module, you can't add, delete, or modify its
+methods. Once frozen, an object stays frozen: there is no
+<a href="ref_c_object.html#Object.thaw">
+      <code>Object#thaw</code>
+    </a>. You can test to see if an object is frozen using
+<a href="ref_c_object.html#Object.frozen_qm">
+      <code>Object#frozen?</code>
+    </a>.
+<P></P>
+What happens when you copy a frozen object? That depends on the method 
+you use. If you call an object's <code>clone</code> method, the entire
+object state (including whether it is frozen) is copied to the new
+object. On the other hand, <code>dup</code> typically copies only the
+object's contents---the new copy will not inherit the frozen status.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>str1&nbsp;=&nbsp;"hello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str1.freeze</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"hello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str1.frozen?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>str2&nbsp;=&nbsp;str1.clone</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str2.frozen?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>str3&nbsp;=&nbsp;str1.dup</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str3.frozen?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Although freezing objects may initially seem like a good idea, you
+might want to hold off doing it until you come across a real
+need. Freezing is one of those ideas that looks essential on paper but 
+isn't used much in practice.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="language.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="taint.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

@@ -1,0 +1,3687 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_gc.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_marshal.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Kernel</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Kernel.Array">Array</a> 
+     <a href="#Kernel.Float">Float</a> 
+     <a href="#Kernel.Integer">Integer</a> 
+     <a href="#Kernel.String">String</a> 
+     <a href="#Kernel._bq">` (backquote)</a> 
+     <a href="#Kernel.abort">abort</a> 
+     <a href="#Kernel.at_exit">at_exit</a> 
+     <a href="#Kernel.autoload">autoload</a> 
+     <a href="#Kernel.binding">binding</a> 
+     <a href="#Kernel.block_given_qm">block_given?</a> 
+     <a href="#Kernel.callcc">callcc</a> 
+     <a href="#Kernel.caller">caller</a> 
+     <a href="#Kernel.catch">catch</a> 
+     <a href="#Kernel.chomp">chomp</a> 
+     <a href="#Kernel.chomp_oh">chomp!</a> 
+     <a href="#Kernel.chop">chop</a> 
+     <a href="#Kernel.chop_oh">chop!</a> 
+     <a href="#Kernel.eval">eval</a> 
+     <a href="#Kernel.exec">exec</a> 
+     <a href="#Kernel.exit">exit</a> 
+     <a href="#Kernel.exit_oh">exit!</a> 
+     <a href="#Kernel.fail">fail</a> 
+     <a href="#Kernel.fork">fork</a> 
+     <a href="#Kernel.format">format</a> 
+     <a href="#Kernel.gets">gets</a> 
+     <a href="#Kernel.global_variables">global_variables</a> 
+     <a href="#Kernel.gsub">gsub</a> 
+     <a href="#Kernel.gsub_oh">gsub!</a> 
+     <a href="#Kernel.iterator_qm">iterator?</a> 
+     <a href="#Kernel.lambda">lambda</a> 
+     <a href="#Kernel.load">load</a> 
+     <a href="#Kernel.local_variables">local_variables</a> 
+     <a href="#Kernel.loop">loop</a> 
+     <a href="#Kernel.open">open</a> 
+     <a href="#Kernel.p">p</a> 
+     <a href="#Kernel.print">print</a> 
+     <a href="#Kernel.printf">printf</a> 
+     <a href="#Kernel.proc">proc</a> 
+     <a href="#Kernel.putc">putc</a> 
+     <a href="#Kernel.puts">puts</a> 
+     <a href="#Kernel.raise">raise</a> 
+     <a href="#Kernel.rand">rand</a> 
+     <a href="#Kernel.readline">readline</a> 
+     <a href="#Kernel.readlines">readlines</a> 
+     <a href="#Kernel.require">require</a> 
+     <a href="#Kernel.scan">scan</a> 
+     <a href="#Kernel.select">select</a> 
+     <a href="#Kernel.set_trace_func">set_trace_func</a> 
+     <a href="#Kernel.singleton_method_added">singleton_method_added</a> 
+     <a href="#Kernel.sleep">sleep</a> 
+     <a href="#Kernel.split">split</a> 
+     <a href="#Kernel.sprintf">sprintf</a> 
+     <a href="#Kernel.srand">srand</a> 
+     <a href="#Kernel.sub">sub</a> 
+     <a href="#Kernel.sub_oh">sub!</a> 
+     <a href="#Kernel.syscall">syscall</a> 
+     <a href="#Kernel.system">system</a> 
+     <a href="#Kernel.test">test</a> 
+     <a href="#Kernel.throw">throw</a> 
+     <a href="#Kernel.trace_var">trace_var</a> 
+     <a href="#Kernel.trap">trap</a> 
+     <a href="#Kernel.untrace_var">untrace_var</a> 
+     <p></p>
+    <hr>
+<P></P>
+  The <code>Kernel</code> module is included by class <code>Object</code>, so its
+  methods are available in every Ruby object. The <code>Kernel</code>
+  instance methods are documented in class <code>Object</code>
+  beginning on page 351. This section documents the module methods.
+  These methods are called without a receiver and thus can be called in
+  functional form.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.Array">Array</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Array( <em>arg</em> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <em>arg</em>
+        <code>.to_a</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Array(1..5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.Float">Float</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Float( <em>arg</em> ) -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <em>arg</em> converted to a float. Numeric types are
+      converted directly, <code>nil</code> is converted to <code>0.0</code>, and
+      the rest are converted using <em>arg</em>.to_f.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Float(1)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1.0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Float(nil)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0.0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Float("123.456")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>123.456</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.Integer">Integer</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Integer( <em>arg</em> ) -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts <em>arg</em> to a <code>Fixnum</code> or <code>Bignum</code>. Numeric types 
+      are converted directly (with floating point numbers being
+      truncated). If <em>arg</em> is a <code>String</code>, leading radix
+      indicators (<code>0</code>, <code>0b</code>, and <code>0x</code>) are honored. This
+      behavior is different from that of <a href="ref_c_string.html#String.to_i">
+          <code>String#to_i</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Integer(123.999)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>123</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Integer("0x1a")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>26</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Integer(Time.new)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1023599977</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.String">String</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        String( <em>arg</em> ) -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts <em>arg</em> to a <code>String</code> by calling its
+      <code>to_s</code> method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>String(self)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"main"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>String(self.type)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Object"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>String(123456)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"123456"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel._bq">` (backquote)</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        `<em>cmd</em>` -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the standard output of running <em>cmd</em> in a
+      subshell. The built-in syntax <code>%x{...}</code>      
+      described
+      on page 73 uses this method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>`date`</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:19:37&nbsp;CDT&nbsp;2002\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>`ls&nbsp;testdir`.split[1]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"main.rb"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.abort">abort</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        abort
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Terminate execution immediately, effectively by calling
+      <code>Kernel.exit(1)</code>. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.at_exit">at_exit</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        at_exit { block }
+-&gt; <i>aProc</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts <em>block</em> to a <code>Proc</code> object (and therefore binds
+      it at the point of call) and registers it for      
+      execution when the program exits. If multiple handlers are
+      registered, they are executed in reverse order of registration.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+def&nbsp;do_at_exit(str1)
+&nbsp;&nbsp;at_exit&nbsp;{&nbsp;print&nbsp;str1&nbsp;}
+end
+at_exit&nbsp;{&nbsp;puts&nbsp;"cruel&nbsp;world"&nbsp;}
+do_at_exit("goodbye&nbsp;")
+exit
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+goodbye&nbsp;cruel&nbsp;world
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.autoload">autoload</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        autoload( <i>aModule</i>, <i>aFile</i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Registers <i>aFile</i> to be loaded (using
+      <a href="ref_m_kernel.html#Kernel.require">
+          <code>Kernel::require</code>
+        </a>) the first time that <i>aModule</i> (which
+      may be a <code>String</code> or a symbol) is accessed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+autoload&nbsp;:MyModule,&nbsp;"/usr/local/lib/modules/my_module.rb"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.binding">binding</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        binding -&gt; <i>aBinding</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a <code>Binding</code> object, describing the variable and method 
+      bindings at the point of call. This object can be used when calling
+      <code>eval</code> to execute the evaluated command in this
+      environment. Also see the description of <code>Binding</code>
+      beginning on page 291. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;getBinding(param)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;return&nbsp;binding</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;getBinding("hello")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>eval&nbsp;"param",&nbsp;b</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.block_given_qm">block_given?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        block_given? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <code>yield</code> would execute a block
+      in the current context.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;try</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;if&nbsp;block_given?</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;yield</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;else</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;"no&nbsp;block"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>try</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"no&nbsp;block"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>try&nbsp;{&nbsp;"hello"&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>try&nbsp;do</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;"hello"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.callcc">callcc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        callcc {| cont | block }
+ -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Generates a <code>Continuation</code> object, which it passes to the associated
+      block. Performing a <em>cont</em>
+        <code>.call</code> will cause the
+      <code>callcc</code> to return (as will falling through the end of
+      the block). The value returned by the <code>callcc</code> is the
+      value of the block, or the value passed to
+      <em>cont</em>
+        <code>.call</code>. See <code>Continuation</code>
+      on page 294 for more details. Also see
+      <a href="ref_m_kernel.html#Kernel.throw">
+          <code>Kernel::throw</code>
+        </a> for an alternative mechanism for unwinding a
+      call stack.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.caller">caller</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        caller( <i>[</i>
+          <i>anInteger</i>
+          <i>]</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current execution
+      stack---an array containing strings in the form
+      ``<em>file:line</em>'' or ``<em>file:line: in `method'</em>''. The
+      optional <em>anInteger</em> parameter determines the number of
+      initial stack entries to omit from the result.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;a(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;caller(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;b(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;a(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;c(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;b(skip)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c(0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["prog:2:in&nbsp;`a'",&nbsp;"prog:5:in&nbsp;`b'",&nbsp;"prog:8:in&nbsp;`c'",&nbsp;"prog:10"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c(1)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["prog:5:in&nbsp;`b'",&nbsp;"prog:8:in&nbsp;`c'",&nbsp;"prog:11"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c(2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["prog:8:in&nbsp;`c'",&nbsp;"prog:12"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c(3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["prog:13"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.catch">catch</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        catch( <em>symbol</em> ) {|  | block }
+<P></P>
+        -&gt; anObject
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            <code>catch</code> executes its block. If a <code>throw</code> is
+      executed, Ruby searches up its stack for a <code>catch</code> block with a tag
+      corresponding to the <code>throw</code>'s <em>symbol</em>. If found, that block is
+      terminated, and <code>catch</code> returns the value given to
+      <code>throw</code>.  If <code>throw</code> is not called,
+      the block terminates normally, and
+      the value of <code>catch</code> is the value of the last expression
+      evaluated.  <code>catch</code> expressions may be nested, and the
+      <code>throw</code> call need not be in lexical scope.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+def&nbsp;routine(n)
+&nbsp;&nbsp;puts&nbsp;n
+&nbsp;&nbsp;throw&nbsp;:done&nbsp;if&nbsp;n&nbsp;&lt;=&nbsp;0
+&nbsp;&nbsp;routine(n-1)
+end
+<P></P>
+catch(:done)&nbsp;{&nbsp;routine(3)&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+3
+2
+1
+0
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.chomp">chomp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        chomp( <i>[</i>
+          <i>aString</i>
+          <i>]</i> )
+        -&gt; $_ or <em>aString</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+         Equivalent to
+      <code>$_ = $_.chomp(<em>aString</em>)</code>.
+      See <a href="ref_c_string.html#String.chomp">
+          <code>String#chomp</code>
+        </a>  on page 367.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;"now\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chomp</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chomp&nbsp;"ow"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chomp&nbsp;"xxx"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.chomp_oh">chomp!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        chomp!( <i>[</i>
+          <i>aString</i>
+          <i>]</i> )
+        -&gt; $_ or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_.chomp!(<em>aString</em>)</code>.
+      See <a href="ref_c_string.html#String.chomp_oh">
+          <code>String#chomp!</code>
+        </a>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;"now\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chomp!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chomp!&nbsp;"x"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.chop">chop</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        chop -&gt; <em>aString</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to
+      <code>($_.dup).chop!</code>, except <code>nil</code> is never
+      returned.
+      See <a href="ref_c_string.html#String.chop_oh">
+          <code>String#chop!</code>
+        </a> on page 367.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;&nbsp;=&nbsp;&nbsp;"now\r\n"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;a</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"no"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now\r\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.chop_oh">chop!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        chop! -&gt; $_ or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_.chop!</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;&nbsp;=&nbsp;"now\r\n"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;a</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"now"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"no"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>chop!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.eval">eval</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        eval( <em>aString</em>
+        <i>[</i>, <em>aBinding</em> <i>[</i>
+          <em>file</em> <i>[</i>
+          <em>line</em>
+          <i>]</i>
+          <i>]</i>
+          <i>]</i>)
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Evaluates the Ruby expression(s) in <em>aString</em>. If
+      <em>aBinding</em> is given, the evaluation is performed in its
+      context.      
+      The binding may be a <code>Binding</code> object or a <code>Proc</code> 
+      object. If the optional <em>file</em> and <em>line</em> parameters
+      are present, they will be used when reporting syntax errors.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;getBinding(str)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;return&nbsp;binding</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>str&nbsp;=&nbsp;"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>eval&nbsp;"str&nbsp;+&nbsp;'&nbsp;Fred'"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello&nbsp;Fred"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>eval&nbsp;"str&nbsp;+&nbsp;'&nbsp;Fred'",&nbsp;getBinding("bye")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"bye&nbsp;Fred"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.exec">exec</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        exec( <em>command</em> <i>[</i>, <em>args</em>
+          <i>]</i>)
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Replaces the current process by running the given external
+      command.      
+      If <code>exec</code> is given a single
+      argument, that argument is taken as a line that is subject to
+      shell expansion before being executed. If multiple arguments are
+      given, the second and subsequent arguments are passed as
+      parameters to <em>command</em> with no shell expansion. If the
+      first argument is a two-element array, the first element is the
+      command to be executed, and the second argument is used as the
+      <code>argv[0]</code> value, which may show up in process listings. In MSDOS
+      environments, the command is executed in a subshell; otherwise,
+      one of the <code>exec(2)</code> system calls is used, so the running
+      command may inherit some of the environment of the original
+      program (including open file descriptors).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+exec&nbsp;"echo&nbsp;*"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;echoes&nbsp;list&nbsp;of&nbsp;files&nbsp;in&nbsp;current&nbsp;directory
+#&nbsp;never&nbsp;get&nbsp;here
+<P></P>
+exec&nbsp;"echo",&nbsp;"*"&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;echoes&nbsp;an&nbsp;asterisk
+#&nbsp;never&nbsp;get&nbsp;here
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.exit">exit</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        exit( <i>anInteger</i>=0 )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+                  Initiates the termination of the Ruby script by raising the
+      <code>SystemExit</code> exception. This exception may be caught. The
+      optional parameter is used to return a status code to the
+      invoking environment.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+begin
+&nbsp;&nbsp;exit
+&nbsp;&nbsp;puts&nbsp;"never&nbsp;get&nbsp;here"
+rescue&nbsp;SystemExit
+&nbsp;&nbsp;puts&nbsp;"rescued&nbsp;a&nbsp;SystemExit&nbsp;exception"
+end
+puts&nbsp;"after&nbsp;begin&nbsp;block"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+rescued&nbsp;a&nbsp;SystemExit&nbsp;exception
+after&nbsp;begin&nbsp;block
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      Just prior to termination, Ruby executes
+      any <code>at_exit</code> functions and runs any object finalizers (see
+      <code>ObjectSpace</code> beginning on page 430).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+at_exit&nbsp;{&nbsp;puts&nbsp;"at_exit&nbsp;function"&nbsp;}
+ObjectSpace.define_finalizer(self,&nbsp;&nbsp;proc&nbsp;{&nbsp;puts&nbsp;"in&nbsp;finalizer"&nbsp;})
+exit
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+at_exit&nbsp;function
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.exit_oh">exit!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        exit!( <i>anInteger</i>=-1 )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Similar to <a href="ref_m_kernel.html#Kernel.exit">
+          <code>Kernel::exit</code>
+        </a>, but exception handling,
+      <code>at_exit</code> functions, and finalizers are bypassed.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.fail">fail</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  fail<br>fail( <i>aString</i> )<br>fail( <i>anException</i> <i>[</i>, <i>aString</i>
+            <i>[</i>
+          <i>anArray</i>
+          <i>]</i>
+          <i>]</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_kernel.html#Kernel.raise">
+          <code>Kernel::raise</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.fork">fork</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        fork <i>[</i>{ block }
+<i>]</i> -&gt; <i>aFixnum</i>
+        or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+                  Creates a subshell. If a block is specified, that block is run
+      in the subshell, and the subshell terminates with a status of
+      zero. Otherwise, the <code>fork</code> call returns twice, once in
+      the parent, returning the  process id of the child, and once in
+      the child, returning <code>nil</code>. The child process can
+      exit using <a href="ref_m_kernel.html#Kernel.exit_oh">
+          <code>Kernel::exit!</code>
+        </a> to avoid running any
+      <code>at_exit</code> functions. The parent process should use
+      <a href="ref_m_process.html#Process.wait">
+          <code>Process::wait</code>
+        </a> to collect the termination statuses of its
+      children; otherwise, the operating system may accumulate zombie
+      processes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+fork&nbsp;do
+&nbsp;&nbsp;3.times&nbsp;{|i|&nbsp;puts&nbsp;"Child:&nbsp;#{i}"&nbsp;}
+end
+3.times&nbsp;{|i|&nbsp;puts&nbsp;"Parent:&nbsp;#{i}"&nbsp;}
+Process.wait
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Parent:&nbsp;0
+Child:&nbsp;0
+Parent:&nbsp;1
+Child:&nbsp;1
+Parent:&nbsp;2
+Child:&nbsp;2
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.format">format</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        format( <i>aString</i> <i>[</i>,
+          <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_kernel.html#Kernel.sprintf">
+          <code>Kernel::sprintf</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.gets">gets</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        gets( <i>aString</i>=<code>$/</code> )
+        -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns (and assigns to <code>$_</code>) the next line from
+      the list of files in <code>ARGV</code> (or <code>$*</code>), or
+      from standard input if no files are present on the command line.
+      Returns <code>nil</code> at end of file. 
+      The optional argument specifies the
+      record separator. The separator is
+      included with the contents of each record. A separator of <code>nil</code>
+      reads the entire contents, and a zero-length separator reads the
+      input one paragraph at a time, where paragraphs are divided
+      by two consecutive newlines. If multiple filenames are
+      present in <code>ARGV</code>, <code>gets(nil)</code> will read the
+      contents one file at a time.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+ARGV&nbsp;&lt;&lt;&nbsp;"testfile"
+print&nbsp;while&nbsp;gets
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.global_variables">global_variables</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        global_variables
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of the names of global variables.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>global_variables.grep&nbsp;/std/</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["$stdin",&nbsp;"$stderr",&nbsp;"$stdout"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.gsub">gsub</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    gsub( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>aString</i>
+          <br>gsub( <i>pattern</i> ) {|  | block }
+<P></P>
+          -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_.gsub...</code>, except that <code>$_</code>
+      receives the modified result.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;"quick&nbsp;brown&nbsp;fox"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>gsub&nbsp;/[aeiou]/,&nbsp;'*'</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"q**ck&nbsp;br*wn&nbsp;f*x"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"q**ck&nbsp;br*wn&nbsp;f*x"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.gsub_oh">gsub!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    gsub!( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>aString</i> or <code>nil</code>
+          <br>gsub!( <i>pattern</i> ) {|  | block }
+<P></P>
+          -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <a href="ref_m_kernel.html#Kernel.gsub">
+          <code>Kernel::gsub</code>
+        </a>, except <code>nil</code> is returned if
+      <code>$_</code> is not modified.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$_&nbsp;=&nbsp;"quick&nbsp;brown&nbsp;fox"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>gsub!&nbsp;/cat/,&nbsp;'*'</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"quick&nbsp;brown&nbsp;fox"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.iterator_qm">iterator?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        iterator? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_kernel.html#Kernel.block_given_qm">
+          <code>Kernel::block_given?</code>
+        </a>. The <code>iterator?</code>
+      method will be removed in Ruby 1.8.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.lambda">lambda</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        lambda {|  | block }
+ -&gt; <i>aProc</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_kernel.html#Kernel.proc">
+          <code>Kernel::proc</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.load">load</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        load( <i>aFileName</i>,
+        <i>wrap</i>=<code>false</code> ) -&gt; <code>true</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Loads and executes the Ruby program in the file
+      <i>aFileName</i>. If the filename does not resolve to an absolute path, the
+      file is searched for in the library directories listed in
+      <code>$:</code>. If the optional <i>wrap</i> parameter is
+      <code>true</code>, the loaded script will be executed under an
+      anonymous module, protecting the calling program's global
+      namespace. Any local variables in the loaded file will not be
+      propagated to the loading environment.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.local_variables">local_variables</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        local_variables
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the names of the current local variables.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>fred&nbsp;=&nbsp;1</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>for&nbsp;i&nbsp;in&nbsp;1..10</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;#&nbsp;...</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>local_variables</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["fred",&nbsp;"i"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.loop">loop</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        loop {|  | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Repeatedly executes the block. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+loop&nbsp;{
+&nbsp;&nbsp;print&nbsp;"Input:&nbsp;"
+&nbsp;&nbsp;break&nbsp;if&nbsp;!gets&nbsp;or&nbsp;$_&nbsp;=~&nbsp;/^qQ/
+&nbsp;&nbsp;#&nbsp;...
+}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  open( <i>aString</i>
+                <i>[</i>, <i>aMode</i> <i>[</i>
+          <i>perm</i>
+          <i>]</i>
+          <i>]</i> )
+                -&gt; <i>anIO</i> or <code>nil</code>
+          <br>open( <i>aString</i>
+                <i>[</i>, <i>aMode</i> <i>[</i>
+          <i>perm</i>
+          <i>]</i>
+          <i>]</i> ) {| anIO | block }
+<P></P>
+                -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+         Creates an <code>IO</code> object connected to the given stream, file, 
+         or subprocess.                  
+<P></P>
+         If <i>aString</i> does not start with a pipe character
+         (``<code>|</code>''), treat it as the name of a file to open using the
+         specified mode defaulting to ``<code>r</code>'' (see the table of
+         valid modes on page 326). If a file is being
+         created, its initial permissions may be set using the integer 
+         third parameter.
+<P></P>
+         If a block is specified, it will be invoked with the <code>File</code>
+         object as a parameter, and the file will be automatically
+         closed when the block terminates. The call always returns
+         <code>nil</code> in this case.
+<P></P>
+         If <i>aString</i> starts with a pipe character, a subprocess
+         is created, connected to the caller by a pair of pipes. The
+         returned <code>IO</code> object may be used to write to the standard
+         input and read from the standard output of this subprocess.
+         If the command following the ``<code>|</code>'' is a single minus sign,
+         Ruby forks, and this subprocess is connected to the parent.
+         In the subprocess, the <code>open</code> call returns <code>nil</code>. If
+         the command is not ``<code>-</code>'', the subprocess runs the command. If 
+         a block is associated with an <code>open("|-")</code> call, that
+         block will be run twice---once in the parent and once in the
+         child. The block parameter will be an <code>IO</code> object in the
+         parent and <code>nil</code> in the child. The parent's <code>IO</code> object will
+         be connected to the child's <code>$stdin</code> and <code>$stdout</code>.
+         The subprocess will be terminated at the end of the
+         block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+open("testfile")&nbsp;do&nbsp;|f|
+&nbsp;&nbsp;print&nbsp;f.gets
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+This&nbsp;is&nbsp;line&nbsp;one
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+         Open a subprocess and read its output:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+cmd&nbsp;=&nbsp;open("|date")
+print&nbsp;cmd.gets
+cmd.close
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:19:39&nbsp;CDT&nbsp;2002
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+         Open a subprocess running the same Ruby program:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;open("|-",&nbsp;"w+")
+if&nbsp;f&nbsp;==&nbsp;nil
+&nbsp;&nbsp;puts&nbsp;"in&nbsp;Child"
+&nbsp;&nbsp;exit
+else
+&nbsp;&nbsp;puts&nbsp;"Got:&nbsp;#{f.gets}"
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Got:&nbsp;in&nbsp;Child
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+         Open a subprocess using a block to receive the I/O object:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+open("|-")&nbsp;do&nbsp;|f|
+&nbsp;&nbsp;if&nbsp;f&nbsp;==&nbsp;nil
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"in&nbsp;Child"
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Got:&nbsp;#{f.gets}"
+&nbsp;&nbsp;end
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Got:&nbsp;in&nbsp;Child
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.p">p</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        p( <i>[</i>
+          <i>anObject</i>
+          <i>]<sup>+</sup>
+          </i> )
+      -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      For each object, directly writes <code>
+          <i>anObject</i>.inspect</code> followed by
+      the current output record separator to the program's standard
+      output. <code>p</code> bypasses the Ruby I/O libraries.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+p&nbsp;self
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+main
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.print">print</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        print( <i>[</i>
+          <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Prints each object in turn to <code>$defout</code>. If the
+      output field separator (<code>$,</code>)
+      is not <code>nil</code>, its contents will appear
+      between each field.      
+      If the output record separator
+      (<code>$\</code>)
+      is not <code>nil</code>, it will be appended to the output. If 
+      no arguments are given, prints <code>$_</code>. Objects that aren't
+      strings will be converted by calling their <code>to_s</code>      
+      method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+print&nbsp;"cat",&nbsp;[1,2,3],&nbsp;99,&nbsp;"\n"
+$,&nbsp;=&nbsp;",&nbsp;"
+$\&nbsp;=&nbsp;"\n"
+print&nbsp;"cat",&nbsp;[1,2,3],&nbsp;99
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+cat12399
+cat,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;99
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.printf">printf</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  printf( <i>anIO</i>, <i>aString</i> <i>[</i>, <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> )
+          -&gt; <code>nil</code>
+          <br>printf( <i>aString</i> <i>[</i>, <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> )
+          -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Equivalent to:
+<P></P>
+<i>anIO.</i>
+        <code>write sprintf(</code>
+        <i>aString,&nbsp;anObject</i>
+        <code> ...)</code>
+        <br>
+        <em>or</em>
+        <br>
+        <code>$defout.write sprintf(</code>
+        <i>aString,&nbsp;anObject</i>
+        <code> ...)</code>
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.proc">proc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        proc { block }
+-&gt; <i>aProc</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a new procedure object from the given block. Equivalent
+      to <a href="ref_c_proc.html#Proc.new">
+          <code>Proc.new</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>aProc&nbsp;=&nbsp;proc&nbsp;{&nbsp;"hello"&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>aProc.call</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.putc">putc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        putc( <i>anInteger</i> ) -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$defout.putc(</code>
+        <i>anInteger</i>
+        <code>)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.puts">puts</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        puts( <i>[</i>
+          <i>args</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$defout.puts(</code>
+        <i>args</i>
+        <code>)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.raise">raise</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  raise<br>raise( <i>aString</i> )<br>raise( <i>anException</i> <i>[</i>, <i>aString</i>
+            <i>[</i>
+          <i>anArray</i>
+          <i>]</i>
+          <i>]</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            With no arguments, raises the
+      exception in <code>$!</code> or raises a
+      <code>RuntimeError</code> if <code>$!</code> is <code>nil</code>.      
+      With a single <code>String</code> argument, raises a
+      <code>RuntimeError</code> with the string as a message. Otherwise, the
+      first parameter should be the name of an <code>Exception</code> class
+      (or an object that returns an <code>Exception</code> when sent
+      <code>exception</code>). The
+      optional second parameter sets the message associated with the
+      exception, and the third parameter is an array of callback
+      information. Exceptions are caught by the <code>rescue</code> clause of
+      <code>begin...end</code> blocks.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+raise&nbsp;"Failed&nbsp;to&nbsp;create&nbsp;socket"
+raise&nbsp;ArgumentError,&nbsp;"No&nbsp;parameters",&nbsp;caller
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.rand">rand</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        rand( <i>max</i>=0 )
+        -&gt; <i>aNumber</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Converts <i>max</i> to an integer using max<sub>1</sub> =
+      max<code>.to_i.abs</code>.
+      If the result is zero, returns a pseudorandom floating point
+      number greater than or equal to 0.0 and less than
+      1.0. Otherwise, returns a pseudorandom integer greater than or
+      equal to zero and less than max<sub>1</sub>. <a href="ref_m_kernel.html#Kernel.srand">
+          <code>Kernel::srand</code>
+        </a> may be
+      used to ensure repeatable sequences of random numbers between
+      different runs of the program.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>srand&nbsp;1234</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>[&nbsp;rand,&nbsp;&nbsp;rand&nbsp;]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[0.7408769294,&nbsp;0.2145348572]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>[&nbsp;rand(10),&nbsp;rand(1000)&nbsp;]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3,&nbsp;323]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>srand&nbsp;1234</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1234</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>[&nbsp;rand,&nbsp;&nbsp;rand&nbsp;]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[0.7408769294,&nbsp;0.2145348572]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.readline">readline</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        readline( <i>[</i>
+          <i>aString</i>=<code>$/</code>
+          <i>]</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <a href="ref_m_kernel.html#Kernel.gets">
+          <code>Kernel::gets</code>
+        </a>, except <code>readline</code> raises 
+      <code>EOFError</code> at end of file.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.readlines">readlines</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        readlines( <i>[</i>
+          <i>aString</i>=<code>$/</code>
+          <i>]</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing the lines returned by
+      calling <code>Kernel.gets(<i>aString</i>)</code> until the end of file.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.require">require</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        require( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Ruby tries to load the library named <i>aString</i>, returning
+      <code>true</code> if successful. If the filename does not resolve to an
+      absolute path, it will be searched for in the directories listed 
+      in <code>$:</code>. If the file has the extension
+      ``.rb'', it is loaded as a source file; if the extension is
+      ``.so'', ``.o'', or ``.dll'',<em>[Or whatever the default
+        shared library extension is on the current platform.]</em> Ruby
+      loads the shared library as a Ruby extension. Otherwise, Ruby
+      tries adding ``.rb'', ``.so'', and so on to the name. The name
+      of the loaded feature is added to the array in <code>$"</code>. A
+      feature will not be loaded if it already appears in <code>$"</code>.
+      <code>require</code> returns <code>true</code> if the feature was
+      successfully loaded.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+require&nbsp;"my-library.rb"
+require&nbsp;"db-driver"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.scan">scan</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  scan( <i>pattern</i> ) -&gt; <i>anArray</i>
+          <br>scan( <i>pattern</i> ) {|  | block }
+ -&gt; $_
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to calling <code>$_.scan</code>. See <a href="ref_c_string.html#String.scan">
+          <code>String#scan</code>
+        </a>
+      on page 373.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.select">select</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        select( <i>readArray</i> <i>[</i>,
+          <i>writeArray</i>
+          <i>[</i>
+          <i>errorArray</i> <i>[</i>
+          <i>timeout</i>
+          <i>]</i>
+          <i>]</i>
+          <i>]</i> )
+        -&gt; <i>anArray</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs
+      a low-level <code>select</code> call, which waits for data to
+      become available from input/output devices. The first three
+      parameters are arrays of <code>IO</code> objects or <code>nil</code>. The last is a
+      timeout in seconds, which should be an <code>Integer</code> or a
+      <code>Float</code>.  The call waits for data to become available for any
+      of the <code>IO</code> objects in <i>readArray</i>, for buffers to have
+      cleared sufficiently to enable writing to any of the devices in
+      <i>writeArray</i>, or for an error to occur on the devices in
+      <i>errorArray</i>. If one or more of these conditions are met, the
+      call returns a three-element array containing arrays of the
+      <code>IO</code> objects that were ready.  Otherwise, if there is no
+      change in status for <i>timeout</i> seconds, the call returns
+      <code>nil</code>. If all parameters are <code>nil</code>, the current thread sleeps forever.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>select(&nbsp;[$stdin],&nbsp;nil,&nbsp;nil,&nbsp;1.5&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[[#&lt;IO:0x401ba090&gt;],&nbsp;[],&nbsp;[]]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.set_trace_func">set_trace_func</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                set_trace_func( <i>aProc</i> ) -&gt; <i>aProc</i>
+          <br>set_trace_func( <code>nil</code> ) -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Establishes <i>aProc</i> as the handler for tracing, or disables
+      tracing if the parameter is <code>nil</code>. <i>aProc</i>
+      takes up to six parameters: an event name, a filename, a line
+      number, an object id, a binding, and the name of a
+      class. <i>aProc</i> is invoked whenever an event
+      occurs. Events are:
+      <code>c-call</code> (call a C-language routine),
+      <code>c-return</code> (return from a C-language routine),
+      <code>call</code> (call a Ruby method),
+      <code>class</code> (start a class or module definition),
+      <code>end</code> (finish a class or module definition),
+      <code>line</code> (execute code on a new line),
+      <code>raise</code> (raise an exception), and
+      <code>return</code> (return from a Ruby method).
+      Tracing is disabled within the context of <i>aProc</i>.
+<P></P>
+      See the example starting on page 267 for more
+      information.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.singleton_method_added">singleton_method_added</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                singleton_method_added( <i>aFixnum</i> ) -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invoked with a symbol id whenever a singleton method is added to 
+      a module or a class. The default implementation in <code>Kernel</code>
+      ignores this, but subclasses may override the method to provide
+      specialized functionality.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+class&nbsp;Test
+&nbsp;&nbsp;def&nbsp;Test.singleton_method_added(id)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Added&nbsp;#{id.id2name}&nbsp;to&nbsp;Test"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;a()&nbsp;end
+&nbsp;&nbsp;def&nbsp;Test.b()&nbsp;end
+end
+def&nbsp;Test.c()&nbsp;end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Added&nbsp;singleton_method_added&nbsp;to&nbsp;Test
+Added&nbsp;b&nbsp;to&nbsp;Test
+Added&nbsp;c&nbsp;to&nbsp;Test
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.sleep">sleep</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        sleep( <i>[</i>
+          <i>aNumeric</i>
+          <i>]</i> )
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Suspends the current thread for <i>aNumber</i> seconds (which may be a <code>Float</code>
+      with fractional seconds). Returns the actual number of seconds
+      slept (rounded), which may be less than that asked for if the
+      thread was interrupted by a
+      <code>SIGALRM</code>, or if another thread
+      calls <a href="ref_c_thread.html#Thread.run">
+          <code>Thread#run</code>
+        </a>. An argument of zero causes <code>sleep</code>
+      to sleep forever.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Time.new</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:19:40&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sleep&nbsp;1.2</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.new</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:19:41&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sleep&nbsp;1.9</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.new</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:19:43&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.split">split</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        split( <i>[</i>
+          <i>pattern</i>
+          <i>[</i>
+          <i>limit</i>
+          <i>]</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to
+      <code>$_.split(<i>pattern</i>, <i>limit</i>)</code>. See <a href="ref_c_string.html#String.split">
+          <code>String#split</code>
+        </a>
+      on page 374.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.sprintf">sprintf</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        sprintf( <i>aFormatString</i> 
+                <i>[</i>, <i>arguments</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the string resulting
+      from applying &nbsp;<i>aFormatString</i> to any additional arguments.
+      Within the format string, any characters other than format
+      sequences are copied to the result.
+      A format sequence consists of a percent sign, followed by
+      optional flags, width, and precision indicators, then terminated
+      with a field type character. The field type controls how the
+      corresponding <code>sprintf</code> argument is to be interpreted,
+      while the flags modify that interpretation.
+      The flag characters are shown in Table
+      23.1 on page 424, and the field type characters are listed 
+      in Table 23.2.
+<P></P>
+      The field width is an optional integer, followed optionally by a 
+      period and a precision. The width specifies the minimum number
+      of characters that will be written to the result for this
+      field. For numeric fields, the precision controls the number of
+      decimal places displayed. For string fields, the precision
+      determines the maximum number of characters to be copied from
+      the string. (Thus, the format sequence <code>%10.10s</code> will always 
+      contribute exactly ten characters to the result.)
+<P></P>
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+        <b>
+                <code>sprintf</code> flag characters</b>        
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Flag</b>
+                  </td>
+  <td valign="top">
+                    <b>Applies to</b>
+                  </td>
+  <td valign="top">
+                    <b>Meaning</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"></code> (space)</td>
+  <td valign="top">bdeEfgGioxXu</td>
+  <td valign="top">Leave a
+          space at the start of positive numbers.</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>#</code>
+                  </td>
+  <td valign="top">beEfgGoxX</td>
+  <td valign="top">Use an alternative format. For the
+          conversions `o', `x', `X', and `b', prefix the result with
+          ``0'', ``0x'', ``0X'', and ``0b'', respectively. For `e',
+          `E', `f', `g', and 'G', force a decimal point to be added,
+          even if no digits follow. For `g' and 'G', do not remove
+          trailing zeros.</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>+</code>
+                  </td>
+  <td valign="top">bdeEfgGioxXu</td>
+  <td valign="top">Add a leading plus sign to
+          positive numbers.</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>-</code>
+                  </td>
+  <td valign="top">all</td>
+  <td valign="top">Left-justify the result of this conversion.</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>0</code> (zero)</td>
+  <td valign="top">all</td>
+  <td valign="top">Pad with zeros, not spaces.</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>*</code>
+                  </td>
+  <td valign="top">all</td>
+  <td valign="top">Use the next argument as the field width. If
+          negative, left-justify the result. If the asterisk is
+          followed by a number and a dollar sign, use 
+          the indicated argument as the width.</td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+        <b>
+                <code>sprintf</code> field types</b>        
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Field</b>
+                  </td>
+  <td valign="top">
+                    <b>Conversion</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">b</td>
+  <td valign="top">Convert argument as a binary number.</td>
+</tr>
+<tr>
+  <td valign="top">c</td>
+  <td valign="top">Argument is the numeric code for a single character.</td>
+</tr>
+<tr>
+  <td valign="top">d</td>
+  <td valign="top">Convert argument as a decimal number.</td>
+</tr>
+<tr>
+  <td valign="top">E</td>
+  <td valign="top">Equivalent to `e', but uses an uppercase E to indicate
+          the exponent.</td>
+</tr>
+<tr>
+  <td valign="top">e</td>
+  <td valign="top">Convert floating point argument into exponential notation 
+          with one digit before the decimal point. The precision
+          determines the number of fractional digits (defaulting to six).</td>
+</tr>
+<tr>
+  <td valign="top">f</td>
+  <td valign="top">Convert floating point argument as <code>[<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">-]ddd.ddd</code>, 
+          where the precision determines the number of digits after
+          the decimal point.</td>
+</tr>
+<tr>
+  <td valign="top">G</td>
+  <td valign="top">Equivalent to `g', but use an uppercase `E' in exponent 
+          form.</td>
+</tr>
+<tr>
+  <td valign="top">g</td>
+  <td valign="top">Convert a floating point number using exponential form
+          if the exponent is less than -4 or greater than or
+          equal to the precision, or in <code>d.dddd</code> form otherwise.</td>
+</tr>
+<tr>
+  <td valign="top">i</td>
+  <td valign="top">Identical to `d'.</td>
+</tr>
+<tr>
+  <td valign="top">o</td>
+  <td valign="top">Convert argument as an octal number.</td>
+</tr>
+<tr>
+  <td valign="top">s</td>
+  <td valign="top">Argument is a string to be substituted. If the format
+          sequence contains a precision, at most that many characters
+          will be copied.</td>
+</tr>
+<tr>
+  <td valign="top">u</td>
+  <td valign="top">Treat argument as an unsigned decimal number.</td>
+</tr>
+<tr>
+  <td valign="top">X</td>
+  <td valign="top">Convert argument as a hexadecimal number using uppercase letters.</td>
+</tr>
+<tr>
+  <td valign="top">x</td>
+  <td valign="top">Convert argument as a hexadecimal number.</td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>sprintf("%d&nbsp;%04x",&nbsp;123,&nbsp;123)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"123<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">007b"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sprintf("%08b&nbsp;'%4s'",&nbsp;123,&nbsp;123)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"01111011<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">'<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">123'"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sprintf("%*2$s&nbsp;%d",&nbsp;"hello",&nbsp;10)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">hello<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">10"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sprintf("%*2$s&nbsp;%d",&nbsp;"hello",&nbsp;-10)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">-10"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sprintf("%+g:%&nbsp;g:%-g",&nbsp;1.23,&nbsp;1.23,&nbsp;1.23)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"+1.23:<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">1.23:1.23"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.srand">srand</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        srand( <i>[</i>
+          <i>aNumber</i>
+          <i>]</i> )
+        -&gt; <i>oldSeed</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Seeds the pseudorandom number generator to the value of
+      <i>aNumber</i>.<code>to_i.abs</code>. If <i>aNumber</i> is omitted or zero,
+      seeds the generator using a combination of the time, the process 
+      id, and a sequence number. (This is also the behavior if
+      <a href="ref_m_kernel.html#Kernel.rand">
+          <code>Kernel::rand</code>
+        </a> is called without previously calling
+      <code>srand</code>, but without the sequence.)
+      By setting the seed to a known value, scripts can be made
+      deterministic during testing. The previous seed value is
+      returned. Also see <a href="ref_m_kernel.html#Kernel.rand">
+          <code>Kernel::rand</code>
+        </a> on page 421.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.sub">sub</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    sub( <i>pattern</i>, <i>replacement</i> )
+            -&gt; $_<br>sub( <i>pattern</i> ) { <i>block</i> }
+            -&gt; $_
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_.sub(<i>args</i>)</code>, except that <code>$_</code> 
+      will be updated if substitution occurs.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.sub_oh">sub!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    sub!( <i>pattern</i>, <i>replacement</i> )
+            -&gt; $_ or <code>nil</code>
+          <br>sub!( <i>pattern</i> ) { <i>block</i> }
+            -&gt; $_ or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_.sub!(<i>args</i>)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.syscall">syscall</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        syscall( <i>aFixnum</i>
+        <i>[</i>, <i>args</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls the operating system function identified by <i>aFixnum</i>, 
+      passing in the arguments, which must be either <code>String</code> objects, or
+      <code>Integer</code> objects that ultimately fit within a native <code>long</code>. 
+      Up to nine parameters may be passed (14 on the
+      Atari-ST). The function identified
+      by <i>Fixnum</i> is system dependent. On some Unix systems, the
+      numbers may be obtained from a header file called
+      <code>syscall.h</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+syscall&nbsp;4,&nbsp;1,&nbsp;"hello\n",&nbsp;6&nbsp;&nbsp;&nbsp;#&nbsp;'4'&nbsp;is&nbsp;write(2)&nbsp;on&nbsp;our&nbsp;box
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+hello
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.system">system</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        system( <i>aCmd</i> <i>[</i>, <i>args</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Executes <i>aCmd</i> in a subshell, returning <code>true</code> if the 
+      command was found and ran successfully, <code>false</code>
+      otherwise. A detailed error code is available in <code>$?</code>. The 
+      arguments are processed in the same way as for <a href="ref_m_kernel.html#Kernel.exec">
+          <code>Kernel::exec</code>
+        </a>
+      on page 415.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+system("echo&nbsp;*")
+system("echo",&nbsp;"*")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+config.h&nbsp;main.rb
+*
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.test">test</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        test(<i>aCmd</i>, <i>file1</i> <i>[</i>, <i>file2</i>
+          <i>]</i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Uses the integer <i>aCmd</i> to perform various tests on
+      <i>file1</i> (Table 23.3 on page 426) or on <i>file1</i> and
+      <i>file2</i> (Table 23.4).      
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+                <b>File tests with a single argument</b>
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Integer</b>
+                  </td>
+  <td valign="top">
+                    <b>Description</b>
+                  </td>
+  <td valign="top">
+                    <b>Returns</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?A</td>
+  <td valign="top">Last access time for <i>file1</i>
+                  </td>
+  <td valign="top">Time</td>
+</tr>
+<tr>
+  <td valign="top">?b</td>
+  <td valign="top">True if <i>file1</i> is a block device</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?c</td>
+  <td valign="top">True if <i>file1</i> is a character device</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?C</td>
+  <td valign="top">Last change time for <i>file1</i>
+                  </td>
+  <td valign="top">Time</td>
+</tr>
+<tr>
+  <td valign="top">?d</td>
+  <td valign="top">True if <i>file1</i> exists and is a directory</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?e</td>
+  <td valign="top">True if <i>file1</i> exists</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?f</td>
+  <td valign="top">True if <i>file1</i> exists and is a regular file</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?g</td>
+  <td valign="top">True if <i>file1</i> has the <code>setgid</code> bit set (false under
+          NT)</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?G</td>
+  <td valign="top">True if <i>file1</i> exists and has a group ownership equal to
+          the caller's group</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?k</td>
+  <td valign="top">True if <i>file1</i> exists and has the sticky bit set</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?l</td>
+  <td valign="top">True if <i>file1</i> exists and is a symbolic link</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?M</td>
+  <td valign="top">Last modification time for <i>file1</i>
+                  </td>
+  <td valign="top">Time</td>
+</tr>
+<tr>
+  <td valign="top">?o</td>
+  <td valign="top">True if <i>file1</i> exists and is owned by the caller's
+          effective uid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?O</td>
+  <td valign="top">True if <i>file1</i> exists and is owned by the caller's
+          real uid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?p</td>
+  <td valign="top">True if <i>file1</i> exists and is a fifo</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?r</td>
+  <td valign="top">True if file is readable by the effective uid/gid of the
+          caller</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?R</td>
+  <td valign="top">True if file is readable by the real uid/gid of the
+          caller</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?s</td>
+  <td valign="top">If <i>file1</i> has nonzero size, return the size, otherwise
+          return <code>nil</code>
+                  </td>
+  <td valign="top">Integer or <code>nil</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?S</td>
+  <td valign="top">True if <i>file1</i> exists and is a socket</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?u</td>
+  <td valign="top">True if <i>file1</i> has the setuid bit set</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?w</td>
+  <td valign="top">True if <i>file1</i> exists and is writable by the effective
+          uid/gid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?W</td>
+  <td valign="top">True if <i>file1</i> exists and is writable by the real
+          uid/gid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?x</td>
+  <td valign="top">True if <i>file1</i> exists and is executable by the effective
+          uid/gid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?X</td>
+  <td valign="top">True if <i>file1</i> exists and is executable by the real
+          uid/gid</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?z</td>
+  <td valign="top">True if <i>file1</i> exists and has a zero length</td>
+  <td valign="top">
+                    <code>true</code> or <code>false</code>
+                  </td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+                        <b>File tests with two arguments</b>
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Integer</b>
+                  </td>
+  <td valign="top">
+                    <b>Description</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?-</td>
+  <td valign="top">True if <i>file1</i> is a hard link to <i>file2</i>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?=</td>
+  <td valign="top">True if the modification times of <i>file1</i> and <i>file2</i> are
+          equal</td>
+</tr>
+<tr>
+  <td valign="top">?&lt;</td>
+  <td valign="top">True if the modification time of <i>file1</i> is prior to that
+          of <i>file2</i>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">?&gt;</td>
+  <td valign="top">True if the modification time of <i>file1</i> is after that
+          of <i>file2</i>
+                  </td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.throw">throw</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        throw( <i>aSymbol</i>
+        <i>[</i>, <i>anObject</i>
+          <i>]</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Transfers control to the end of the active <code>catch</code> block
+      waiting for <i>aSymbol</i>. Raises <code>NameError</code> if
+      there is no <code>catch</code> block
+      for the symbol. The optional second
+      parameter supplies a return value for the <code>catch</code> block,
+      which otherwise defaults to <code>nil</code>. For examples, see
+      <a href="ref_m_kernel.html#Kernel.catch">
+          <code>Kernel::catch</code>
+        </a> on page 413.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.trace_var">trace_var</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  trace_var( <i>aSymbol</i>, <i>aCmd</i> ) -&gt; <code>nil</code>
+          <br>trace_var( <i>aSymbol</i> ) {| val | block }
+<P></P>
+          -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Controls tracing of assignments to global variables. The
+      parameter <i>aSymbol</i> identifies the variable (as either a
+      string name or a symbol identifier).
+      <i>cmd</i> (which may be a string or a <code>Proc</code> object) or block
+      is executed whenever the variable is assigned. The block or
+      <code>Proc</code> object receives the variable's new value as a
+      parameter. Also see <a href="ref_m_kernel.html#Kernel.untrace_var">
+          <code>Kernel::untrace_var</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+trace_var&nbsp;:$_,&nbsp;proc&nbsp;{|v|&nbsp;puts&nbsp;"$_&nbsp;is&nbsp;now&nbsp;'#{v}'"&nbsp;}
+$_&nbsp;=&nbsp;"hello"
+$_&nbsp;=&nbsp;'&nbsp;there'
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$_&nbsp;is&nbsp;now&nbsp;'hello'
+$_&nbsp;is&nbsp;now&nbsp;'&nbsp;there'
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.trap">trap</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  trap( <i>signal</i>, <i>cmd</i> ) -&gt; <i>anObject</i>
+          <br>trap( <i>signal</i> ) {|  | block }
+ -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Specifies the handling of signals. The first parameter is a
+      signal name (a string such as ``SIGALRM'', ``SIGUSR1'', and so on)
+      or a signal number. The characters ``SIG'' may be omitted from
+      the signal name. The command or block specifies code to be run
+      when the signal is raised. If the command is the string
+      ``IGNORE'' or ``SIG_IGN'', the signal will be ignored. If the
+      command is ``DEFAULT'' or ``SIG_DFL'', the operating system's
+      default handler will be invoked. If the command is ``EXIT'', the 
+      script will be terminated by the signal. Otherwise, the given
+      command or block will be run.
+<P></P>
+      The special signal name ``EXIT'' or signal
+      number zero will be invoked just prior to program termination.
+<P></P>
+      <code>trap</code> returns the previous handler for the given signal.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+trap&nbsp;0,&nbsp;proc&nbsp;{&nbsp;puts&nbsp;"Terminating:&nbsp;#{$$}"&nbsp;}
+trap("CLD")&nbsp;{&nbsp;puts&nbsp;"Child&nbsp;died"&nbsp;}
+fork&nbsp;&amp;&amp;&nbsp;Process.wait
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Terminating:&nbsp;1425
+Child&nbsp;died
+Terminating:&nbsp;1424
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Kernel.untrace_var">untrace_var</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        untrace_var( <i>aSymbol</i> <i>[</i>,
+          <i>aCmd</i>
+          <i>]</i> ) -&gt; <i>anArray</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+         Removes tracing
+      for the specified command on the given global variable and
+      returns <code>nil</code>. If no command is specified, removes all tracing for
+      that variable and returns an array containing the commands
+      actually removed.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_gc.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_marshal.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

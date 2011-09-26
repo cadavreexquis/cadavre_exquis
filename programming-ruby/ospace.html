@@ -1,0 +1,1534 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="taint.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="builtins.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Reflection, ObjectSpace, and Distributed  Ruby</h1>
+    <hr>
+    <br>
+<P></P>
+One of the many advantages of dynamic languages such as Ruby is the
+ability to <em>introspect</em>---to examine aspects of the program from
+within the program itself.  Java, for one, calls this
+feature <em>reflection</em>.
+<P></P>
+The word ``reflection''
+conjures up an image of looking at oneself in the mirror---perhaps
+investigating the relentless spread of that bald spot on the top of
+one's head.  That's a pretty apt analogy: we use reflection to examine
+parts of our programs that aren't normally visible from where we stand.
+<P></P>
+In this deeply introspective mood, while we are contemplating our
+navels and burning incense (being careful not to swap the two tasks),
+what can we learn about our program? We might discover:
+<P></P>
+<ul>
+  <li> what objects it contains,
+  </li>
+      <li> the current class hierarchy,
+  </li>
+      <li> the contents and behaviors of objects, and
+  </li>
+      <li> information on methods.
+</li>
+    </ul>
+<P></P>
+Armed with this information, we can look at particular objects
+and decide which of their methods to call at runtime---even if the class of
+the object didn't exist when we first wrote the code. We can also
+start doing clever things, perhaps modifying the program as it's
+running.
+<P></P>
+Sound scary? It needn't be. In fact, these reflection capabilities let
+us do some very useful things. Later in this chapter we'll look at
+distributed Ruby and marshaling, two reflection-based technologies
+that let us send objects around the world and through time.
+<h2><a name="S1">Looking at Objects</a></h2>
+<P></P>
+Have you ever craved the ability to traverse <em>all</em> the living objects
+in your program?  We have!  Ruby lets you perform
+this trick with <a href="ref_m_objectspace.html#ObjectSpace.each_object">
+      <code>ObjectSpace::each_object</code>
+    </a>.  We can use it to
+do all sorts of neat tricks.
+<P></P>
+For example, to iterate over all objects of type <code>Numeric</code>, you'd
+write the following.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;102.7
+b&nbsp;=&nbsp;95.1
+ObjectSpace.each_object(Numeric)&nbsp;{|x|&nbsp;p&nbsp;x&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+95.1
+102.7
+2.718281828
+3.141592654
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Hey, where did those last two numbers come from?  We didn't define
+them in our program.  If you look on page 429, you'll 
+see that the <code>Math</code> module defines constants for e and PI; since we are
+examining <em>all</em> living objects in the system, these turn up as
+well.
+<P></P>
+However, there is a catch. Let's try the same example with different
+numbers.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;102
+b&nbsp;=&nbsp;95
+ObjectSpace.each_object(Numeric)&nbsp;{|x|&nbsp;p&nbsp;x&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+2.718281828
+3.141592654
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Neither of the <code>Fixnum</code> objects we created showed up. That's because 
+<code>ObjectSpace</code> doesn't know about objects with immediate values:
+<code>Fixnum</code>, <code>true</code>, <code>false</code>, and <code>nil</code>.
+<h3><a name="UA">Looking Inside Objects</a></h3>
+<P></P>
+Once you've found an interesting object, you may be tempted to find
+out just what it can do. Unlike static languages, where a variable's
+type determines its class, and hence the methods it supports, Ruby
+supports liberated objects. You really cannot tell exactly what an
+object can do until you look under its hood.<em>[Or under its bonnet, for
+  objects created to the east of the Atlantic.]</em>
+<P></P>
+For instance, we can get a list of all the methods to which an object will 
+respond.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>r&nbsp;=&nbsp;1..10&nbsp;#&nbsp;Create&nbsp;a&nbsp;Range&nbsp;object</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>list&nbsp;=&nbsp;r.methods</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list.length</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>60</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list[0..3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["size",&nbsp;"end",&nbsp;"length",&nbsp;"exclude_end?"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Or, we can check to see if an object supports a particular method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>r.respond_to?("frozen?")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>r.respond_to?("hasKey")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"me".respond_to?("==")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+We can determine our object's class and its unique object id, and test
+its relationship to other classes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>num&nbsp;=&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.class</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Fixnum</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.kind_of?&nbsp;Fixnum</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.kind_of?&nbsp;Numeric</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.instance_of?&nbsp;Fixnum</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>num.instance_of?&nbsp;Numeric</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h2><a name="S2">Looking at Classes</a></h2>
+<P></P>
+Knowing about objects is one part of reflection, but to get the whole
+picture, you also need to be able to look at classes---the methods
+and constants that they contain.
+<P></P>
+Looking at the class hierarchy is easy. You can get the parent of any
+particular class using <a href="ref_c_class.html#Class.superclass">
+      <code>Class#superclass</code>
+    </a>. For
+classes <em>and</em> modules, <a href="ref_c_module.html#Module.ancestors">
+      <code>Module#ancestors</code>
+    </a> lists both
+superclasses and mixed-in modules.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+klass&nbsp;=&nbsp;Fixnum
+begin
+&nbsp;&nbsp;print&nbsp;klass
+&nbsp;&nbsp;klass&nbsp;=&nbsp;klass.superclass
+&nbsp;&nbsp;print&nbsp;"&nbsp;&lt;&nbsp;"&nbsp;if&nbsp;klass
+end&nbsp;while&nbsp;klass
+puts
+p&nbsp;Fixnum.ancestors
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Fixnum&nbsp;&lt;&nbsp;Integer&nbsp;&lt;&nbsp;Numeric&nbsp;&lt;&nbsp;Object
+[Fixnum,&nbsp;Integer,&nbsp;Precision,&nbsp;Numeric,&nbsp;Comparable,&nbsp;Object,&nbsp;Kernel]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If you want to build a complete class hierarchy, just run that code
+for every class in the system.  We can use <code>ObjectSpace</code> to iterate
+over all <code>Class</code> objects:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+ObjectSpace.each_object(Class)&nbsp;do&nbsp;|aClass|
+&nbsp;&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UB">Looking Inside Classes</a></h3>
+<P></P>
+We can find out a bit more about the methods and constants in a
+particular object.  Instead of just checking to see whether the object 
+responds to a given message, we can ask for methods by access level,
+we can ask for just singleton methods, and we can have a look at
+the object's constants.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Demo</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;private</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;privMethod</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;protected</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;protMethod</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;public</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;pubMethod</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;Demo.classMethod</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;CONST&nbsp;=&nbsp;1.23</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Demo.private_instance_methods</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["privMethod"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Demo.protected_instance_methods</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["protMethod"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Demo.public_instance_methods</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["pubMethod"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Demo.singleton_methods</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["classMethod"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Demo.constants&nbsp;-&nbsp;Demo.superclass.constants</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["CONST"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+<a href="ref_c_module.html#Module.constants">
+      <code>Module.constants</code>
+    </a> returns
+<em>all</em> the constants available via a module, including
+constants from the module's superclasses. We're not interested in
+those just at the moment, so we'll subtract them from our list.
+<P></P>
+Given a list of method names, we might now be tempted to try calling them.
+Fortunately, that's easy with Ruby.
+<h2><a name="S3">Calling Methods Dynamically</a></h2>
+<P></P>
+C and Java programmers often find themselves writing some kind of
+dispatch table: functions which are invoked based on a command.  Think
+of a typical C idiom where you have to translate a string to a
+function pointer:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+typedef&nbsp;struct&nbsp;{
+&nbsp;&nbsp;char&nbsp;*name;
+&nbsp;&nbsp;void&nbsp;(*fptr)();
+}&nbsp;Tuple;
+<P></P>
+Tuple&nbsp;list[]=&nbsp;{
+&nbsp;&nbsp;{&nbsp;"play",&nbsp;&nbsp;&nbsp;fptr_play&nbsp;},
+&nbsp;&nbsp;{&nbsp;"stop",&nbsp;&nbsp;&nbsp;fptr_stop&nbsp;},
+&nbsp;&nbsp;{&nbsp;"record",&nbsp;fptr_record&nbsp;},
+&nbsp;&nbsp;{&nbsp;0,&nbsp;0&nbsp;},
+};
+<P></P>
+...
+<P></P>
+void&nbsp;dispatch(char&nbsp;*cmd)&nbsp;{
+&nbsp;&nbsp;int&nbsp;i&nbsp;=&nbsp;0;
+&nbsp;&nbsp;for&nbsp;(;&nbsp;list[i].name;&nbsp;i++)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(strncmp(list[i].name,cmd,strlen(cmd))&nbsp;==&nbsp;0)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list[i].fptr();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+&nbsp;&nbsp;/*&nbsp;not&nbsp;found&nbsp;*/
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In Ruby, you can do all this in one line.  Stick all your command
+functions into a class, create an instance of that class (we called it 
+<code>commands</code>), and ask that object to execute a method called the
+same name as the command string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+commands.send(commandString)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Oh, and by the way, it does much more than the C version---it's
+dynamic.  The Ruby version will find new methods added at runtime just
+as easily.
+<P></P>
+You don't have to write special command classes for <code>send</code>: it
+works on any object.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>"John&nbsp;Coltrane".send(:length)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>13</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Miles&nbsp;Davis".send("sub",&nbsp;/iles/,&nbsp;'.')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"M.&nbsp;Davis"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Another way of invoking methods dynamically uses <code>Method</code> objects.  A
+<code>Method</code> object is like a <code>Proc</code> object: it represents a chunk of
+code and a context in which it executes. In this case, the code is the
+body of the method, and the context is the object that created the
+method. Once we have our <code>Method</code> object, we can execute it sometime
+later by sending it the message <code>call</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>trane&nbsp;=&nbsp;"John&nbsp;Coltrane".method(:length)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>miles&nbsp;=&nbsp;"Miles&nbsp;Davis".method("sub")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>trane.call</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>13</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>miles.call(/iles/,&nbsp;'.')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"M.&nbsp;Davis"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+You can pass the <code>Method</code> object around as you would any other
+object, and when you invoke <a href="ref_c_method.html#Method.call">
+      <code>Method#call</code>
+    </a>, the method is run just
+as if you had invoked it on the original object.  It's like having a
+C-style function pointer but in a fully object-oriented style.
+<P></P>
+You can also use <code>Method</code> objects with iterators.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;double(a)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;2*a</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>mObj&nbsp;=&nbsp;method(:double)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7&nbsp;].collect(&amp;mObj)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[2,&nbsp;6,&nbsp;10,&nbsp;14]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+As good things come in threes, here's yet another way to invoke
+methods dynamically. The <code>eval</code>
+method (and its variations such as
+<code>class_eval</code>, <code>module_eval</code>, and <code>instance_eval</code>) will
+parse and execute an arbitrary string of legal Ruby source code.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>trane&nbsp;=&nbsp;%q{"John&nbsp;Coltrane".length}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>miles&nbsp;=&nbsp;%q{"Miles&nbsp;Davis".sub(/iles/,&nbsp;'.')}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>eval&nbsp;trane</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>13</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>eval&nbsp;miles</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"M.&nbsp;Davis"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+When using <code>eval</code>, it can be helpful to state explicitly the
+context in which the expression should be evaluated, rather than using
+the current context.  You can obtain a context by calling
+<a href="ref_m_kernel.html#Kernel.binding">
+      <code>Kernel#binding</code>
+    </a> at the desired point.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;CoinSlot
+&nbsp;&nbsp;def&nbsp;initialize(amt=Cents.new(25))
+&nbsp;&nbsp;&nbsp;&nbsp;@amt&nbsp;=&nbsp;amt
+&nbsp;&nbsp;&nbsp;&nbsp;$here&nbsp;=&nbsp;binding
+&nbsp;&nbsp;end
+end
+<P></P>
+a&nbsp;=&nbsp;CoinSlot.new
+eval&nbsp;"puts&nbsp;@amt",&nbsp;$here
+eval&nbsp;"puts&nbsp;@amt"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+$0.25USD
+nil
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The first <code>eval</code> evaluates <code>@amt</code> in the context of the instance
+of class <code>CoinSlot</code>.  The second <code>eval</code> evaluates <code>@amt</code> in
+the context of <code>Object</code>, where the instance variable <code>@amt</code> is
+not defined.
+<h3><a name="UC">Performance Considerations</a></h3>
+<P></P>
+As we've seen in this section, there are several ways to invoke an
+arbitrary method of some object: <a href="ref_c_object.html#Object.send">
+      <code>Object#send</code>
+    </a>, 
+<a href="ref_c_method.html#Method.call">
+      <code>Method#call</code>
+    </a>, and the various flavors of <code>eval</code>.
+<P></P>
+You may prefer to use any one of these techniques depending on your
+needs, but be aware that <code>eval</code> is significantly slower than the
+others (or, for optimistic readers, <code>send</code> and <code>call</code> are
+significantly faster than <code>eval</code>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"benchmark"&nbsp;&nbsp;&nbsp;#&nbsp;from&nbsp;the&nbsp;Ruby&nbsp;Application&nbsp;Archive
+include&nbsp;Benchmark
+<P></P>
+test&nbsp;=&nbsp;"Stormy&nbsp;Weather"
+m&nbsp;=&nbsp;test.method(:length)
+n&nbsp;=&nbsp;100000
+<P></P>
+bm(12)&nbsp;{|x|
+&nbsp;&nbsp;x.report("call")&nbsp;{&nbsp;n.times&nbsp;{&nbsp;m.call&nbsp;}&nbsp;}
+&nbsp;&nbsp;x.report("send")&nbsp;{&nbsp;n.times&nbsp;{&nbsp;test.send(:length)&nbsp;}&nbsp;}
+&nbsp;&nbsp;x.report("eval")&nbsp;{&nbsp;n.times&nbsp;{&nbsp;eval&nbsp;"test.length"&nbsp;}&nbsp;}
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real
+call&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.220000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.220000&nbsp;(&nbsp;&nbsp;0.214065)
+send&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;0.210000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.210000&nbsp;(&nbsp;&nbsp;0.217070)
+eval&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.540000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;2.540000&nbsp;(&nbsp;&nbsp;2.518311)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S4">System Hooks</a></h2>
+<P></P>
+A <em>hook</em> is a technique that lets you trap some Ruby event, such
+as object creation.
+<P></P>
+The simplest hook technique in Ruby is to intercept calls to methods
+in system classes. Perhaps you want to log all the operating system
+commands your program executes. Simply rename the method
+<a href="ref_m_kernel.html#Kernel.system">
+      <code>Kernel::system</code>
+    </a>
+    <em>[This Eiffel-inspired  
+  idiom of renaming a
+  feature and redefining a new one is very useful, but be aware that
+  it can cause problems. If a subclass does the same thing, and
+  renames the methods using the same names, you'll end up with an
+  infinite loop. You can avoid this by aliasing your methods to a
+  unique symbol name or by using a consistent naming convention.]</em>
+and substitute it with one of your own that both logs the command and
+calls the original <code>Kernel</code> method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Kernel
+&nbsp;&nbsp;alias_method&nbsp;:old_system,&nbsp;:system
+&nbsp;&nbsp;def&nbsp;system(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;old_system(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"system(#{args.join(',&nbsp;')})&nbsp;returned&nbsp;#{result}"
+&nbsp;&nbsp;&nbsp;&nbsp;result
+&nbsp;&nbsp;end
+end
+<P></P>
+system("date")
+system("kangaroo",&nbsp;"-hop&nbsp;10",&nbsp;"skippy")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:09:44&nbsp;CDT&nbsp;2002
+system(date)&nbsp;returned&nbsp;true
+system(kangaroo,&nbsp;-hop&nbsp;10,&nbsp;skippy)&nbsp;returned&nbsp;false
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A more powerful hook is catching objects as they are created.
+If you can be 
+present when every object is born, you can do all sorts of interesting
+things: you can wrap them, add methods to them, remove methods from them, add them
+to containers to implement persistence, you name it. We'll show a
+simple example here: we'll add a timestamp to every object as it's
+created. 
+<P></P>
+One way to hook object creation is to do our method renaming trick on
+<a href="ref_c_class.html#Class.new">
+      <code>Class#new</code>
+    </a>, the method that's called to allocate space for a new
+object. The technique isn't perfect---some built-in objects, such as
+literal strings, are constructed without calling <code>new</code>---but
+it'll work just fine for objects we write.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Class
+&nbsp;&nbsp;alias_method&nbsp;:old_new,&nbsp;&nbsp;:new
+&nbsp;&nbsp;def&nbsp;new(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;old_new(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;result.timestamp&nbsp;=&nbsp;Time.now
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;result
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We'll also need to add a timestamp attribute to every object in the
+system. We can do this by hacking class <code>Object</code> itself.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Object
+&nbsp;&nbsp;def&nbsp;timestamp
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@timestamp
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;timestamp=(aTime)
+&nbsp;&nbsp;&nbsp;&nbsp;@timestamp&nbsp;=&nbsp;aTime
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, we can run a test. We'll create a couple of objects a few
+seconds apart and check their timestamps.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Test</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>obj1&nbsp;=&nbsp;Test.new</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>sleep&nbsp;2</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>obj2&nbsp;=&nbsp;Test.new</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>obj1.timestamp</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:09:45&nbsp;CDT&nbsp;2002</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>obj2.timestamp</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:09:47&nbsp;CDT&nbsp;2002</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+All this method renaming is fine, and it really does work. However,
+there are other, more refined ways to get inside a running
+program. Ruby provides several callback methods that let you trap
+certain events in a controlled way.
+<h3><a name="UD">Runtime Callbacks</a></h3>
+<P></P>
+You can be notified whenever one of the following events occurs:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>Event</b>
+        </td>
+  <td valign="top">
+          <b>Callback Method</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Adding an instance method</td>
+  <td valign="top">
+          <a href="ref_c_module.html#Module.method_added">
+            <code>Module#method_added</code>
+          </a>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Adding a singleton method</td>
+  <td valign="top">
+          <a href="ref_m_kernel.html#Kernel.singleton_method_added">
+            <code>Kernel::singleton_method_added</code>
+          </a>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Subclassing a class</td>
+  <td valign="top">
+          <a href="ref_c_class.html#Class.inherited">
+            <code>Class#inherited</code>
+          </a>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Mixing in a module</td>
+  <td valign="top">
+          <a href="ref_c_module.html#Module.extend_object">
+            <code>Module#extend_object</code>
+          </a>
+        </td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+These techniques are all illustrated in the library descriptions for
+each callback method.  At runtime, these methods will be called by the
+system when the specified event occurs.  By default, these methods do
+nothing. If you want to be notified when one of these events happens,
+just define the callback method, and you're in.
+<P></P>
+Keeping track of method creation and class and module usage lets you
+build an accurate picture of the dynamic state of your program. This
+can be important. For example, you may have written code that wraps
+all the methods in a class, perhaps to add transactional support or
+to implement some form of delegation. This is only half the job: the
+dynamic nature of Ruby means that users of this class could add new
+methods to it at any time. Using these callbacks, you can write
+code that wraps these new methods as they are created.
+<h2><a name="S5">Tracing Your Program's Execution</a></h2>
+<P></P>
+While we're having fun reflecting on all the objects and classes in
+our programs, let's not forget about the humble statements that make
+our code actually do things. It turns out that Ruby lets us look at
+these statements, too.
+<P></P>
+First, you can watch the interpreter as it executes code.
+<code>set_trace_func</code>
+executes a <code>Proc</code> with all sorts of juicy
+debugging information whenever a new source line is executed,
+methods are called, objects are created, and so on. There's a full description
+on page 422, but here's a taste.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Test
+&nbsp;&nbsp;def&nbsp;test
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;b&nbsp;=&nbsp;2
+&nbsp;&nbsp;end
+end
+<P></P>
+set_trace_func&nbsp;proc&nbsp;{&nbsp;|event,&nbsp;file,&nbsp;line,&nbsp;id,&nbsp;binding,&nbsp;classname|
+&nbsp;&nbsp;printf&nbsp;"%8s&nbsp;%s:%-2d&nbsp;%10s&nbsp;%8s\n",&nbsp;event,&nbsp;file,&nbsp;line,&nbsp;id,&nbsp;classname
+}
+t&nbsp;=&nbsp;Test.new
+t.test
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+&nbsp;&nbsp;&nbsp;&nbsp;line&nbsp;prog.rb:11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false
+&nbsp;&nbsp;c-call&nbsp;prog.rb:11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;&nbsp;&nbsp;&nbsp;Class
+&nbsp;&nbsp;c-call&nbsp;prog.rb:11&nbsp;initialize&nbsp;&nbsp;&nbsp;Object
+c-return&nbsp;prog.rb:11&nbsp;initialize&nbsp;&nbsp;&nbsp;Object
+c-return&nbsp;prog.rb:11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new&nbsp;&nbsp;&nbsp;&nbsp;Class
+&nbsp;&nbsp;&nbsp;&nbsp;line&nbsp;prog.rb:12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;false
+&nbsp;&nbsp;&nbsp;&nbsp;call&nbsp;prog.rb:2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test
+&nbsp;&nbsp;&nbsp;&nbsp;line&nbsp;prog.rb:3&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test
+&nbsp;&nbsp;&nbsp;&nbsp;line&nbsp;prog.rb:4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test
+&nbsp;&nbsp;return&nbsp;prog.rb:4&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;test&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Test
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There's also a method <code>trace_var</code> (described
+on page 427) that lets you add a hook to a global variable; whenever
+an assignment is made to the global, your <code>Proc</code> object is invoked.
+<h3><a name="UE">How Did We Get Here?</a></h3>
+<P></P>
+A fair question, and one we ask ourselves regularly.  Mental lapses
+aside, in Ruby at least you can find out exactly ``how you got there''
+by using the method <code>caller</code>,
+which returns an <code>Array</code> of
+<code>String</code> objects representing the current call stack.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;catA
+&nbsp;&nbsp;puts&nbsp;caller.join("\n")
+end
+def&nbsp;catB
+&nbsp;&nbsp;catA
+end
+def&nbsp;catC
+&nbsp;&nbsp;catB
+end
+catC
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+prog.rb:5:in&nbsp;`catB'
+prog.rb:8:in&nbsp;`catC'
+prog.rb:10
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Once you've figured out how you got there, where you go next is up to
+you.
+<h2><a name="S6">Marshaling and Distributed Ruby</a></h2>
+<P></P>
+Java features the ability to <em>serialize</em> objects, letting you
+store them somewhere and reconstitute them when needed.  You might
+use this facility, for instance, to save a tree of objects that
+represent some portion of application state---a document, a CAD
+drawing, a piece of music, and so on.
+<P></P>
+Ruby calls this kind of serialization
+<em>marshaling</em>.<em>[Think of railroad marshaling yards
+  where individual cars are assembled in sequence into a complete
+  train, which is then dispatched somewhere.]</em>  Saving an object
+and some or all of its components is done using the method
+<a href="ref_m_marshal.html#Marshal.dump">
+      <code>Marshal::dump</code>
+    </a>.  Typically, you will dump an entire object tree
+starting with some given object. Later on, you can reconstitute the
+object using <a href="ref_m_marshal.html#Marshal.load">
+      <code>Marshal::load</code>
+    </a>.
+<P></P>
+Here's a short example. We have a class <code>Chord</code> that holds a
+collection of musical notes. We'd like to save away a particularly
+wonderful chord so our grandchildren can load it into Ruby Version
+23.5 and savor it, too. Let's start off with the classes for <code>Note</code>
+and <code>Chord</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Note
+&nbsp;&nbsp;attr&nbsp;:value
+&nbsp;&nbsp;def&nbsp;initialize(val)
+&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;=&nbsp;val
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;to_s
+&nbsp;&nbsp;&nbsp;&nbsp;@value.to_s
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;Chord
+&nbsp;&nbsp;def&nbsp;initialize(arr)
+&nbsp;&nbsp;&nbsp;&nbsp;@arr&nbsp;=&nbsp;arr
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;play
+&nbsp;&nbsp;&nbsp;&nbsp;@arr.join('-')
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Now we'll create our masterpiece, and use <a href="ref_m_marshal.html#Marshal.dump">
+      <code>Marshal::dump</code>
+    </a> to save
+a serialized version of it to disk.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+c&nbsp;=&nbsp;Chord.new(&nbsp;[&nbsp;Note.new("G"),&nbsp;&nbsp;Note.new("Bb"),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Note.new("Db"),&nbsp;Note.new("E")&nbsp;]&nbsp;)
+<P></P>
+File.open("posterity",&nbsp;"w+")&nbsp;do&nbsp;|f|
+&nbsp;&nbsp;Marshal.dump(c,&nbsp;f)
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, our grandchildren read it in, and are transported by our
+creation's beauty.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>File.open("posterity")&nbsp;do&nbsp;|f|</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;chord&nbsp;=&nbsp;Marshal.load(f)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>chord.play</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"G-Bb-Db-E"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UF">Custom Serialization Strategy</a></h3>
+<P></P>
+Not all objects can be dumped: bindings, procedure objects, instances
+of class <code>IO</code>, and singleton objects cannot be saved outside of the
+running Ruby environment (a <code>TypeError</code> will be raised if you try).
+Even if your object doesn't contain one of these problematic objects,
+you may want to take control of object serialization yourself.
+<P></P>
+<code>Marshal</code> provides the hooks you need. In the objects that require
+custom serialization, simply implement two methods: an instance method 
+called <code>_dump</code>,
+which writes the object out to a string, and a
+class method called <code>_load</code>, which reads a string that you'd
+previously created and converts it into a new object.
+<P></P>
+For instance, here is a sample class that defines its own
+serialization.
+For whatever reasons, <code>Special</code> doesn't want to save one of its
+internal data members, ``<code>@volatile</code>''.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Special
+&nbsp;&nbsp;def&nbsp;initialize(valuable)
+&nbsp;&nbsp;&nbsp;&nbsp;@valuable&nbsp;=&nbsp;valuable
+&nbsp;&nbsp;&nbsp;&nbsp;@volatile&nbsp;=&nbsp;"Goodbye"
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;_dump(depth)
+&nbsp;&nbsp;&nbsp;&nbsp;@valuable.to_str
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;Special._load(str)
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;Special.new(str);
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;to_s
+&nbsp;&nbsp;&nbsp;&nbsp;"#{@valuable}&nbsp;and&nbsp;#{@volatile}"
+&nbsp;&nbsp;end
+end
+<P></P>
+a&nbsp;=&nbsp;Special.new("Hello,&nbsp;World")
+data&nbsp;=&nbsp;Marshal.dump(a)
+obj&nbsp;=&nbsp;Marshal.load(data)
+puts&nbsp;obj
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Hello,&nbsp;World&nbsp;and&nbsp;Goodbye
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+For more details, see the reference section on <code>Marshal</code>
+beginning on page 428.
+<h3><a name="UG">Distributed Ruby</a></h3>
+Since we can serialize an object or a set of objects into a form
+suitable for out-of-process storage, we can use this capability for
+the <em>transmission</em> of objects from one process to another.
+Couple this capability with the power of networking, and
+<em>voilà</em>: you have a distributed object system.  To save you
+the trouble of having to write the code, we suggest downloading
+Masatoshi Seki's Distributed Ruby library (drb) from the RAA.
+<P></P>
+Using drb, a Ruby process may act as a server, as a client, or as both. A 
+drb server acts as a source of objects, while a client is a user of
+those objects. To the client, it appears that the objects are local,
+but in reality the code is still being executed remotely.
+<P></P>
+A server starts a service by associating an object with a given port.
+Threads are created internally to handle incoming requests on that
+port, so remember to join the drb thread before exiting your program.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'drb'
+<P></P>
+class&nbsp;TestServer
+&nbsp;&nbsp;def&nbsp;doit
+&nbsp;&nbsp;&nbsp;&nbsp;"Hello,&nbsp;Distributed&nbsp;World"
+&nbsp;&nbsp;end
+end
+<P></P>
+aServerObject&nbsp;=&nbsp;TestServer.new
+DRb.start_service('druby://localhost:9000',&nbsp;aServerObject)
+DRb.thread.join&nbsp;#&nbsp;Don't&nbsp;exit&nbsp;just&nbsp;yet!
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A simple drb client simply creates a local drb object and associates
+it with the object on the remote server; the local object is a proxy.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'drb'
+DRb.start_service()
+obj&nbsp;=&nbsp;DRbObject.new(nil,&nbsp;'druby://localhost:9000')
+#&nbsp;Now&nbsp;use&nbsp;obj
+p&nbsp;obj.doit
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The client connects to the server and calls the method <code>doit</code>, which
+returns a string that the client prints out:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+"Hello,&nbsp;Distributed&nbsp;World"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The initial <code>nil</code> argument to <code>DRbObject</code> indicates that we want
+to attach to a new distributed object.  We could also use an
+existing object.
+<P></P>
+Ho hum, you say. This sounds like Java's RMI, or CORBA, or whatever.
+Yes, it is a functional distributed object mechanism---but it is
+written in just 200 lines of Ruby code.  No C, nothing fancy,  just
+plain old Ruby code.  Of course, there's no naming service or trader
+service, or anything like you'd see in CORBA, but it is simple and
+reasonably fast.  On the 233MHz test system, this sample code runs at
+about 50 remote message calls per second.
+<P></P>
+And, if you like the look of Sun's JavaSpaces, the basis of their JINI
+architecture, you'll be interested to know that drb is distributed with
+a short module that does the same kind of thing. JavaSpaces is based
+on a technology called Linda. To prove that its Japanese author has a
+sense of humor, Ruby's version of Linda is known as ``rinda.''
+<h2><a name="S7">Compile Time? Runtime? Anytime!</a></h2>
+<P></P>
+The important thing to remember about Ruby is that there isn't a big
+difference between ``compile time'' and ``runtime.''  It's all the
+same.  You can add code to a running process.  You
+can redefine methods on the fly, change their scope from <code>public</code>
+to <code>private</code>, and so on. You can even alter basic types,  such
+as <code>Class</code> and <code>Object</code>.
+<P></P>
+Once you get used to this flexibility, it is hard to go back to a
+static language such as C++, or even to a half-static language such as
+Java.
+<P></P>
+But then, why would you want to?
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="taint.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="builtins.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

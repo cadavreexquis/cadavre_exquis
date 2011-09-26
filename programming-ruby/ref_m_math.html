@@ -1,0 +1,361 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_marshal.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_objectspace.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Math</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Math.atan2">atan2</a> 
+     <a href="#Math.cos">cos</a> 
+     <a href="#Math.exp">exp</a> 
+     <a href="#Math.frexp">frexp</a> 
+     <a href="#Math.ldexp">ldexp</a> 
+     <a href="#Math.log">log</a> 
+     <a href="#Math.log10">log10</a> 
+     <a href="#Math.sin">sin</a> 
+     <a href="#Math.sqrt">sqrt</a> 
+     <a href="#Math.tan">tan</a> 
+     <p></p>
+    <hr>
+<P></P>
+  The <code>Math</code> module contains module functions for basic
+  trigonometric and transcendental functions.    
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+  <tr>
+       <td>
+              <a name="Math.E">
+                <code>E</code>
+              </a>
+            </td>
+       <td>2.718281828</td>
+       <td>Value of e (base of natural
+    logarithms)</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Math.PI">
+                <code>PI</code>
+              </a>
+            </td>
+       <td>3.141592654</td>
+       <td>Value of PI</td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.atan2">atan2</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.atan2( <i>y, x</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Computes the arc tangent given <i>y</i> and <i>x</i>. Returns -PI..PI.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.cos">cos</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.cos( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Computes the cosine of <i>aNumeric</i> (expressed 
+      in radians).
+      Returns -1..1.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.exp">exp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.exp( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns e raised to the power of <i>aNumeric</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.frexp">frexp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.frexp( <i>aNumeric</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a two-element array ([<i>aFloat, aFixnum</i>]) containing
+      the normalized fraction and exponent of <i>aNumeric</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.ldexp">ldexp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.ldexp( <i>aFloat</i>, <i>anInteger</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the value of <i>aFloat</i> *2<sup>
+          <i>anInteger</i>
+        </sup>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.log">log</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.log( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the natural logarithm of <i>aNumeric</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.log10">log10</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.log10( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the base 10 logarithm of <i>aNumeric</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.sin">sin</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.sin( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Computes the sine of <i>aNumeric</i> (expressed in 
+      radians). Returns -1..1.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.sqrt">sqrt</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.sqrt( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the non-negative square root of <i>aNumeric</i>.
+      Raises <code>ArgError</code> if <i>aNumeric</i> is less than zero.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Math.tan">tan</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Math.tan( <i>aNumeric</i> )
+        -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the tangent of <i>aNumeric</i> (expressed in radians).
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_marshal.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_objectspace.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

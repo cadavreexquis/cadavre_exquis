@@ -1,0 +1,770 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_exceptions.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_io.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Modules</h1>
+    <hr>
+    <br>
+<P></P>
+Modules are
+a way of grouping together methods, classes, and
+constants. Modules give you two major benefits:
+<ol>
+<li> Modules provide a namespace and prevent name clashes.
+</li>
+      <li> Modules implement the mixin facility.
+</li>
+    </ol>
+<h2><a name="S1">Namespaces</a></h2>
+<P></P>
+As you start to write bigger and bigger Ruby programs, you'll
+naturally find yourself producing chunks of reusable code---libraries
+of related routines that are generally applicable. You'll want to
+break this code out into separate files so the contents can be shared 
+among different Ruby programs.
+<P></P>
+Often this code will be organized into classes, so you'll probably
+stick a class (or a set of interrelated classes) into a file.
+<P></P>
+However, there are times when you want to group things together that
+don't naturally form a class.
+<P></P>
+An initial approach might be to put all these things into a file and
+simply load that file into any program that needs it. This is the
+way the C language works. However, there's a problem. Say you write a
+set of trigonometry functions <code>sin</code>, <code>cos</code>, and so on.
+You stuff them all into a file, <code>trig.rb</code>, for future generations
+to enjoy. Meanwhile, Sally is working on a simulation of good and evil,
+and codes up a set of her own useful routines, including <code>beGood</code>
+and <code>sin</code>, and sticks them into <code>action.rb</code>. Joe, who
+wants to write a program to find out how many angels can dance on the
+head of a pin, needs to load both <code>trig.rb</code> and <code>action.rb</code>
+into his program. But both define a method called <code>sin</code>. Bad news.
+<P></P>
+The answer is the module mechanism. Modules define a namespace, a
+sandbox in which your methods and constants can play without having to
+worry about being stepped on by other methods and constants. The trig
+functions can go into one module:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Trig
+&nbsp;&nbsp;PI&nbsp;=&nbsp;3.141592654
+&nbsp;&nbsp;def&nbsp;Trig.sin(x)
+&nbsp;&nbsp;&nbsp;#&nbsp;..
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Trig.cos(x)
+&nbsp;&nbsp;&nbsp;#&nbsp;..
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+and the good and bad action methods can go into another:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Action
+&nbsp;&nbsp;VERY_BAD&nbsp;=&nbsp;0
+&nbsp;&nbsp;BAD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;1
+&nbsp;&nbsp;def&nbsp;Action.sin(badness)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Module constants are named just like class constants, with an initial
+uppercase letter.
+The method definitions look similar, too: these
+module methods are defined just like class methods.
+<P></P>
+If a third program wants to use these modules, it can simply load up
+the two files (using the Ruby <code>require</code> statement, which we discuss
+on page 103) and reference the qualified names.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"trig"
+require&nbsp;"action"
+<P></P>
+y&nbsp;=&nbsp;Trig.sin(Trig::PI/4)
+wrongdoing&nbsp;=&nbsp;Action.sin(Action::VERY_BAD)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+As with class methods, you call a module method by preceding its name
+with the module's name and a period, and you reference a constant
+using  the module name and two colons.
+<h2><a name="S2">Mixins</a></h2>
+<P></P>
+Modules have another, wonderful use. At a stroke, they pretty much
+eliminate the need for multiple inheritance, providing a
+facility called a <em>mixin</em>.
+<P></P>
+In the previous section's examples, we defined module methods, methods
+whose names were prefixed by the module name. If this made you think of
+class methods, your next thought might well be ``what happens if
+I define instance methods within a module?'' Good question. A module
+can't have instances, because a module isn't a class. However, you can 
+<em>include</em> a module within a class definition. When this happens,
+all the module's instance methods are suddenly available as methods in 
+the class as well. They get <em>mixed in</em>. In fact, mixed-in modules 
+effectively behave as superclasses.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>module&nbsp;Debug</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;whoAmI?</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"#{self.type.name}&nbsp;(\##{self.id}):&nbsp;#{self.to_s}"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Phonograph</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Debug</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;#&nbsp;...</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;EightTrack</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Debug</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;#&nbsp;...</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>ph&nbsp;=&nbsp;Phonograph.new("West&nbsp;End&nbsp;Blues")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>et&nbsp;=&nbsp;EightTrack.new("Surrealistic&nbsp;Pillow")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>ph.whoAmI?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Phonograph&nbsp;(#537766170):&nbsp;West&nbsp;End&nbsp;Blues"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>et.whoAmI?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"EightTrack&nbsp;(#537765860):&nbsp;Surrealistic&nbsp;Pillow"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+By including the <code>Debug</code> module, both <code>Phonograph</code> and
+<code>EightTrack</code> gain access to the <code>whoAmI?</code> instance method.
+<P></P>
+A couple of points about the <code>include</code>
+statement before we go on.
+First, it has nothing to do with files. C programmers use a
+preprocessor directive called <code>#include</code> to insert the contents of
+one file into another during compilation. The Ruby <code>include</code>
+statement simply makes a reference to a named module. If that module
+is in a separate file, you must use <code>require</code>
+to drag that
+file in before using <code>include</code>. Second, a Ruby <code>include</code> does
+not simply copy the module's instance methods into the class. Instead,
+it makes a reference from the class to the included module. If
+multiple classes include that module, they'll all point to the same
+thing. If you change the definition of a method within a module, even
+while your program is running, all classes that include that module
+will exhibit the new behavior.<em>[Of course, we're speaking only
+  of methods here. Instance variables are always per-object, for
+  example.]</em>
+<P></P>
+Mixins give you a wonderfully controlled way of adding functionality
+to classes. However, their true power comes out when the code in the
+mixin starts to interact with code in the class that uses it. Let's
+take the standard Ruby mixin <code>Comparable</code> as an
+example. The <code>Comparable</code> mixin can be used to add the comparison
+operators (<code>&lt;</code>, <code>&lt;=</code>, <code>==</code>, <code>&gt;=</code>, and <code>&gt;</code>), as well as
+the method <code>between?</code>, to a class. For this to work,
+<code>Comparable</code> assumes that any class that uses it defines the
+operator <code>&lt;=&gt;</code>. So, as a class writer, you define the one method,
+<code>&lt;=&gt;</code>, include <code>Comparable</code>, and get six comparison functions for 
+free. Let's try this with our <code>Song</code> class, by making the songs comparable 
+based on their duration.
+All we have to do is include the <code>Comparable</code> module and implement
+the comparison operator <code>&lt;=&gt;</code>. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;include&nbsp;Comparable
+&nbsp;&nbsp;def&nbsp;&lt;=&gt;(other)
+&nbsp;&nbsp;&nbsp;&nbsp;self.duration&nbsp;&lt;=&gt;&nbsp;other.duration
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We can check that the results are sensible with a few test songs.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>song1&nbsp;=&nbsp;Song.new("My&nbsp;Way",&nbsp;&nbsp;"Sinatra",&nbsp;225)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>song2&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>song1&nbsp;&lt;=&gt;&nbsp;song2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>-1</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>song1&nbsp;&nbsp;&lt;&nbsp;&nbsp;song2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>song1&nbsp;==&nbsp;&nbsp;song1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>song1&nbsp;&nbsp;&gt;&nbsp;&nbsp;song2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Finally, back on page 43 we showed an
+implementation of Smalltalk's <code>inject</code> function, implementing it
+within class <code>Array</code>. We promised then that we'd make it more generally
+applicable. What better way than making it a mixin module?
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Inject
+&nbsp;&nbsp;def&nbsp;inject(n)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;each&nbsp;do&nbsp;|value|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;=&nbsp;yield(n,&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;sum(initial&nbsp;=&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;inject(initial)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;+&nbsp;value&nbsp;}
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;product(initial&nbsp;=&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;inject(initial)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;*&nbsp;value&nbsp;}
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We can then test this by mixing it into some built-in classes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Array</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Inject</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].sum</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>15</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].product</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>120</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Range</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Inject</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(1..5).sum</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>15</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(1..5).product</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>120</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('a'..'m').sum("Letters:&nbsp;")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Letters:&nbsp;abcdefghijklm"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+For a more extensive example of a mixin, have a look at the
+documentation for the <code>Enumerable</code> module, which starts
+on page 403. 
+<h3><a name="UA">Instance Variables in Mixins</a></h3>
+<P></P>
+People coming to Ruby from C++ often ask us, ``What happens to instance
+variables in a mixin? In C++, I have to jump through some hoops to
+control how variables are shared in a multiple-inheritance hierarchy.
+How does Ruby handle this?''
+<P></P>
+Well, for starters, it's not really a fair question, we tell them.
+Remember how instance variables work in Ruby: the first mention of an
+``@''-prefixed variable creates the instance variable <em>in the
+  current object,</em> <code>self</code>.
+<P></P>
+For a mixin, this means that the module that you mix into your
+client class (the mixee?) may create instance variables in the client
+object and may use <code>attr</code> and friends to define accessors for
+these instance variables.  For instance:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Notes
+&nbsp;&nbsp;attr&nbsp;&nbsp;:concertA
+&nbsp;&nbsp;def&nbsp;tuning(amt)
+&nbsp;&nbsp;&nbsp;&nbsp;@concertA&nbsp;=&nbsp;440.0&nbsp;+&nbsp;amt
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;Trumpet
+&nbsp;&nbsp;include&nbsp;Notes
+&nbsp;&nbsp;def&nbsp;initialize(tune)
+&nbsp;&nbsp;&nbsp;&nbsp;tuning(tune)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Instance&nbsp;method&nbsp;returns&nbsp;#{concertA}"
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Instance&nbsp;variable&nbsp;is&nbsp;#{@concertA}"
+&nbsp;&nbsp;end
+end
+<P></P>
+#&nbsp;The&nbsp;piano&nbsp;is&nbsp;a&nbsp;little&nbsp;flat,&nbsp;so&nbsp;we'll&nbsp;match&nbsp;it
+Trumpet.new(-5.3)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Instance&nbsp;method&nbsp;returns&nbsp;434.7
+Instance&nbsp;variable&nbsp;is&nbsp;434.7
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Not only do we have access to the methods defined in the mixin, but we 
+get access to the necessary instance variables as well.  There's a risk here, of 
+course, that different mixins may use an instance variable with
+the same name and create a collision:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;MajorScales
+&nbsp;&nbsp;def&nbsp;majorNum
+&nbsp;&nbsp;&nbsp;&nbsp;@numNotes&nbsp;=&nbsp;7&nbsp;if&nbsp;@numNotes.nil?
+&nbsp;&nbsp;&nbsp;&nbsp;@numNotes&nbsp;#&nbsp;Return&nbsp;7
+&nbsp;&nbsp;end
+end
+<P></P>
+module&nbsp;PentatonicScales
+&nbsp;&nbsp;def&nbsp;pentaNum
+&nbsp;&nbsp;&nbsp;&nbsp;@numNotes&nbsp;=&nbsp;5&nbsp;if&nbsp;@numNotes.nil?
+&nbsp;&nbsp;&nbsp;&nbsp;@numNotes&nbsp;#&nbsp;Return&nbsp;5?
+&nbsp;&nbsp;end
+end
+<P></P>
+class&nbsp;ScaleDemo
+&nbsp;&nbsp;include&nbsp;MajorScales
+&nbsp;&nbsp;include&nbsp;PentatonicScales
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;majorNum&nbsp;#&nbsp;Should&nbsp;be&nbsp;7
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;pentaNum&nbsp;#&nbsp;Should&nbsp;be&nbsp;5
+&nbsp;&nbsp;end
+end
+<P></P>
+ScaleDemo.new
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+7
+7
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The two bits of code that we mix in both use an instance
+variable named <code>@numNotes</code>.  Unfortunately, the result is probably
+not what the author intended.
+<P></P>
+For the most part, mixin modules don't try to carry their own instance
+data around---they use accessors to retrieve data from the client
+object.  But if you need to create a mixin that has to have its own
+state, ensure that the instance variables have unique names to
+distinguish them from any other mixins in the system (perhaps by using
+the module's name as part of the variable name).
+<h2><a name="S3">Iterators and the Enumerable Module</a></h2>
+<P></P>
+You've probably noticed that the Ruby collection classes support a
+large number of operations that do various things with the
+collection: traverse it, sort it, and so on. You may be thinking,
+``Gee, it'd sure be nice if <em>my</em> class could support all these
+neat-o features, too!'' (If you actually thought that, it's probably
+time to stop watching reruns of 1960s television shows.) 
+<P></P>
+Well, your classes <em>can</em> support all these neat-o features,
+thanks to the magic of mixins and module <code>Enumerable</code>. All you have 
+to do is write an iterator called <code>each</code>, which returns the
+elements of your collection in turn. Mix in <code>Enumerable</code>, and
+suddenly your class supports things such as <code>map</code>,
+<code>include?</code>, and <code>find_all?</code>. If the objects in your collection
+implement meaningful ordering semantics using the <code>&lt;=&gt;</code>
+method, you'll also get <code>min</code>, <code>max</code>, and
+<code>sort</code>.
+<h2><a name="S4">Including Other Files</a></h2>
+<P></P>
+Because Ruby makes it easy to write good, modular code, you'll often
+find yourself producing small files containing some chunk of
+self-contained functionality---an interface to <em>x</em>, an algorithm
+to do <em>y</em>, and so on. Typically, you'll organize these files as
+class or module libraries.
+<P></P>
+Having produced these files, you'll want to incorporate them into your
+new programs. Ruby has two statements that do this.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+load&nbsp;"filename.rb"
+<P></P>
+require&nbsp;"filename"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>load</code> method includes the named Ruby source file every
+time the method is executed, whereas <code>require</code> loads any given
+file only once.
+<code>require</code> has additional functionality: it can load
+shared binary libraries. Both routines accept relative and absolute
+paths. If given a relative path (or just a plain name), they'll search
+every directory in the current load path (<code>$:</code>, discussed
+on page 140) for the file.
+<P></P>
+Files loaded using <code>load</code> and <code>require</code> can, of course, include
+other files, which include other files, and so on.  What might
+<em>not</em> be obvious is that <code>require</code> is an executable
+statement---it may be inside an <code>if</code> statement, or it may include a
+string that was just built.  The search path can be altered at runtime
+as well.  Just add the directory you want to the string <code>$:</code>.
+<P></P>
+Since <code>load</code> will include the source unconditionally, you can
+use it to reload a source file that may have changed since the
+program began:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+5.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;&nbsp;File.open("temp.rb","w")&nbsp;{&nbsp;|f|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;f.puts&nbsp;"module&nbsp;Temp\ndef&nbsp;Temp.var()&nbsp;#{i};&nbsp;end\nend"
+&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;load&nbsp;"temp.rb"
+&nbsp;&nbsp;&nbsp;puts&nbsp;Temp.var
+&nbsp;end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0
+1
+2
+3
+4
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_exceptions.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_io.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

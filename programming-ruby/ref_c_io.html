@@ -1,0 +1,2707 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_integer.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_matchdata.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class IO</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#IO.foreach">foreach</a> 
+     <a href="#IO.new">new</a> 
+     <a href="#IO.pipe">pipe</a> 
+     <a href="#IO.popen">popen</a> 
+     <a href="#IO.readlines">readlines</a> 
+     <a href="#IO.select">select</a> 
+     <i>
+      <a href="#IO._lt_lt">&lt;&lt;</a>
+    </i> <i>
+      <a href="#IO.binmode">binmode</a>
+    </i> <i>
+      <a href="#IO.clone">clone</a>
+    </i> <i>
+      <a href="#IO.close">close</a>
+    </i> <i>
+      <a href="#IO.close_read">close_read</a>
+    </i> <i>
+      <a href="#IO.close_write">close_write</a>
+    </i> <i>
+      <a href="#IO.closed_qm">closed?</a>
+    </i> <i>
+      <a href="#IO.each">each</a>
+    </i> <i>
+      <a href="#IO.each_byte">each_byte</a>
+    </i> <i>
+      <a href="#IO.each_line">each_line</a>
+    </i> <i>
+      <a href="#IO.eof">eof</a>
+    </i> <i>
+      <a href="#IO.eof_qm">eof?</a>
+    </i> <i>
+      <a href="#IO.fcntl">fcntl</a>
+    </i> <i>
+      <a href="#IO.fileno">fileno</a>
+    </i> <i>
+      <a href="#IO.flush">flush</a>
+    </i> <i>
+      <a href="#IO.getc">getc</a>
+    </i> <i>
+      <a href="#IO.gets">gets</a>
+    </i> <i>
+      <a href="#IO.ioctl">ioctl</a>
+    </i> <i>
+      <a href="#IO.isatty">isatty</a>
+    </i> <i>
+      <a href="#IO.lineno">lineno</a>
+    </i> <i>
+      <a href="#IO.lineno_eq">lineno=</a>
+    </i> <i>
+      <a href="#IO.pid">pid</a>
+    </i> <i>
+      <a href="#IO.pos">pos</a>
+    </i> <i>
+      <a href="#IO.pos_eq">pos=</a>
+    </i> <i>
+      <a href="#IO.print">print</a>
+    </i> <i>
+      <a href="#IO.printf">printf</a>
+    </i> <i>
+      <a href="#IO.putc">putc</a>
+    </i> <i>
+      <a href="#IO.puts">puts</a>
+    </i> <i>
+      <a href="#IO.read">read</a>
+    </i> <i>
+      <a href="#IO.readchar">readchar</a>
+    </i> <i>
+      <a href="#IO.readline">readline</a>
+    </i> <i>
+      <a href="#IO.readlines">readlines</a>
+    </i> <i>
+      <a href="#IO.reopen">reopen</a>
+    </i> <i>
+      <a href="#IO.rewind">rewind</a>
+    </i> <i>
+      <a href="#IO.seek">seek</a>
+    </i> <i>
+      <a href="#IO.stat">stat</a>
+    </i> <i>
+      <a href="#IO.sync">sync</a>
+    </i> <i>
+      <a href="#IO.sync_eq">sync=</a>
+    </i> <i>
+      <a href="#IO.sysread">sysread</a>
+    </i> <i>
+      <a href="#IO.syswrite">syswrite</a>
+    </i> <i>
+      <a href="#IO.tell">tell</a>
+    </i> <i>
+      <a href="#IO.to_i">to_i</a>
+    </i> <i>
+      <a href="#IO.to_io">to_io</a>
+    </i> <i>
+      <a href="#IO.tty_qm">tty?</a>
+    </i> <i>
+      <a href="#IO.ungetc">ungetc</a>
+    </i> <i>
+      <a href="#IO.write">write</a>
+    </i> <p></p>
+    <hr>  <br>
+    <font size="-1">Subclasses: File</font>
+    <p></p>
+<P></P>
+  Class <code>IO</code> is the basis for all input and output in Ruby.
+  An I/O stream may be <em>duplexed</em> (that is, bidirectional), and so may use
+  more than one native operating system stream.
+<P></P>
+  Many of the examples in this section use class <code>File</code>, the only
+  standard subclass of <code>IO</code>.  The two classes are closely associated.
+<P></P>
+  As used in this section, <em>aPortname</em> may take any of the
+  following forms.        
+<P></P>
+  <ul>
+  <li> A plain string represents a filename suitable for the
+    underlying operating system.
+  </li>
+      <li> A string starting with ``<code>|</code>'' indicates a subprocess.  The
+    remainder of the string following the ``<code>|</code>'' is invoked as a
+    process with appropriate input/output channels connected to it.
+  </li>
+      <li> A string equal to ``<code>|-</code>'' will create another Ruby
+    instance as a subprocess.
+  </li>
+    </ul>
+<P></P>
+  Ruby will convert pathnames between different operating system
+  conventions if possible.  For instance, on a Windows system the
+  filename ``<code>/gumby/ruby/test.rb</code>'' will be opened as
+  ``<code>\gumby\ruby\test.rb</code>''.  When specifying a
+  Windows-style filename in a Ruby string, remember to escape the
+  backslashes:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+"c:\\gumby\\ruby\\test.rb"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  Our examples here will use the Unix-style forward slashes;
+  <a href="ref_c_file.html#File.SEPARATOR">
+      <code>File::SEPARATOR</code>
+    </a> can be used to get the platform-specific
+  separator character.
+<P></P>
+  I/O ports may be opened in any one of several different modes, which are
+  shown in this section as <em>aModeString</em>. This mode string must be one of the
+  values listed in Table 22.5 on page 326.
+<P></P>
+  <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+    <b>Mode strings</b>    
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Mode</b>
+              </td>
+  <td valign="top">
+                <b>Meaning</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">``r''</td>
+  <td valign="top">Read-only, starts at beginning of file  (default mode).</td>
+</tr>
+<tr>
+  <td valign="top">``r+''</td>
+  <td valign="top">Read-write, starts at beginning of file.</td>
+</tr>
+<tr>
+  <td valign="top">``w''</td>
+  <td valign="top">Write-only, truncates existing file 
+                   to zero length or creates a new file for writing.</td>
+</tr>
+<tr>
+  <td valign="top">``w+''</td>
+  <td valign="top">Read-write, truncates existing file to zero length
+                   or creates a new file for reading and writing.</td>
+</tr>
+<tr>
+  <td valign="top">``a''</td>
+  <td valign="top">Write-only, starts at end of file if file exists,
+                   otherwise creates a new file for writing.</td>
+</tr>
+<tr>
+  <td valign="top">``a+''</td>
+  <td valign="top">Read-write, starts at end of file if file exists,
+                   otherwise creates a new file for reading and 
+                           writing.</td>
+</tr>
+<tr>
+  <td valign="top">``b''</td>
+  <td valign="top">(DOS/Windows only) Binary file mode (may appear with 
+                  any of the key letters listed above).</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+  </td>
+      </tr>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>Enumerable:
+    </td>
+        <td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.foreach">foreach</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IO.foreach( <i>aPortName</i>,
+            <i>aSepString</i>=<code>$/</code> )
+        {| line | block }
+ -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Executes the block for every line in the
+      named I/O port, where lines are separated by <em>aSepString</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+IO.foreach("testfile")&nbsp;{|x|&nbsp;print&nbsp;"GOT&nbsp;",&nbsp;x&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+GOT&nbsp;This&nbsp;is&nbsp;line&nbsp;one
+GOT&nbsp;This&nbsp;is&nbsp;line&nbsp;two
+GOT&nbsp;This&nbsp;is&nbsp;line&nbsp;three
+GOT&nbsp;And&nbsp;so&nbsp;on...
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IO.new( <i>anInteger</i>, <i>aModeString</i> )
+        -&gt; <i>aFile</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a new <code>File</code> object (a stream) for the given
+        integer file descriptor and mode string. See also <a href="ref_c_io.html#IO.fileno">
+          <code>IO#fileno</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;IO.new(2,"w")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;'2'&nbsp;is&nbsp;standard&nbsp;error
+$stderr.puts&nbsp;"Hello"
+a.puts&nbsp;"World"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Hello
+World
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.pipe">pipe</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IO.pipe -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a pair of pipe endpoints (connected to each other) and
+      returns them as a two-element array of <code>IO</code> objects: <code>[</code>
+      <i>readFile</i>, <i>writeFile</i> <code>]</code>.  Not available on all
+      platforms.
+<P></P>
+      In the example below, the two processes close the ends of the
+      pipe that they are not using. This is not just a cosmetic
+      nicety. The read end of a pipe will not generate an end of file
+      condition if there are any writers with the pipe still open. In
+      the case of the parent process, the <code>rd.read</code> will never
+      return if it does not first issue a <code>wr.close</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+rd,&nbsp;wr&nbsp;=&nbsp;IO.pipe
+<P></P>
+if&nbsp;fork
+&nbsp;&nbsp;wr.close
+&nbsp;&nbsp;puts&nbsp;"Parent&nbsp;got:&nbsp;&lt;#{rd.read}&gt;"
+&nbsp;&nbsp;rd.close
+&nbsp;&nbsp;Process.wait
+else
+&nbsp;&nbsp;rd.close
+&nbsp;&nbsp;puts&nbsp;"Sending&nbsp;message&nbsp;to&nbsp;parent"
+&nbsp;&nbsp;wr.write&nbsp;"Hi&nbsp;Dad"
+&nbsp;&nbsp;wr.close
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Sending&nbsp;message&nbsp;to&nbsp;parent
+Parent&nbsp;got:&nbsp;&lt;Hi&nbsp;Dad&gt;
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.popen">popen</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                IO.popen( <i>aCmdString</i>, <i>aModeString</i>="r" )
+        -&gt; <i>anIO</i>
+          <br>IO.popen( <i>aCmdString</i>, <i>aModeString</i>="r" )
+        {| anIO | block }
+ -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Runs the specified command string as a subprocess; the
+      subprocess's standard input and output will be connected 
+      to the returned <code>IO</code> object.  If <i>aCmdString</i> starts with a
+      ``<code>-</code>'', then a new instance of Ruby is started as the subprocess.
+      The default mode for the new file object is ``r'', but
+      <i>aModeString</i> may be
+      set to any of the modes in Table 22.5 on page 326.                  
+<P></P>
+      If a block is given, Ruby will run the command as a child
+      connected to Ruby with a pipe.  Ruby's end of the pipe will be
+      passed as a parameter to the block.
+<P></P>
+      If a block is given with a <i>aCmdString</i> of ``<code>-</code>'', the block
+      will be run in two separate processes: once in the parent, and
+      once in a child.
+      The parent process will be
+      passed the pipe object as a parameter to the block, the child
+      version of the block will be passed <code>nil</code>, and the child's
+      standard in and standard out will be connected to the parent through the 
+      pipe.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;IO.popen("uname")
+p&nbsp;f.readlines
+puts&nbsp;"Parent&nbsp;is&nbsp;#{Process.pid}"
+IO.popen&nbsp;("date")&nbsp;{&nbsp;|f|&nbsp;puts&nbsp;f.gets&nbsp;}
+IO.popen("-")&nbsp;{|f|&nbsp;$stderr.puts&nbsp;"#{Process.pid}&nbsp;is&nbsp;here,&nbsp;f&nbsp;is&nbsp;#{f}"}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+["Linux\n"]
+Parent&nbsp;is&nbsp;561
+Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:17:46&nbsp;CDT&nbsp;2002
+564&nbsp;is&nbsp;here,&nbsp;f&nbsp;is
+561&nbsp;is&nbsp;here,&nbsp;f&nbsp;is&nbsp;#&lt;IO:0x401b54dc&gt;
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.readlines">readlines</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IO.readlines( <i>aPortName</i>,
+                <i>aSepString</i>=<code>$/</code> ) 
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads the entire file specified by <i>aPortName</i> as individual
+      lines, and returns those lines in an array.  Lines are 
+      separated by <i>aSepString</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;IO.readlines("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.select">select</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IO.select( <i>readArray</i> <i>[</i>,
+          <i>writeArray</i>
+          <i>[</i>
+          <i>errorArray</i> <i>[</i>
+          <i>timeout</i>
+          <i>]</i>
+          <i>]</i>
+          <i>]</i> )
+        -&gt; <i>anArray</i>
+          <br>or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      See <a href="ref_m_kernel.html#Kernel.select">
+          <code>Kernel#select</code>
+        </a> on page 422.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO._lt_lt">&lt;&lt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em> &lt;&lt; <i>anObject</i>
+        -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      String Output---Writes <i>anObject</i> to <em>ios</em>. 
+      <i>anObject</i> will be
+      converted to a string using <code>to_s</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$stdout&nbsp;&lt;&lt;&nbsp;"Hello&nbsp;"&nbsp;&lt;&lt;&nbsp;"world!\n"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Hello&nbsp;world!
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.binmode">binmode</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.binmode -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Puts <em>ios</em> into binary mode.  This is useful only in 
+      MS-DOS/Windows environments.  Once a stream is in binary mode, it cannot
+      be reset to nonbinary mode.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.clone">clone</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.clone -&gt; <i>anIO</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a new I/O stream, copying all the attributes of <em>ios</em>.
+      The file position is shared as well, so
+      reading from the clone will alter the file position of the
+      original, and vice-versa.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.close">close</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.close -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes <em>ios</em> and flushes any pending writes to the
+      operating system.
+      The stream is unavailable for any further
+      data operations; an <code>IOError</code> is raised if such an attempt is 
+      made.  I/O streams are automatically closed when they are claimed 
+      by the garbage collector.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.close_read">close_read</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.close_read -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Closes the read end of a duplex I/O stream (i.e., one that
+      contains both a read and a write stream, such as a pipe).
+      Will raise an <code>IOError</code> if the stream is not duplexed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;IO.popen("/bin/sh","r+")
+f.close_read
+f.readlines
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+prog.rb:3:in&nbsp;`readlines':&nbsp;not&nbsp;opened&nbsp;for&nbsp;reading&nbsp;(IOError)
+	from&nbsp;prog.rb:3
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.close_write">close_write</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.close_write -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Closes the write end of a duplex I/O stream (i.e., one that
+      contains both a read and a write stream, such as a pipe).
+      Will raise an <code>IOError</code> if the stream is not duplexed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;IO.popen("/bin/sh","r+")
+f.close_write
+f.print&nbsp;"nowhere"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+prog.rb:3:in&nbsp;`write':&nbsp;not&nbsp;opened&nbsp;for&nbsp;writing&nbsp;(IOError)
+	from&nbsp;prog.rb:3:in&nbsp;`print'
+	from&nbsp;prog.rb:3
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.closed_qm">closed?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.closed? 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <em>ios</em> is completely closed (for
+      duplex streams, both reader and writer), <code>false</code> otherwise.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.close</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.closed?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;IO.popen("/bin/sh","r+")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.close_write</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.closed?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.close_read</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.closed?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.each( <i>aSepString</i>=<code>$/</code> )
+        {| line | block }
+ -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Executes the block for every line in <em>ios</em>, where lines are
+      separated by <i>aSepString</i>.
+      <em>ios</em> must be opened for reading or an
+      <code>IOerror</code> will be raised.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;File.new("testfile")
+f.each&nbsp;{|line|&nbsp;puts&nbsp;"#{f.lineno}:&nbsp;#{line}"&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+1:&nbsp;This&nbsp;is&nbsp;line&nbsp;one
+2:&nbsp;This&nbsp;is&nbsp;line&nbsp;two
+3:&nbsp;This&nbsp;is&nbsp;line&nbsp;three
+4:&nbsp;And&nbsp;so&nbsp;on...
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.each_byte">each_byte</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.each_byte {| byte | block }
+<P></P>
+      -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls the given block once for each byte (0..255) in <em>ios</em>,
+      passing the byte as an argument.
+      The stream must be opened for reading or an <code>IOerror</code> will be raised.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>checksum&nbsp;=&nbsp;0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.each_byte&nbsp;{|x|&nbsp;checksum&nbsp;^=&nbsp;x&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;File:0x401b5cac&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>checksum</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>12</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.each_line">each_line</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.each_line(
+                <i>aSepString</i>=<code>$/</code> ) {| line | block }
+<P></P>
+        -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_io.html#IO.each">
+          <code>IO#each</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.eof">eof</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.eof 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns true if <em>ios</em> is at end of file.  The
+      stream must be opened for reading or an <code>IOError</code> will be
+      raised.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>dummy&nbsp;=&nbsp;f.readlines</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.eof</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.eof_qm">eof?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.eof? 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_io.html#IO.eof">
+          <code>IO#eof</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.fcntl">fcntl</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.fcntl( <i>anIntegerCmd</i>, <i>anArg</i> ) 
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Provides a mechanism for issuing low-level commands to control or
+      query file-oriented I/O streams.
+      Arguments and results are platform dependent.
+      If <i>anArg</i> is a number, its value is passed directly.  If it is 
+      a string, it is interpreted as a binary sequence of bytes.
+      On Unix platforms, see <code>fcntl(2)</code> for details.
+      Not implemented on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.fileno">fileno</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.fileno -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an integer representing the numeric file descriptor for <em>ios</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>$stdin.fileno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$stdout.fileno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.flush">flush</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.flush -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Flushes any buffered data within <em>ios</em> to the underlying
+      operating system (note that this is Ruby internal buffering only; the
+      OS may buffer the data as well).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$stdout.print&nbsp;"no&nbsp;newline"
+$stdout.flush
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+no&nbsp;newline
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.getc">getc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.getc -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Gets the next 8-bit byte (0..255) from <em>ios</em>.
+      Returns <code>nil</code> if called at end of file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.getc</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>84</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.getc</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>104</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.gets">gets</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.gets( <i>aSepString</i>=<code>$/</code> )
+        -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads the next ``line'' from the I/O stream; lines are separated
+      by <i>aSepString</i>. A separator of <code>nil</code> reads the entire
+      contents, and a zero-length separator reads the input a paragraph
+      at a time (two successive newlines in the input separate
+      paragraphs). The stream must be opened for reading or an
+      <code>IOerror</code> will be raised.  The line read in will be
+      returned and also assigned to 
+      <code>$_</code>. Returns <code>nil</code> if called at end of file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$_</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.ioctl">ioctl</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.ioctl( <i>anIntegerCmd</i>, <i>anArg</i> ) 
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Provides a mechanism for issuing low-level commands to control or
+      query I/O devices.
+      Arguments and results are platform dependent.
+      If <i>anArg</i> is a number, its value is passed directly.  If it is 
+      a string, it is interpreted as a binary sequence of bytes.
+      On Unix platforms, see <code>ioctl(2)</code> for details.
+      Not implemented on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.isatty">isatty</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.isatty 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns <code>true</code> if <em>ios</em> is associated with a
+      terminal device (tty), <code>false</code> otherwise.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").isatty</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.new("/dev/tty").isatty</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.lineno">lineno</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.lineno -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current line number in <em>ios</em>.  The stream
+      must be opened for reading. <code>lineno</code> counts the number of 
+      times <code>gets</code> is called, rather than the number of
+      newlines encountered. The two values will differ if <code>gets</code>
+      is called with a separator other than newline. See also the
+      <code>$.</code> variable.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lineno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lineno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;two\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lineno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.lineno_eq">lineno=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.lineno = <i>anInteger</i> 
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Manually sets the current line number to the given
+      value. <code>$.</code> is updated only on the next read.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$.</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>f.lineno&nbsp;=&nbsp;1000</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lineno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1000</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$.&nbsp;#&nbsp;lineno&nbsp;of&nbsp;last&nbsp;read</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;two\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>$.&nbsp;#&nbsp;lineno&nbsp;of&nbsp;last&nbsp;read</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1001</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.pid">pid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.pid -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the process ID of a child process associated with
+      <em>ios</em>. This will be set by <a href="ref_c_io.html#IO.popen">
+          <code>IO.popen</code>
+        </a>.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+pipe&nbsp;=&nbsp;IO.popen("-")
+if&nbsp;pipe
+&nbsp;&nbsp;$stderr.puts&nbsp;"In&nbsp;parent,&nbsp;child&nbsp;pid&nbsp;is&nbsp;#{pipe.pid}"
+else
+&nbsp;&nbsp;$stderr.puts&nbsp;"In&nbsp;child,&nbsp;pid&nbsp;is&nbsp;#{$$}"
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+In&nbsp;parent,&nbsp;child&nbsp;pid&nbsp;is&nbsp;600In&nbsp;child,&nbsp;pid&nbsp;is&nbsp;600
+<P></P>
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.pos">pos</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.pos -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current offset (in bytes) of <em>ios</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.pos</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.pos</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>17</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.pos_eq">pos=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.pos = <i>anInteger</i>
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Seeks to the given position (in bytes) in <em>ios</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>f.pos&nbsp;=&nbsp;17</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.gets</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;two\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.print">print</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.print( <i>[</i>
+          <i>anObject</i>=<code>$_</code>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Writes the given object(s) to <em>ios</em>.  The stream must be
+      opened for writing.
+      If the output record separator
+      (<code>$\</code>)
+      is not <code>nil</code>, it will be appended to the output. If 
+      no arguments are given, prints <code>$_</code>. Objects that aren't
+      strings will be converted by calling their <code>to_s</code> method.
+      Returns <code>nil</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$stdout.print("This&nbsp;is&nbsp;",&nbsp;100,&nbsp;"&nbsp;percent.\n")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+This&nbsp;is&nbsp;100&nbsp;percent.
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.printf">printf</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.printf( <i>aFormatString</i> 
+                <i>[</i>, <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> )
+       -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+           Formats and writes to <em>ios</em>, converting parameters under
+     control of the format string. See <a href="ref_m_kernel.html#Kernel.sprintf">
+          <code>Kernel#sprintf</code>
+        </a>
+     on page 423 for details.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.putc">putc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.putc( <i>anObject</i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Writes the given character (taken from a <code>String</code> or a <code>Fixnum</code>) 
+      on <em>ios</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$stdout.putc&nbsp;"A"
+$stdout.putc&nbsp;65
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+AA
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.puts">puts</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.puts( <i>[</i>
+          <i>anObject</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Writes the given objects to <em>ios</em> as with
+      <a href="ref_c_io.html#IO.print">
+          <code>IO#print</code>
+        </a>. Writes a record separator (typically a newline)
+      after any that do not already end with a newline sequence. If called with 
+      an array argument, writes each element on a new line.
+      If called without arguments,
+      outputs a single record separator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+$stdout.puts("this",&nbsp;"is",&nbsp;"a",&nbsp;"test")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+this
+is
+a
+test
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.read">read</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.read( <i>[</i>
+          <i>anInteger</i>
+          <i>]</i> )
+        -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads at most <i>anInteger</i> bytes from the I/O stream, or to the
+      end of file if <i>anInteger</i> is omitted.
+      Returns <code>nil</code> if called at end of file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.read(16)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.readchar">readchar</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.readchar -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads a character as with <a href="ref_c_io.html#IO.getc">
+          <code>IO#getc</code>
+        </a>, but raises an <code>EOFError</code> 
+      on end of file.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.readline">readline</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.readline( <i>aSepString</i>=<code>$/</code> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads a line as with <a href="ref_c_io.html#IO.gets">
+          <code>IO#gets</code>
+        </a>, but raises an <code>EOFError</code> 
+      on end of file.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.readlines">readlines</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.readlines(
+        <i>aSepString</i>=<code>$/</code> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reads all of the lines in <em>ios</em>, and returns them in
+      <i>anArray</i>.
+      Lines are separated by the
+      optional <i>aSepString</i>.
+      The stream must be opened for reading or an
+      <code>IOerror</code> will be raised.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.readlines[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.reopen">reopen</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                        <em>ios</em>.reopen( <i>anOtherIO</i> ) -&gt; <em>ios</em> <br>
+          <em>ios</em>.reopen( <i>aPath</i>, <i>aModeStr</i> ) -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reassociates
+      <em>ios</em> with the I/O stream given in <i>anOtherIO</i> or to a
+      new stream opened on <i>aPath</i>.  This may dynamically change
+      the actual class of this stream.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f1&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>f2&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f2.readlines[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f2.reopen(f1)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;File:0x401b5a54&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f2.readlines[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.rewind">rewind</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.rewind -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Positions <em>ios</em> to the beginning of input, resetting
+      <code>lineno</code> to zero.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.readline</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.rewind</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lineno</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.readline</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.seek">seek</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.seek( <i>anInteger</i>,
+        <i>whence</i>=<code>SEEK_SET</code> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Seeks to a given offset <i>anInteger</i> in the stream according
+      to the value of <i>whence</i>:
+<P></P>
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+        <tr>
+            <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+          <tr>
+  <td valign="top">
+              <a href="ref_c_io.html#IO.SEEK_CUR">
+                <code>IO::SEEK_CUR</code>
+              </a>
+            </td>
+  <td valign="top">Seeks to <i>anInteger</i> plus current position.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <a href="ref_c_io.html#IO.SEEK_END">
+                <code>IO::SEEK_END</code>
+              </a>
+            </td>
+  <td valign="top">Seeks to <i>anInteger</i> plus end of stream (you probably 
+              want a negative value for <i>anInteger</i>).</td>
+</tr>
+<tr>
+  <td valign="top">
+              <a href="ref_c_io.html#IO.SEEK_SET">
+                <code>IO::SEEK_SET</code>
+              </a>
+            </td>
+  <td valign="top">Seeks to the absolute location given by
+              <i>anInteger</i>.</td>
+</tr>
+<tr>
+            <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.seek(-13,&nbsp;IO::SEEK_END)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.readline</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"And&nbsp;so&nbsp;on...\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.stat">stat</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.stat -&gt; <i>aStat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns status information for <em>ios</em> as an object of
+      type <code>File::Stat</code>.  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>s&nbsp;=&nbsp;f.stat</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"%o"&nbsp;%&nbsp;s.mode</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"100644"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s.blksize</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4096</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s.atime</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:17:48&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.sync">sync</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.sync 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current ``sync mode'' of <em>ios</em>.  When sync
+      mode is true, all output is immediately flushed to the
+      underlying operating system and is not buffered by Ruby internally.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.sync</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.sync_eq">sync=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.sync = <i>aBoolean</i>
+        -&gt; <i>aBoolean</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the ``sync mode'' to <code>true</code> or <code>false</code>.  When
+      sync mode is true, all output is immediately flushed to the
+      underlying operating system and is not buffered internally.
+      Returns the new state.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;File.new("testfile")
+f.sync&nbsp;=&nbsp;true
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.sysread">sysread</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.sysread( <i>anInteger</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Reads <i>anInteger</i> bytes from <em>ios</em> using a low-level
+      read and returns them as a string.
+      Do not mix with other methods that read from <em>ios</em>
+      or you may get unpredictable results.
+      Raises <code>SystemCallError</code> on error and <code>EOFError</code> at end of
+      file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.sysread(16)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.syswrite">syswrite</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.syswrite( <i>aString</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Writes the given string to <em>ios</em>  using a
+      low-level write.
+      Returns the number of bytes written.
+      Do not mix with other methods that write to <em>ios</em> or you may get
+      unpredictable results.
+      Raises <code>SystemCallError</code> on error.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("out",&nbsp;"w")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.syswrite("ABCDEF")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>6</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.tell">tell</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.tell -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_io.html#IO.pos">
+          <code>IO#pos</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.to_i">to_i</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.to_i -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_io.html#IO.fileno">
+          <code>IO#fileno</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.to_io">to_io</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.to_io -&gt; <em>ios</em>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <em>ios</em>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.tty_qm">tty?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.tty? 
+                -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_io.html#IO.isatty">
+          <code>IO#isatty</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.ungetc">ungetc</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.ungetc( <i>anInteger</i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Pushes back one character onto <em>ios</em>,
+      such that a subsequent buffered read will return it.
+      Only one character may be pushed back before a subsequent read
+      operation
+      (that is, you will
+      be able to read only the last of several characters that have
+      been pushed back).  Has no effect with unbuffered reads (such as
+      <a href="ref_c_io.html#IO.sysread">
+          <code>IO#sysread</code>
+        </a>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>f&nbsp;=&nbsp;File.new("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;File:0x401b5b80&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c&nbsp;=&nbsp;f.getc</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>84</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.ungetc(c)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.getc</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>84</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IO.write">write</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <em>ios</em>.write( <i>aString</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Writes the given string to <em>ios</em>. 
+      The stream must be opened for writing.  If the
+      argument is not a string, it will be converted to a string using 
+      <code>to_s</code>.  Returns the number of bytes written.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+count&nbsp;=&nbsp;$stdout.write(&nbsp;"This&nbsp;is&nbsp;a&nbsp;test\n"&nbsp;)
+puts&nbsp;"That&nbsp;was&nbsp;#{count}&nbsp;bytes&nbsp;of&nbsp;data"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+This&nbsp;is&nbsp;a&nbsp;test
+That&nbsp;was&nbsp;15&nbsp;bytes&nbsp;of&nbsp;data
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_integer.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_matchdata.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

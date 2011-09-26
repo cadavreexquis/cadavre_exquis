@@ -1,0 +1,914 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_comparable.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_errno.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Enumerable</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Relies on:
+              </font>
+              </td>
+              <td>
+                <font color="white">each, &lt;=&gt;</font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Enumerable.collect">collect</a>
+    </i> <i>
+      <a href="#Enumerable.detect">detect</a>
+    </i> <i>
+      <a href="#Enumerable.each_with_index">each_with_index</a>
+    </i> <i>
+      <a href="#Enumerable.entries">entries</a>
+    </i> <i>
+      <a href="#Enumerable.find">find</a>
+    </i> <i>
+      <a href="#Enumerable.find_all">find_all</a>
+    </i> <i>
+      <a href="#Enumerable.grep">grep</a>
+    </i> <i>
+      <a href="#Enumerable.include_qm">include?</a>
+    </i> <i>
+      <a href="#Enumerable.map">map</a>
+    </i> <i>
+      <a href="#Enumerable.max">max</a>
+    </i> <i>
+      <a href="#Enumerable.member_qm">member?</a>
+    </i> <i>
+      <a href="#Enumerable.min">min</a>
+    </i> <i>
+      <a href="#Enumerable.reject">reject</a>
+    </i> <i>
+      <a href="#Enumerable.select">select</a>
+    </i> <i>
+      <a href="#Enumerable.sort">sort</a>
+    </i> <i>
+      <a href="#Enumerable.to_a">to_a</a>
+    </i> <p></p>
+    <hr>
+  
+<P></P>
+  The <code>Enumerable</code> mixin provides collection classes with several
+  traversal and searching methods, and with the ability to sort.    
+  The class must provide a method <code>each</code>, which yields
+  successive members of the collection. If <a href="ref_m_enumerable.html#Enumerable.max">
+      <code>Enumerable#max</code>
+    </a>,
+  <code>#min</code>, or <code>#sort</code> is used, the objects in the
+  collection must also implement a meaningful <code>&lt;=&gt;</code> operator, as
+  these methods rely on an ordering between members of the collection.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.collect">collect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.collect {| obj | block }
+<P></P>
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new array with the results of running <em>block</em> once for every
+      element in <i>enumObj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..4).collect&nbsp;{|i|&nbsp;i*i&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1,&nbsp;4,&nbsp;9,&nbsp;16]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1..4).collect&nbsp;{&nbsp;"cat"&nbsp;&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["cat",&nbsp;"cat",&nbsp;"cat",&nbsp;"cat"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.detect">detect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.detect {| obj | block }
+<P></P>
+        -&gt; <i>anObject</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Passes each entry in <i>enumObj</i> to <em>block</em>. Returns the first for 
+      which <em>block</em> is not <code>false</code>. Returns <code>nil</code> 
+      if no object matches.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..10).detect&nbsp;&nbsp;{|i|&nbsp;i&nbsp;%&nbsp;5&nbsp;==&nbsp;0&nbsp;and&nbsp;i&nbsp;%&nbsp;7&nbsp;==&nbsp;0&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1..100).detect&nbsp;{|i|&nbsp;i&nbsp;%&nbsp;5&nbsp;==&nbsp;0&nbsp;and&nbsp;i&nbsp;%&nbsp;7&nbsp;==&nbsp;0&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>35</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.each_with_index">each_with_index</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.each_with_index
+        {| obj, i | block }
+<P></P>
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls <em>block</em> with two arguments, the item and its index,
+      for each item in <i>enumObj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>hash&nbsp;=&nbsp;Hash.new</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>%w(cat&nbsp;dog&nbsp;wombat).each_with_index&nbsp;{|item,&nbsp;index|</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;hash[item]&nbsp;=&nbsp;index</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>{"cat"=&gt;0,&nbsp;"wombat"=&gt;2,&nbsp;"dog"=&gt;1}</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.entries">entries</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.entries -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_enumerable.html#Enumerable.to_a">
+          <code>Enumerable#to_a</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.find">find</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.find {| obj | block }
+<P></P>
+        -&gt; <i>anObject</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_enumerable.html#Enumerable.detect">
+          <code>Enumerable#detect</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.find_all">find_all</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.find_all {| obj | block }
+<P></P>
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing all elements of <i>enumObj</i> for which
+      <em>block</em> is not <code>false</code> (see also <a href="ref_m_enumerable.html#Enumerable.reject">
+          <code>Enumerable#reject</code>
+        </a>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..10).find_all&nbsp;{|i|&nbsp;&nbsp;i&nbsp;%&nbsp;3&nbsp;==&nbsp;0&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3,&nbsp;6,&nbsp;9]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.grep">grep</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>enumObj</i>.grep( <i>pattern</i> ) -&gt; <i>anArray</i>
+          <br>
+          <i>enumObj</i>.grep( <i>pattern</i> ) {| obj | block }
+ -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of every element in <i>enumObj</i> for which
+      <code>Pattern === element</code>. If the optional <em>block</em> is
+      supplied, each matching element is passed to it, and the block's
+      result is stored in the output array.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..100).grep&nbsp;38..44</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[38,&nbsp;39,&nbsp;40,&nbsp;41,&nbsp;42,&nbsp;43,&nbsp;44]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>c&nbsp;=&nbsp;IO.constants</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c.grep(/SEEK/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["SEEK_END",&nbsp;"SEEK_CUR",&nbsp;"SEEK_SET"]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>res&nbsp;=&nbsp;c.grep(/SEEK/)&nbsp;{|v|&nbsp;IO.const_get(v)&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>res</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[2,&nbsp;1,&nbsp;0]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.include_qm">include?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.include?( <i>anObject</i> )
+      -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if any member of <i>enumObj</i> equals
+      <i>anObject</i>. Equality is tested using <code>==</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>IO.constants.include?&nbsp;"SEEK_SET"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>IO.constants.include?&nbsp;"SEEK_NO_FURTHER"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.map">map</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.map {| obj | block }
+<P></P>
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_enumerable.html#Enumerable.collect">
+          <code>Enumerable#collect</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.max">max</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>enumObj</i>.max -&gt; <i>anObject</i>
+          <br>
+          <i>enumObj</i>.max {| a,b | block }
+ -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the object in <i>enumObj</i> with the maximum value. The first
+      form assumes all objects implement <code>Comparable</code>; the second
+      uses the block to return <em>a&nbsp;&lt;=&gt;&nbsp;b</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;%w(albatross&nbsp;dog&nbsp;horse)</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.max</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"horse"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.max&nbsp;{|a,b|&nbsp;a.length&nbsp;&lt;=&gt;&nbsp;b.length&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"albatross"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.member_qm">member?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.member?( <i>anObject</i> ) -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_enumerable.html#Enumerable.include_qm">
+          <code>Enumerable#include?</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.min">min</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>enumObj</i>.min -&gt; <i>anObject</i>
+          <br>
+          <i>enumObj</i>.min {| a,b | block }
+ -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the object in <i>enumObj</i> with the minimum value. The first
+      form assumes all objects implement <code>Comparable</code>; the second
+      uses the block to return <em>a&nbsp;&lt;=&gt;&nbsp;b</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;%w(albatross&nbsp;dog&nbsp;horse)</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.min</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"albatross"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.min&nbsp;{|a,b|&nbsp;a.length&nbsp;&lt;=&gt;&nbsp;b.length&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"dog"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.reject">reject</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.reject {| obj | block }
+<P></P>
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array for all elements of <i>enumObj</i> for which
+      <em>block</em> is <code>false</code> (see also <a href="ref_m_enumerable.html#Enumerable.find_all">
+          <code>Enumerable#find_all</code>
+        </a>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..10).reject&nbsp;{|i|&nbsp;&nbsp;i&nbsp;%&nbsp;3&nbsp;==&nbsp;0&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1,&nbsp;2,&nbsp;4,&nbsp;5,&nbsp;7,&nbsp;8,&nbsp;10]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.select">select</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.select {| obj | block }
+<P></P>
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_enumerable.html#Enumerable.find_all">
+          <code>Enumerable#find_all</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.sort">sort</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>enumObj</i>.sort -&gt; <i>anArray</i>
+          <br>
+          <i>enumObj</i>.sort {| a, b | block }
+ -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing the items in <i>enumObj</i> sorted, either
+      according to their own <code>&lt;=&gt;</code> method, or by using the
+      results of the supplied block. The block should return -1, 0, or 
+      +1 depending on the comparison between <i>a</i> and <i>b</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>%w(rhea&nbsp;kea&nbsp;flea).sort</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["flea",&nbsp;"kea",&nbsp;"rhea"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1..10).sort&nbsp;{|a,b|&nbsp;b&nbsp;&lt;=&gt;&nbsp;a}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[10,&nbsp;9,&nbsp;8,&nbsp;7,&nbsp;6,&nbsp;5,&nbsp;4,&nbsp;3,&nbsp;2,&nbsp;1]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      The following code sorts some files on modification time.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>files&nbsp;=&nbsp;Dir["*"]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>sorted&nbsp;=&nbsp;files.sort&nbsp;{|a,b|&nbsp;File.new(a).mtime&nbsp;&lt;=&gt;&nbsp;File.new(b).mtime}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sorted</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["mon",&nbsp;"tues",&nbsp;"wed",&nbsp;"thurs"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      This sort is inefficient: it generates two new <code>File</code> objects
+      during every comparison. A slightly better technique is to use
+      the <a href="ref_c_kernel.html#Kernel.test">
+          <code>Kernel#test</code>
+        </a> method to generate the modification times
+      directly.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>files&nbsp;=&nbsp;Dir["*"]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>sorted&nbsp;=&nbsp;files.sort&nbsp;{&nbsp;|a,b|</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;test(?M,&nbsp;a)&nbsp;&lt;=&gt;&nbsp;test(?M,&nbsp;b)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sorted</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["mon",&nbsp;"tues",&nbsp;"wed",&nbsp;"thurs"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      This still generates many unnecessary <code>Time</code> objects.
+      A more efficient technique is to cache
+      the sort keys (modification times in this case) before the sort.
+      Perl users often call this approach a Schwartzian Transform,                  
+      after Randal Schwartz. We construct a temporary array,
+      where each element is an array containing our sort key along
+      with the filename. We sort this array, and then extract the
+      filename from the result.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>sorted&nbsp;=&nbsp;Dir["*"].collect&nbsp;{&nbsp;|f|</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;[test(?M,&nbsp;f),&nbsp;f]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>}.sort.collect&nbsp;{&nbsp;|f|&nbsp;f[1]&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sorted</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["mon",&nbsp;"tues",&nbsp;"wed",&nbsp;"thurs"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Enumerable.to_a">to_a</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>enumObj</i>.to_a -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing the items in <i>enumObj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..7).to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5,&nbsp;6,&nbsp;7]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>{&nbsp;'a'=&gt;1,&nbsp;'b'=&gt;2,&nbsp;'c'=&gt;3&nbsp;}.to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[["a",&nbsp;1],&nbsp;["b",&nbsp;2],&nbsp;["c",&nbsp;3]]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_comparable.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_errno.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

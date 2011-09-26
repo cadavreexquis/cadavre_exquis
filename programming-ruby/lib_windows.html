@@ -1,0 +1,748 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_network.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="rdtool.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Microsoft Windows Support</h1>
+    <hr>
+    <br>
+<P></P>
+The three libraries documented in this chapter turn Ruby into a
+powerful and convenient Windows scripting language. Now you have the
+power to control your applications, but in a controlled,
+object-oriented environment.
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class WIN32OLE</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#WIN32OLE.connect">connect</a> 
+     <a href="#WIN32OLE.const_load">const_load</a> 
+     <a href="#WIN32OLE.new">new</a> 
+     <i>
+      <a href="#WIN32OLE._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#WIN32OLE._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#WIN32OLE.each">each</a>
+    </i> <i>
+      <a href="#WIN32OLE.invoke">invoke</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'win32ole'
+ie&nbsp;=&nbsp;WIN32OLE.new('InternetExplorer.Application')
+ie.visible&nbsp;=&nbsp;true
+ie.gohome
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <code>WIN32OLE</code> provides a client interface to Windows 32 OLE
+  Automation servers.  See the tutorial description on page 164
+  for more information.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="WIN32OLE.WIN32OLE::VERSION">
+                <code>WIN32OLE::VERSION</code>
+              </a>
+            </td>
+       <td></td>
+       <td>
+              <em>Current version number</em>
+            </td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE.connect">connect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WIN32OLE.connect( <i>aString</i> )
+        -&gt; <i>wapi</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new OLE automation client connected to an existing instance
+      of the named automation server.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE.const_load">const_load</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WIN32OLE.const_load( <i>wapi</i>,
+        <i>[</i>
+          <i>aClass=WIN32OLE</i>
+          <i>]</i> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Defines the constants from the specified automation server 
+      as class constants in <i>aClass</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WIN32OLE.new( <i>aString</i> )
+        -&gt; <i>wapi</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new OLE automation client connected to a new instance
+      of the automation server named by <i>aString</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>[ <i>aString</i> ]
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the named property from the OLE automation object.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>[ <i>aString</i> ] = <i>aValue</i>
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the named property in the OLE automation object.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>.each {| anObj | block }
+<P></P>
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates over each item of this OLE server that supports the
+      <code>IEnumVARIANT</code> interface.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE.invoke">invoke</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>.invoke ( <i>aCmdString</i>,
+        <i>[</i>
+          <i>args</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes the command given in <i>aCmdString</i> with the given
+      <i>args</i>.  <i>args</i> may be a <code>Hash</code> of named parameters
+      and values.  You don't need to call <code>invoke</code> explicitly; this
+      class uses <code>method_missing</code> to forward calls through
+      <code>invoke</code>, so you can simply use the OLE methods as methods of 
+      this class.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class WIN32OLE_EVENT</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#WIN32OLE_EVENT.message_loop">message_loop</a> 
+     <a href="#WIN32OLE_EVENT.new">new</a> 
+     <i>
+      <a href="#WIN32OLE_EVENT.on_event">on_event</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+    This (slightly modified) example from the Win32OLE 0.1.1
+    distribution shows the use of an event sink.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'win32ole'
+<P></P>
+$urls&nbsp;=&nbsp;[]
+<P></P>
+def&nbsp;navigate(url)
+&nbsp;&nbsp;$urls&nbsp;&lt;&lt;&nbsp;url
+end
+<P></P>
+def&nbsp;stop_msg_loop
+&nbsp;&nbsp;puts&nbsp;"IE&nbsp;has&nbsp;exited..."
+&nbsp;&nbsp;throw&nbsp;:done
+end
+<P></P>
+def&nbsp;default_handler(event,&nbsp;*args)
+&nbsp;&nbsp;case&nbsp;event
+&nbsp;&nbsp;when&nbsp;"BeforeNavigate"
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Now&nbsp;Navigating&nbsp;to&nbsp;#{args[0]}..."
+&nbsp;&nbsp;end
+end
+<P></P>
+ie&nbsp;=&nbsp;WIN32OLE.new('InternetExplorer.Application')
+ie.visible&nbsp;=&nbsp;TRUE
+ie.gohome
+ev&nbsp;=&nbsp;WIN32OLE_EVENT.new(ie,&nbsp;'DWebBrowserEvents')
+<P></P>
+ev.on_event&nbsp;{|*args|&nbsp;default_handler(*args)}
+ev.on_event("NavigateComplete")&nbsp;{|url|&nbsp;navigate(url)}
+ev.on_event("Quit")&nbsp;{|*args|&nbsp;stop_msg_loop}
+<P></P>
+catch(:done)&nbsp;{
+&nbsp;&nbsp;loop&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;WIN32OLE_EVENT.message_loop
+&nbsp;&nbsp;}
+}
+<P></P>
+puts&nbsp;"You&nbsp;Navigated&nbsp;to&nbsp;the&nbsp;following&nbsp;URLs:&nbsp;"
+$urls.each_with_index&nbsp;do&nbsp;|url,&nbsp;i|
+&nbsp;&nbsp;puts&nbsp;"(#{i+1})&nbsp;#{url}"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<code>WIN32OLE_EVENT</code> is used in conjunction with the <code>WIN32OLE</code> class 
+  to add callbacks for Windows 32 events.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE_EVENT.message_loop">message_loop</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WIN32OLE_EVENT.message_loop
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Executes the Windows event loop, translating and dispatching
+      events.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE_EVENT.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WIN32OLE_EVENT.new ( <i>anOle</i>, <i>aName</i> )
+        -&gt; <i>wapi</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>WIN32OLE_EVENT</code> (an event sink) for the given
+      <code>WIN32OLE</code> object and named event source.  If <i>aName</i> is <code>nil</code>,
+      it will attempt to use the default source and will raise a
+      <code>RuntimeError</code> if it cannot find one.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WIN32OLE_EVENT.on_event">on_event</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>.on_event ( <i>[</i>
+          <i>anEvent</i>
+          <i>]</i> )
+        {| args | block }
+<P></P>
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Defines a callback      
+      for the named <i>anEvent</i>.  If <i>anEvent</i> 
+      is <code>nil</code>, then this callback is associated with all events.
+      The block will be given any arguments appropriate for this
+      event.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Win32API</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Win32API.new">new</a> 
+     <i>
+      <a href="#Win32API.call">call</a>
+    </i> <i>
+      <a href="#Win32API.Call">Call</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+    This example is from the Ruby distribution, in
+    <code>ext/Win32API</code>:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'Win32API'
+<P></P>
+getCursorPos&nbsp;=&nbsp;Win32API.new("user32",&nbsp;"GetCursorPos",&nbsp;['P'],&nbsp;'V')
+<P></P>
+lpPoint&nbsp;=&nbsp;"&nbsp;"&nbsp;*&nbsp;8&nbsp;#&nbsp;store&nbsp;two&nbsp;LONGs
+getCursorPos.Call(lpPoint)
+x,&nbsp;y&nbsp;=&nbsp;lpPoint.unpack("LL")&nbsp;#&nbsp;get&nbsp;the&nbsp;actual&nbsp;values
+<P></P>
+print&nbsp;"x:&nbsp;",&nbsp;x,&nbsp;"\n"
+print&nbsp;"y:&nbsp;",&nbsp;y,&nbsp;"\n"
+<P></P>
+ods&nbsp;=&nbsp;Win32API.new("kernel32",&nbsp;"OutputDebugString",&nbsp;['P'],&nbsp;'V')
+ods.Call("Hello,&nbsp;World\n")
+<P></P>
+GetDesktopWindow&nbsp;=&nbsp;Win32API.new("user32",&nbsp;"GetDesktopWindow",&nbsp;[],&nbsp;'L')
+GetActiveWindow&nbsp;=&nbsp;Win32API.new("user32",&nbsp;"GetActiveWindow",&nbsp;[],&nbsp;'L')
+SendMessage&nbsp;=&nbsp;Win32API.new("user32",&nbsp;"SendMessage",&nbsp;['L']&nbsp;*&nbsp;4,&nbsp;'L')
+SendMessage.Call(GetDesktopWindow.Call,&nbsp;274,&nbsp;0xf140,&nbsp;0)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>Win32API</code> module allows access to any arbitrary Windows 32
+  function. Many of these functions take or return a <code>Pointer</code>
+  datatype---a region of memory corresponding to a C string or
+  structure type.
+<P></P>
+  In Ruby, these pointers are represented using class <code>String</code>,
+  which contains a sequence of 8-bit bytes.  It is up to you
+  to pack and unpack the bits in the <code>String</code>.
+  See the reference section for unpack on page 378 and
+  pack on page 286 for details.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Win32API.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Win32API.new( <i>dllname</i>,
+    <i>procname</i>,
+    <i>importArray</i>,
+    <i>export</i> )
+        -&gt; <i>wapi</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new object representing a Windows 32 API function.
+      <i>dllname</i> is the name of the DLL containing the function,
+      such as ``user32'' or ``kernel32.''
+      <i>procname</i> is the name of the desired function.
+      <i>importArray</i> is an array of strings
+      representing the types of arguments to the
+      function.
+      <i>export</i> is a string  representing the return type
+      of the function. Strings ``n'' and ``l''
+      represent numbers, ``i''  represent integers, ``p'' represents
+      pointers to data stored in a string, and ``v'' represents a void 
+      type (used for export parameters only). These strings are
+      case-insensitive. 
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Win32API.call">call</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>.call( <i>[</i>
+          <i>args</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls this API function with the given arguments, which must
+      match the signature specified to <code>new</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Win32API.Call">Call</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>wapi</i>.Call( <i>[</i>
+          <i>args</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Synonym for <code>Win32API#call</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_network.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="rdtool.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

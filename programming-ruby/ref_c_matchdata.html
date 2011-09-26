@@ -1,0 +1,651 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_io.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_method.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class MatchData</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#MatchData._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#MatchData.begin">begin</a>
+    </i> <i>
+      <a href="#MatchData.end">end</a>
+    </i> <i>
+      <a href="#MatchData.length">length</a>
+    </i> <i>
+      <a href="#MatchData.offset">offset</a>
+    </i> <i>
+      <a href="#MatchData.post_match">post_match</a>
+    </i> <i>
+      <a href="#MatchData.pre_match">pre_match</a>
+    </i> <i>
+      <a href="#MatchData.size">size</a>
+    </i> <i>
+      <a href="#MatchData.string">string</a>
+    </i> <i>
+      <a href="#MatchData.to_a">to_a</a>
+    </i> <i>
+      <a href="#MatchData.to_s">to_s</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  <code>MatchData</code> is the type of the special variable <code>$~</code>,
+  and is the type of the object returned by <a href="ref_c_regexp.html#Regexp.match">
+      <code>Regexp#match</code>
+    </a> and
+  <a href="ref_c_regexp.html#Regexp.last_match">
+      <code>Regexp#last_match</code>
+    </a>. It
+  encapsulates all the results of a pattern match, results normally
+  accessed through the special variables <code>$&amp;</code>, <code>$'</code>,
+  <code>$`</code>, <code>$1</code>, <code>$2</code>, and so on.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>mtch</i>[<i>i</i>] -&gt; <i>anObject</i>
+          <br>
+          <i>mtch</i>[<i>start</i>, <i>length</i>] -&gt; <i>anArray</i>
+          <br>
+          <i>mtch</i>[<i>aRange</i>] -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Match Reference---<code>MatchData</code> acts as an array, and may
+        be accessed using the normal array indexing techniques.
+        <i>mtch</i>[0] is equivalent to the special variable <code>$&amp;</code>, and
+        returns the entire matched string. <i>mtch</i>[1], <i>mtch</i>[2], and so
+        on return the
+        values of the matched backreferences (portions of the pattern
+        between parentheses).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"HX1138"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m[1,&nbsp;2]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["H",&nbsp;"X"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m[1..3]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["H",&nbsp;"X",&nbsp;"113"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m[-3,&nbsp;2]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["X",&nbsp;"113"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.begin">begin</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.begin( <i>n</i> ) -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the offset of the start of the <em>n</em>th element of the
+      match array in the string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.begin(0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.begin(2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.end">end</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.end( <i>n</i> ) -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the offset of the character immediately following the
+      end of the <em>n</em>th element of the match array in the string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.end(0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>7</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.end(2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>3</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.length">length</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.length -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the number of elements in the match array.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.length</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.offset">offset</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.offset( <i>n</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a two-element array containing the beginning and ending
+      offsets of the <em>n</em>th match.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.offset(0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1,&nbsp;7]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.offset(4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[6,&nbsp;7]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.post_match">post_match</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.post_match -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the portion of the original string after the current
+      match. Equivalent to the special variable <code>$'</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138:&nbsp;The&nbsp;Movie")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.post_match</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>":&nbsp;The&nbsp;Movie"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.pre_match">pre_match</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.pre_match -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the portion of the original string before the current
+      match. Equivalent to the special variable <code>$`</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.pre_match</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"T"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.size -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      A synonym for <a href="ref_c_matchdata.html#MatchData.length">
+          <code>MatchData#length</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.string">string</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.string -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a frozen copy of the string passed in to <code>match</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.string</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"THX1138."</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.to_a">to_a</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.to_a -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the array of matches.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["HX1138",&nbsp;"H",&nbsp;"X",&nbsp;"113",&nbsp;"8"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="MatchData.to_s">to_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>mtch</i>.to_s -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the entire matched string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;/(.)(.)(\d+)(\d)/.match("THX1138.")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.to_s</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"HX1138"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_io.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_method.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

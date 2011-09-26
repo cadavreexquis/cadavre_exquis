@@ -1,0 +1,1615 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_classes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_stdtypes.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Containers, Blocks, and Iterators</h1>
+    <hr>
+    <br>
+A jukebox with one song is unlikely to be popular (except perhaps in
+some very, very scary bars), so pretty soon we'll have to start thinking about
+producing a catalog of available songs and a playlist of songs waiting
+to be played. Both of these are containers: objects that hold
+references to one or more other objects.
+<P></P>
+Both the catalog and the playlist need a similar set of methods: add a
+song, remove a song, return a list of songs, and so on. The playlist
+may perform additional tasks, such as inserting advertising every so
+often or keeping track of cumulative play time, but we'll worry
+about these things later. In the meantime, it seems like a good idea
+to develop some kind of generic <code>SongList</code> class, which we can
+specialize into catalogs and playlists.
+<h2><a name="S1">Containers</a></h2>
+<P></P>
+Before we start implementing, we'll need to work out how to store the
+list of songs inside a <code>SongList</code> object. We have three obvious
+choices. We could use the Ruby <code>Array</code> type, use the Ruby <code>Hash</code> type, 
+or create our own list structure. Being lazy, for now we'll
+look at arrays and hashes, and choose one of these for our class.
+<h3><a name="UA">Arrays</a></h3>
+<P></P>
+The class <code>Array</code> holds a collection of object references.
+Each
+object reference occupies a position in the array, identified by a
+non-negative integer index.
+<P></P>
+You can create arrays using literals or by explicitly creating an
+<code>Array</code> object. A literal array is simply a list of objects between
+square brackets.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;[&nbsp;3.14159,&nbsp;"pie",&nbsp;99&nbsp;]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Array</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.length</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[0]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>3.14159</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[1]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"pie"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>99</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b&nbsp;=&nbsp;Array.new</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Array</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.length</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b[0]&nbsp;=&nbsp;"second"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b[1]&nbsp;=&nbsp;"array"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["second",&nbsp;"array"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Arrays are indexed using the <code>[]</code> operator.
+As with most Ruby
+operators, this is actually a method (in class <code>Array</code>) and hence
+can be overridden in subclasses. As the example shows, array indices
+start at zero. Index an array with a single integer, and it returns
+the object at that position or returns <code>nil</code> if nothing's there.
+Index an array with a negative integer, and it counts from the
+end. This is shown in Figure 4.1 on page 35.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[-1]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>9</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[-2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>7</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[-99]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+You can also index arrays with a pair of numbers, <code>[start,&nbsp;count]</code>.
+This returns a new array consisting of references to <code>count</code> objects
+starting at position <code>start</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[1,&nbsp;3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[3,&nbsp;5,&nbsp;7]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[3,&nbsp;1]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[7]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[-3,&nbsp;2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[5,&nbsp;7]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Finally, you can index arrays using ranges, in which start and end
+positions are separated by two or three periods. The two-period form
+includes the end position, while the three-period form does not.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9&nbsp;]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[1..3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[3,&nbsp;5,&nbsp;7]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[1...3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[3,&nbsp;5]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[3..3]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[7]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a[-3..-1]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[5,&nbsp;7,&nbsp;9]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The <code>[]</code> operator has a corresponding <code>[]=</code> operator, which
+lets you set elements in the array. If used with a single integer
+index, the element at that position is replaced by whatever is on the
+right-hand side of the assignment. Any gaps that result will be filled
+with <code>nil</code>.
+<P></P>
+
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">a = [ 1, 3, 5, 7, 9 ]</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, 3, 5, 7, 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[1] = 'bat'</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, "bat", 5, 7, 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[-3] = 'cat'</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, "bat", "cat", 7, 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[3]  = [ 9, 8 ]</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, "bat", "cat", [9, 8], 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[6]  = 99</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, "bat", "cat", [9, 8], 9, nil, 99]</td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+If the index to <code>[]=</code> is two numbers (a start and a length) or a
+range, then those elements in the original array are replaced by
+whatever is on the right-hand side of the assignment. If the length is
+zero, the right-hand side is inserted into the array before the start
+position; no elements are removed. If the right-hand side is itself an
+array, its elements are used in the replacement.
+The array size is automatically adjusted if the index selects a
+different number of elements than are available on the right-hand side
+of the assignment.
+<P></P>
+
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">a = [ 1, 3, 5, 7, 9 ]</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, 3, 5, 7, 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[2, 2] = 'cat'</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, 3, "cat", 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[2, 0] = 'dog'</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, 3, "dog", "cat", 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[1, 1] = [ 9, 8,  7 ]</td>
+  <td valign="top">»</td>
+  <td valign="top">[1, 9, 8, 7, "dog", "cat", 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[0..3] = []</td>
+  <td valign="top">»</td>
+  <td valign="top">["dog", "cat", 9]</td>
+</tr>
+<tr>
+  <td valign="top">a[5]    = 99</td>
+  <td valign="top">»</td>
+  <td valign="top">["dog", "cat", 9, nil, nil, 99]</td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Arrays have a large number of other useful methods. Using these,
+you can treat arrays as stacks, sets, queues,
+dequeues, and fifos. A complete list of array methods starts
+on page 278.
+<h3><a name="UB">Hashes</a></h3>
+<P></P>
+Hashes (sometimes known as associative arrays or dictionaries) are
+similar to arrays, in that they are indexed collectives of object
+references.
+<P></P>
+However, while you index arrays with integers, you can
+index a hash with objects of any type: strings, regular expressions,
+and so on. When you store a value in a hash, you actually supply two
+objects---the key and the value. You can subsequently retrieve the
+value by indexing the hash with the same key. The values in a hash can
+be any objects of any type. The example that follows uses hash literals: a
+list of <em>key</em>&nbsp;<code>=&gt;</code>&nbsp;<em>value</em> pairs between braces.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>h&nbsp;=&nbsp;{&nbsp;'dog'&nbsp;=&gt;&nbsp;'canine',&nbsp;'cat'&nbsp;=&gt;&nbsp;'feline',&nbsp;'donkey'&nbsp;=&gt;&nbsp;'asinine'&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>h.length</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>h['dog']</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"canine"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>h['cow']&nbsp;=&nbsp;'bovine'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>h[12]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;'dodecine'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>h['cat']&nbsp;=&nbsp;99</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>h</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>{"cow"=&gt;"bovine",&nbsp;"cat"=&gt;99,&nbsp;12=&gt;"dodecine",&nbsp;"donkey"=&gt;"asinine",&nbsp;"dog"=&gt;"canine"}</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Compared with arrays, hashes have one significant advantage: they can
+use any object as an index. However, they also have a significant
+disadvantage: their elements are not ordered, so you cannot easily use 
+a hash as a stack or a queue.
+<P></P>
+You'll find that hashes are one of the most commonly used data
+structures in Ruby. A full list of the methods implemented by class
+<code>Hash</code> starts on page 317.
+<h3><a name="UC">Implementing a SongList Container</a></h3>
+<P></P>
+After that little diversion into arrays and hashes, we're now ready to
+implement the jukebox's <code>SongList</code>.  Let's invent a basic list of
+methods we need in our <code>SongList</code>. We'll want to add to it as we go
+along, but it will do for now.
+<P></P>
+<dl>
+  <dt>append( aSong ) » list</dt>
+      <dd>
+  Append the given song to the list.
+  </dd>
+      <dt>deleteFirst() » aSong</dt>
+      <dd>
+  Remove the first song from the list, returning that song.
+  </dd>
+      <dt>deleteLast() » aSong</dt>
+      <dd>
+  Remove the last song from the list, returning that song.
+  </dd>
+      <dt>[ anIndex } » aSong</dt>
+      <dd>
+  Return the song identified by <i>anIndex</i>, which may be an
+  integer index or a song title.
+</dd>
+    </dl>
+<P></P>
+This list gives us a clue to the implementation. The ability to append
+songs at the end, and remove them from both the front and end, suggests a
+dequeue---a double-ended queue---which we know we can implement using
+an <code>Array</code>. Similarly, the ability to return a song at an integer
+position in the list is supported by arrays.
+<P></P>
+However, there's also the 
+need to be able to retrieve songs by title, which might suggest using a
+hash, with the title as a key and the song as a value. Could we use a
+hash? Well, possibly, but there are problems. First a hash is
+unordered, so we'd probably need to use an ancillary array to keep
+track of the list. A bigger problem is that a hash does not support
+multiple keys with the same value. That would be a problem for our
+playlist, where the same song might be queued up for playing multiple
+times. So, for now we'll stick with an array of songs, searching it
+for titles when needed. If this becomes a performance bottleneck, we
+can always add some kind of hash-based lookup later.
+<P></P>
+We'll start our class with a basic <code>initialize</code> method, which
+creates the <code>Array</code> we'll use to hold the songs and stores a
+reference to it in the instance variable <code>@songs</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@songs&nbsp;=&nbsp;Array.new
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>SongList#append</code> method adds the given song to the end of the 
+<code>@songs</code> array. It also returns <i>self</i>, a reference to the
+current <code>SongList</code> object. This is a useful convention, as it lets
+us chain together multiple calls to <code>append</code>. We'll see an
+example of this later.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;append(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.push(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;self
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Then we'll add the <code>deleteFirst</code> and <code>deleteLast</code>
+methods, trivially implemented using <a href="ref_c_array.html#Array.shift">
+      <code>Array#shift</code>
+    </a> and
+<a href="ref_c_array.html#Array.pop">
+      <code>Array#pop</code>
+    </a>, respectively.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;deleteFirst
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.shift
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;deleteLast
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.pop
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+At this point, a quick test might be in order. First, we'll append
+four songs to the list. Just to show off, we'll use the fact that
+<code>append</code> returns the <code>SongList</code> object to chain together
+these method calls.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+list&nbsp;=&nbsp;SongList.new
+list.
+&nbsp;&nbsp;append(Song.new('title1',&nbsp;'artist1',&nbsp;1)).
+&nbsp;&nbsp;append(Song.new('title2',&nbsp;'artist2',&nbsp;2)).
+&nbsp;&nbsp;append(Song.new('title3',&nbsp;'artist3',&nbsp;3)).
+&nbsp;&nbsp;append(Song.new('title4',&nbsp;'artist4',&nbsp;4))
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Then we'll check that songs are taken from the start and end of the
+list correctly, and that <code>nil</code> is returned when the list becomes
+empty.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>list.deleteFirst</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title1--artist1&nbsp;(1)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list.deleteFirst</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title2--artist2&nbsp;(2)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list.deleteLast</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title4--artist4&nbsp;(4)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list.deleteLast</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title3--artist3&nbsp;(3)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list.deleteLast</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+So far so good. Our next method is <code>[]</code>, which accesses elements
+by index. If the index is a number (which we check using
+<a href="ref_c_object.html#Object.kind_of_qm">
+      <code>Object#kind_of?</code>
+    </a>), we just return the
+element at that position.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Again, testing this is pretty trivial.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>list[0]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title1--artist1&nbsp;(1)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list[2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Song:&nbsp;title3--artist3&nbsp;(3)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>list[9]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Now we need to add the facility that lets us look up a song by
+title. This is going to involve scanning through the songs in the
+list, checking the title of each. To do this, we first need to spend a 
+couple of pages looking at one of Ruby's neatest features: iterators.<h2><a name="S2">Blocks and Iterators</a></h2>
+<P></P>
+So, our next problem with <code>SongList</code> is to implement the code in
+method <code>[]</code> that takes a string and searches for a song with
+that title. This seems straightforward: we have an array of songs, so
+we just go through it one element at a time, looking for a match.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0...@songs.length
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[i]&nbsp;if&nbsp;key&nbsp;==&nbsp;@songs[i].name
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;nil
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This works, and it looks comfortingly familiar: a <code>for</code> loop
+iterating over an array. What could be more natural?
+<P></P>
+It turns out there <em>is</em> something more natural. In a way,
+our <code>for</code> loop is somewhat too intimate with the array; it asks for
+a length, then retrieves values in turn until it finds a match. Why
+not just ask the array to apply a test to each of its members?
+That's just what the <code>find</code> method in <code>Array</code> does.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;@songs[key]
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;@songs.find&nbsp;{&nbsp;|aSong|&nbsp;key&nbsp;==&nbsp;aSong.name&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;result
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We could use <code>if</code> as a statement modifier to shorten the
+code even more.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;[](key)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs[key]&nbsp;if&nbsp;key.kind_of?(Integer)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@songs.find&nbsp;{&nbsp;|aSong|&nbsp;aSong.name&nbsp;==&nbsp;key&nbsp;}
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The method <code>find</code> is an iterator---a method that invokes a
+block of code repeatedly. Iterators and code blocks are among the
+more interesting features of Ruby, so let's spend a while looking into
+them (and in the process we'll find out exactly what that line of code
+in our <code>[]</code> method actually does).
+<h3><a name="UD">Implementing Iterators</a></h3>
+<P></P>
+A Ruby iterator is simply a method that can invoke a block of code.
+At first sight, a block in Ruby looks just like a block in C, Java,
+or Perl. Unfortunately, in this case looks are deceiving---a Ruby
+block <em>is</em> a way of grouping statements, but not in the
+conventional way.
+<P></P>
+First, a block may appear only in the source adjacent to a method
+call; the block is written starting on the same line as the method's
+last parameter. Second, the code in the block is not executed at the
+time it is encountered. Instead, Ruby remembers the context in which
+the block appears (the local variables, the current object, and so
+on), and then enters the method. This is where the magic starts.
+<P></P>
+Within the method, the block may be invoked, almost as if it were a
+method itself, using the <code>yield</code> statement.
+Whenever a <code>yield</code>
+is executed, it invokes the code in the block. When the block
+exits, control picks back up immediately after the
+<code>yield</code>.<em>[Programming-language buffs will be pleased to
+  know that the keyword <code>yield</code> was chosen to echo the <code>yield</code>
+  function in Liskov's language CLU, a language that is over 20
+  years old and yet contains features that still haven't been widely
+  exploited by the CLU-less.]</em>  Let's start with a trivial example.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;threeTimes
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;yield
+end
+threeTimes&nbsp;{&nbsp;puts&nbsp;"Hello"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Hello
+Hello
+Hello
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The block (the code between the braces) is associated with the call to
+the method <code>threeTimes</code>. Within this method, <code>yield</code> is
+called three times in a row. Each time, it invokes the code in the
+block, and a cheery greeting is printed. What makes blocks interesting,
+however, is that you can pass parameters to them and receive values
+back from them. For example, we could write a simple function that
+returns members of the Fibonacci series up to a certain
+value.<em>[The basic Fibonacci series is a sequence of integers,
+  starting with two 1's, in which each subsequent term is the sum
+  of the two preceding terms. The series is sometimes used in sorting
+  algorithms and in analyzing natural phenomena.]</em>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;fibUpTo(max)
+&nbsp;&nbsp;i1,&nbsp;i2&nbsp;=&nbsp;1,&nbsp;1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;parallel&nbsp;assignment
+&nbsp;&nbsp;while&nbsp;i1&nbsp;&lt;=&nbsp;max
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;i1
+&nbsp;&nbsp;&nbsp;&nbsp;i1,&nbsp;i2&nbsp;=&nbsp;i2,&nbsp;i1+i2
+&nbsp;&nbsp;end
+end
+fibUpTo(1000)&nbsp;{&nbsp;|f|&nbsp;print&nbsp;f,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+1&nbsp;1&nbsp;2&nbsp;3&nbsp;5&nbsp;8&nbsp;13&nbsp;21&nbsp;34&nbsp;55&nbsp;89&nbsp;144&nbsp;233&nbsp;377&nbsp;610&nbsp;987
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In this example, the <code>yield</code> statement has a parameter.
+This value
+is passed to the associated block. In the definition of the block, the
+argument list appears between vertical bars. In this instance, the
+variable <code>f</code> receives the value passed to the <code>yield</code>, so the
+block prints successive members of the series. (This example also
+shows parallel assignment in action. We'll come back to this
+on page 75.)  Although it is common to pass just one
+value to a block, this is not a requirement; a block may have any
+number of arguments. What happens if a block has a different number
+of parameters than are given to the yield? By a staggering
+coincidence, the rules we discuss under parallel assignment come into
+play (with a slight twist: multiple parameters passed to a <code>yield</code>
+are converted to an array if the block has just one argument).
+<P></P>
+Parameters to a block may be existing local variables; if so, the new value of the variable will be
+retained after the block completes.  This may lead to unexpected
+behavior, but there is also a performance gain to be had by using
+variables that already exist.<em>[For more information on this
+  and other ``gotchas,'' see the list beginning
+  on page 127; more performance information begins
+  on page 128.]</em>
+<P></P>
+A block may also return a value to the method. The value of the last
+expression evaluated in the block is passed back to the method as the
+value of the <code>yield</code>. This is how the <code>find</code> method used by class
+<code>Array</code> works.<em>[The <code>find</code> method is actually defined
+  in module <code>Enumerable</code>, which is mixed into class <code>Array</code>.]</em> Its
+implementation would look something like the following.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Array</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;find</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;i&nbsp;in&nbsp;0...size</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value&nbsp;=&nbsp;self[i]</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;value&nbsp;if&nbsp;yield(value)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;nil</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[1,&nbsp;3,&nbsp;5,&nbsp;7,&nbsp;9].find&nbsp;{|v|&nbsp;v*v&nbsp;&gt;&nbsp;30&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>7</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This passes successive elements of the array to the associated block. If
+the block returns <code>true</code>, the method returns the corresponding
+element. If no element matches, the method returns <code>nil</code>. The example shows
+the benefit of this approach to iterators. The <code>Array</code> class does
+what it does best, accessing array elements, leaving the application
+code to concentrate on its particular requirement (in this case,
+finding an entry that meets some mathematical criteria).
+<P></P>
+Some iterators are common to many types of Ruby collections. We've
+looked at <code>find</code> already. Two others are <code>each</code> and
+<code>collect</code>.
+<code>each</code> is probably the simplest iterator---all it does is yield
+successive elements of its collection.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+[&nbsp;1,&nbsp;3,&nbsp;5&nbsp;].each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+1
+3
+5
+<P></P>
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>each</code> iterator has a special place in Ruby;
+on page
+85 we'll describe how it's used as the basis of the
+language's <code>for</code> loop, and starting on page 102 we'll see how
+defining an <code>each</code> method can add a whole lot more
+functionality to your class for free.
+<P></P>
+Another common iterator is <code>collect</code>, which takes each element
+from the collection and passes it to the block. The results returned
+by the block are
+used to construct a new array.  For instance:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>["H",&nbsp;"A",&nbsp;"L"].collect&nbsp;{&nbsp;|x|&nbsp;x.succ&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["I",&nbsp;"B",&nbsp;"M"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UE">Ruby Compared with C++ and Java</a></h3>
+<P></P>
+It's worth spending a paragraph comparing Ruby's approach to iterators
+to that of C++ and Java. In the Ruby approach, the iterator is simply
+a method, identical to any other, that happens to call <code>yield</code>
+whenever it generates a new value. The thing that uses the iterator is
+simply a block of code associated with this method. There is no need
+to generate helper classes to carry the iterator state, as in Java and
+C++. In this, as in many other ways, Ruby is a transparent
+language.
+When you write a Ruby program, you concentrate on getting
+the job done, not on building scaffolding to support the language
+itself.
+<P></P>
+Iterators are not limited to accessing existing data in arrays and
+hashes. As we saw in the Fibonacci example, an iterator can return
+derived values. This capability is used by the Ruby input/output
+classes, which implement
+an iterator interface returning successive lines (or bytes) in an I/O
+stream.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+f&nbsp;=&nbsp;File.open("testfile")
+f.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;print&nbsp;line
+end
+f.close
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Let's look at just one more iterator implementation. The Smalltalk
+language also supports iterators over collections. If you ask 
+Smalltalk programmers to sum the elements in an array, it's likely that
+they'd use the <code>inject</code> function.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+sumOfValues&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Smalltalk&nbsp;method"
+&nbsp;&nbsp;&nbsp;&nbsp;^self&nbsp;values
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inject:&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into:&nbsp;[&nbsp;:sum&nbsp;:element&nbsp;|&nbsp;sum&nbsp;+&nbsp;element&nbsp;value]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<code>inject</code> works like this. The first time the associated block
+is called, <code>sum</code> is set to <code>inject</code>'s parameter (zero in this case),
+and <code>element</code> is set to the first element in the array. The second
+and subsequent times the block is called, <code>sum</code> is set to the
+value returned by the block on the previous call. This way, <code>sum</code>
+can be used to keep a running total. The final value of <code>inject</code> is the
+value returned by the block the last time it was called.
+<P></P>
+Ruby does not have an <code>inject</code> method, but
+it's easy to write one. In this case we'll add it to the <code>Array</code>
+class, while on page 100 we'll see how to make it more
+generally available.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Array</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;inject(n)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;each&nbsp;{&nbsp;|value|&nbsp;n&nbsp;=&nbsp;yield(n,&nbsp;value)&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;n</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;sum</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;inject(0)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;+&nbsp;value&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;product</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;inject(1)&nbsp;{&nbsp;|n,&nbsp;value|&nbsp;n&nbsp;*&nbsp;value&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].sum</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>15</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].product</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>120</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Although blocks are often the target of an iterator, they also have
+other uses. Let's look at a few.
+<h3><a name="UF">Blocks for Transactions</a></h3>
+<P></P>
+Blocks can be used to define a chunk of code that must be run under
+some kind of transactional control.
+For example, you'll often open a
+file, do something with its contents, and then want to ensure that the
+file is closed when you finish. Although you can do this using
+conventional code, there's an argument for making the file responsible
+for closing itself. We can do this with blocks. A naive implementation 
+(ignoring error handling) might look something like the following.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;File
+&nbsp;&nbsp;def&nbsp;File.openAndProcess(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;=&nbsp;File.open(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;f
+&nbsp;&nbsp;&nbsp;&nbsp;f.close()
+&nbsp;&nbsp;end
+end
+<P></P>
+File.openAndProcess("testfile",&nbsp;"r")&nbsp;do&nbsp;|aFile|
+&nbsp;&nbsp;print&nbsp;while&nbsp;aFile.gets
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This small example illustrates a number of techniques. The
+<code>openAndProcess</code> method is a <em>class method</em>---it may be
+called independent of any particular <code>File</code> object. We want it to
+take the same arguments as the conventional <a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> method,
+but we don't really care what those arguments are. Instead, we
+specified the arguments as <code>*args</code>, meaning ``collect the actual
+parameters passed to the method into an array.'' We then call
+<code>File.open</code>, passing it <code>*args</code> as a parameter. This expands the
+array back into individual parameters. The net result is that
+<code>openAndProcess</code> transparently passes whatever parameters it
+received to <a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a>.
+<P></P>
+Once the file has been opened, <code>openAndProcess</code> calls <code>yield</code>,
+passing the open file object to the block. When the block returns, the 
+file is closed. In this way, the responsibility for closing an open
+file has been passed from the user of file objects back to the files
+themselves.
+<P></P>
+Finally, this example uses <code>do</code>...<code>end</code> to define a block. The only
+difference between this notation and using braces to define blocks is
+precedence: <code>do</code>...<code>end</code> binds lower than ``{...}''. We
+discuss the impact of this on page 234.
+<P></P>
+The technique of having files manage their own lifecycle is so useful
+that the class <code>File</code> supplied with Ruby supports it directly. If
+<a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> has an associated block, then that block will be
+invoked with a file object, and the file will be closed when the block
+terminates. This is interesting, as it means that <a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> has
+two different behaviors: when called with a block, it executes the
+block and closes the file. When called without a block, it returns the 
+file object. This is made possible by the method
+<a href="ref_m_kernel.html#Kernel.block_given_qm">
+      <code>Kernel::block_given?</code>
+    </a>, which returns <code>true</code> if a block is associated
+with the current method. Using it, you could implement <a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> 
+(again, ignoring error handling) using something like the following.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;File
+&nbsp;&nbsp;def&nbsp;File.myOpen(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;aFile&nbsp;=&nbsp;File.new(*args)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;If&nbsp;there's&nbsp;a&nbsp;block,&nbsp;pass&nbsp;in&nbsp;the&nbsp;file&nbsp;and&nbsp;close
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;the&nbsp;file&nbsp;when&nbsp;it&nbsp;returns
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;block_given?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;aFile
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aFile.close
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aFile&nbsp;=&nbsp;nil
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;aFile
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UG">Blocks Can Be Closures</a></h3>
+<P></P>
+Let's get back to our jukebox for a moment (remember the
+jukebox?).
+At some point we'll be working on the code that handles the 
+user interface---the buttons that people press to select songs and
+control the jukebox. We'll need to associate actions with those
+buttons: press <font size="-2">STOP</font> and the music stops. It turns out that
+Ruby's blocks are a convenient way to do this. Let's start out by
+assuming that the people who made the hardware implemented a Ruby
+extension that gives us a basic button
+class. (We talk about extending Ruby beginning on page 169.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+bStart&nbsp;=&nbsp;Button.new("Start")
+bPause&nbsp;=&nbsp;Button.new("Pause")
+#&nbsp;...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+What happens when the user presses one of our buttons? In the
+<code>Button</code> class, the hardware folks rigged things so that a
+callback method, <code>buttonPressed</code>, will be invoked. 
+The obvious way of adding functionality to these buttons is to create
+subclasses of <code>Button</code> and have each subclass implement its own
+<code>buttonPressed</code> method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;StartButton&nbsp;&lt;&nbsp;Button
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;super("Start")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;invoke&nbsp;Button's&nbsp;initialize
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;buttonPressed
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;do&nbsp;start&nbsp;actions...
+&nbsp;&nbsp;end
+end
+<P></P>
+bStart&nbsp;=&nbsp;StartButton.new
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There are two problems here. First, this will lead to a large number
+of subclasses. If the interface to <code>Button</code> changes, this could
+involve us in a lot of maintenance. Second, the actions performed when 
+a button is pressed are expressed at the wrong level; they are not a
+feature of the button, but are a feature of the jukebox that uses the
+buttons. We can fix both of these problems using blocks.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;JukeboxButton&nbsp;&lt;&nbsp;Button
+&nbsp;&nbsp;def&nbsp;initialize(label,&nbsp;&amp;action)
+&nbsp;&nbsp;&nbsp;&nbsp;super(label)
+&nbsp;&nbsp;&nbsp;&nbsp;@action&nbsp;=&nbsp;action
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;buttonPressed
+&nbsp;&nbsp;&nbsp;&nbsp;@action.call(self)
+&nbsp;&nbsp;end
+end
+<P></P>
+bStart&nbsp;=&nbsp;JukeboxButton.new("Start")&nbsp;{&nbsp;songList.start&nbsp;}
+bPause&nbsp;=&nbsp;JukeboxButton.new("Pause")&nbsp;{&nbsp;songList.pause&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The key to all this is the second parameter to
+<code>JukeboxButton#initialize</code>. If the last parameter in a method
+definition is prefixed with an ampersand (such as <code>&amp;action</code>),
+Ruby
+looks for a code block whenever that method is called. That code block
+is converted to an object of class <code>Proc</code> and assigned to the
+parameter. You can then treat the parameter as any other variable. In
+our example, we assigned it to the instance variable <code>@action</code>.
+When the callback method <code>buttonPressed</code> is invoked, we use the
+<a href="ref_c_proc.html#Proc.call">
+      <code>Proc#call</code>
+    </a> method on that object to invoke the block.
+<P></P>
+So what exactly do we have when we create a <code>Proc</code> object? The
+interesting thing is that it's more than just a chunk of code.
+Associated with a block (and hence a <code>Proc</code> object) is all the
+context in which the block was <em>defined</em>: the value of
+<code>self</code>, and the methods, variables, and constants in scope. Part
+of the magic of Ruby is that the block can still use all this original
+scope information even if the environment in which it was defined
+would otherwise have disappeared.  In other languages, this facility
+is called a <em>closure</em>.
+<P></P>
+Let's look at a contrived example. This example uses the method
+<code>proc</code>,
+which converts a block to a <code>Proc</code> object.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;nTimes(aThing)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;return&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;aThing&nbsp;*&nbsp;n&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>p1&nbsp;=&nbsp;nTimes(23)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>p1.call(3)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>69</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>p1.call(4)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>92</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>p2&nbsp;=&nbsp;nTimes("Hello&nbsp;")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>p2.call(3)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hello&nbsp;Hello&nbsp;Hello&nbsp;"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The method <code>nTimes</code> returns a <code>Proc</code> object that references
+the method's parameter, <code>aThing</code>. Even though that parameter is out 
+of scope by the time the block is called, the parameter remains
+accessible to the block.
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_classes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_stdtypes.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

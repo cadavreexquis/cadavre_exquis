@@ -1,0 +1,867 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_errno.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_gc.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module FileTest</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#FileTest.blockdev_qm">blockdev?</a>
+    </i> <i>
+      <a href="#FileTest.chardev_qm">chardev?</a>
+    </i> <i>
+      <a href="#FileTest.directory_qm">directory?</a>
+    </i> <i>
+      <a href="#FileTest.executable_qm">executable?</a>
+    </i> <i>
+      <a href="#FileTest.executable_real_qm">executable_real?</a>
+    </i> <i>
+      <a href="#FileTest.exist_qm">exist?</a>
+    </i> <i>
+      <a href="#FileTest.exists_qm">exists?</a>
+    </i> <i>
+      <a href="#FileTest.file_qm">file?</a>
+    </i> <i>
+      <a href="#FileTest.grpowned_qm">grpowned?</a>
+    </i> <i>
+      <a href="#FileTest.owned_qm">owned?</a>
+    </i> <i>
+      <a href="#FileTest.pipe_qm">pipe?</a>
+    </i> <i>
+      <a href="#FileTest.readable_qm">readable?</a>
+    </i> <i>
+      <a href="#FileTest.readable_real_qm">readable_real?</a>
+    </i> <i>
+      <a href="#FileTest.setgid_qm">setgid?</a>
+    </i> <i>
+      <a href="#FileTest.setuid_qm">setuid?</a>
+    </i> <i>
+      <a href="#FileTest.size">size</a>
+    </i> <i>
+      <a href="#FileTest.size_qm">size?</a>
+    </i> <i>
+      <a href="#FileTest.socket_qm">socket?</a>
+    </i> <i>
+      <a href="#FileTest.sticky_qm">sticky?</a>
+    </i> <i>
+      <a href="#FileTest.symlink_qm">symlink?</a>
+    </i> <i>
+      <a href="#FileTest.writable_qm">writable?</a>
+    </i> <i>
+      <a href="#FileTest.writable_real_qm">writable_real?</a>
+    </i> <i>
+      <a href="#FileTest.zero_qm">zero?</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  <code>FileTest</code> implements file test operations similar to those used
+  in <code>File::Stat</code>.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.blockdev_qm">blockdev?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.blockdev?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is a block device, <code>false</code>
+      if it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.blockdev?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.chardev_qm">chardev?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.chardev?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is a character device, <code>false</code>
+      if it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.chardev?(&nbsp;"/dev/tty"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.directory_qm">directory?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.directory?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if this named file is a directory, <code>false</code> 
+      otherwise.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.directory?(&nbsp;"."&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.executable_qm">executable?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.executable?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is executable.
+      The tests are made using the effective
+      owner of the process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.executable?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.executable_real_qm">executable_real?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.executable_real?( <i>aString</i> )
+    -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Same as <a href="ref_m_filetest.html#FileTest.executable_qm">
+          <code>FileTest#executable?</code>
+        </a>, but tests using the real owner of the
+      process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.exist_qm">exist?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.exist? ( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file exists.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.exist?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.exists_qm">exists?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.exists? ( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_m_filetest.html#FileTest.exist_qm">
+          <code>FileTest::exist?</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.file_qm">file?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.file?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+     Returns <code>true</code> if the named file is a regular file (not a device 
+     file, pipe, socket, etc.).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.file?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.grpowned_qm">grpowned?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.grpowned?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the effective group id of the process is the same 
+      as the group id of the named file.
+      On Windows NT, returns <code>false</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.grpowned?(&nbsp;"/etc/passwd"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.owned_qm">owned?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.owned?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the effective user id of the process is the same 
+      as the owner of the named file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.owned?(&nbsp;"/etc/passwd"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.pipe_qm">pipe?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.pipe?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the operating system supports pipes and
+      the named file is a pipe, <code>false</code> otherwise.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.pipe?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.readable_qm">readable?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.readable?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is readable by the effective
+      user id of this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.readable?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.readable_real_qm">readable_real?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.readable_real?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is readable by the real
+      user id of this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.readable_real?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.setgid_qm">setgid?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.setgid?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file's set-group-id
+      permission bit is set, and <code>false</code> if it isn't or
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.setgid?(&nbsp;"/usr/sbin/lpc"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.setuid_qm">setuid?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.setuid?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named  file's set-user-id
+      permission bit is set, and <code>false</code> if it isn't or
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.setuid?(&nbsp;"/bin/su"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.size( <i>aString</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the size of the named file in bytes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.size(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.size_qm">size?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.size?( <i>aString</i> )
+        -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>nil</code> if the named file is of zero length; otherwise,
+      returns a nonzero <i>aFixnum</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>FileTest.size?(&nbsp;"testfile"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>FileTest.size?(&nbsp;"/dev/zero"&nbsp;)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.socket_qm">socket?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.socket?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is a socket, <code>false</code> if
+      it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.sticky_qm">sticky?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.sticky?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file has its sticky bit set,
+      <code>false</code> if it doesn't or if the operating system doesn't
+      support this feature.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.symlink_qm">symlink?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.symlink?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is a symbolic link,
+      <code>false</code> if it isn't or if the operating system doesn't
+      support this feature.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.writable_qm">writable?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.writable?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is writable by the effective
+      user id of this process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.writable_real_qm">writable_real?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.writable_real?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is writable by the real
+      user id of this process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="FileTest.zero_qm">zero?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FileTest.zero?( <i>aString</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the named file is of zero length, <code>false</code>
+      otherwise.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_errno.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_gc.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

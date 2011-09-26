@@ -1,0 +1,395 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ext_tk.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ext_ruby.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Ruby and Microsoft Windows</h1>
+    <hr>
+    <br>
+<P></P>
+Ruby is written for POSIX environments, which means that it can
+take advantage of all of the system calls and libraries 
+that Unix programmers are familiar with.
+<P></P>
+But there are a number of features and extensions designed to make
+Ruby more useful in a Microsoft Windows environment, too.  In this
+chapter, we'll look at these features and share some secrets to using
+Ruby effectively under Windows.
+<h2><a name="S1">Ruby Ports</a></h2>
+<P></P>
+Windows does not provide a POSIX environment by itself, so some sort
+of emulation library is required in order to provide the necessary
+functions.  There are several ports of Ruby for
+Windows: the most commonly used one relies on the GNU Win32
+environment, and is called the ``cygwin32'' port.  The cygwin32 port
+works well with extension libraries, and is available on the Web as a
+precompiled binary.
+Another port, ``mswin32,'' does not rely on cygwin.  It is currently
+available as source code only. The remainder
+of this chapter will refer to the cygwin32 port.
+<h2><a name="S2">Running Ruby Under Windows</a></h2>
+<P></P>
+There are two executables provided with the cygwin32 Ruby distribution:
+<code>ruby.exe</code> and <code>rubyw.exe</code>.
+<P></P>
+<code>ruby.exe</code> is meant to be used at a command prompt (a DOS shell),
+just as in the Unix version.  For applications that read and write to
+the standard input and output, this is fine.
+But that also means that anytime you run <code>ruby.exe</code>, you'll get a
+DOS shell even if you don't want one---Windows will create a new
+command prompt window and display it while Ruby is running.  This
+might not be appropriate behavior if, for example,
+you double-click on a Ruby script that uses a graphical interface
+(such as Tk), or if you are running a Ruby script as a background
+task, or from inside another program.
+<P></P>
+In these cases, you'll want to use <code>rubyw.exe</code>.  It is the same as
+<code>ruby.exe</code> except that it does not provide standard in, standard
+out, or standard error, and does not launch a DOS shell when run.
+<P></P>
+You can set a file association<em>[Using
+  <code>View/Options/Filetypes</code> from Explorer.]</em>
+so that files with the extension ``<code>.rb</code>'' will
+automatically use <code>rubyw.exe</code>.  By doing this, you can double-click
+on Ruby scripts and they will simply run without popping up a DOS
+shell.
+<h2><a name="S3">Win32API</a></h2>
+<P></P>
+If you plan on doing Ruby programming that needs to access
+some Windows 32 API functions directly, or to use the entry points in some
+other DLLs, we've got good news for you---the <code>Win32API</code> extension.
+<P></P>
+The <code>Win32API</code> module is documented beginning on page 508,
+but here's a quick peek at how it works.
+<P></P>
+You create a <code>Win32API</code> object that represents a call to a
+particular DLL entry point by specifying the name of the function, the
+name of the DLL that contains the function, and the function signature (argument
+types and return type).  The resulting object can then be used to make
+the function call.
+<P></P>
+Many of the arguments to DLL functions are binary structures
+of some form.  <code>Win32API</code> handles this by using Ruby <code>String</code>
+objects to pass the binary data back and forth.  You will need to pack
+and unpack these strings as necessary (see the example
+on page 508).
+<h2><a name="S4">Windows Automation</a></h2>
+<P></P>
+If groveling around in the low-level Windows API doesn't interest you,
+Windows automation might---you can use Ruby as a client for Windows
+Automation thanks to a Ruby extension called <code>WIN32OLE</code>, written by
+Masaki Suketa.
+The examples in this section are taken from those
+provided in the <code>WIN32OLE</code> distribution.
+<P></P>
+Windows automation
+allows an
+automation controller (a client) to issue commands and queries against
+an automation server, such as Microsoft Excel, Word, PowerPoint, and
+so on.
+<P></P>
+You can execute a method of an automation server by calling a method
+of the same name from a <code>WIN32OLE</code> object.  For instance, you can
+create a new <code>WIN32OLE</code> client that launches a fresh copy of
+Internet Explorer and commands it to visit the home page.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+ie&nbsp;=&nbsp;WIN32OLE.new('InternetExplorer.Application')
+ie.visible&nbsp;=&nbsp;true
+ie.gohome
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Methods that aren't known to <code>WIN32OLE</code> (such as <code>visible</code> or
+<code>gohome</code>) are passed on to the <code>WIN32OLE#invoke</code> method, which sends the
+proper commands to the server.  The <code>WIN32OLE</code> reference
+beginning on page 505 describes the class in detail, but
+we'll go over a few of its features here.
+<h3><a name="UA">Getting and Setting Properties</a></h3>
+<P></P>
+You can set and get <em>properties</em> from the server using normal
+Ruby hash notation.  For example, to set the <code>Rotation</code> property 
+in an Excel chart, you might write
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+excel&nbsp;=&nbsp;WIN32OLE.new("excel.application")
+excelchart&nbsp;=&nbsp;excel.Charts.Add()
+...
+excelchart['Rotation']&nbsp;=&nbsp;45
+puts&nbsp;excelchart['Rotation']
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+An OLE object's parameters are automatically set up as attributes of
+the <code>WIN32OLE</code> object. This means that you can set a parameter by
+assigning to an object attribute.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+excelchart.rotation&nbsp;=&nbsp;45
+r&nbsp;=&nbsp;excelchart.rotation
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Because these attributes are conventional Ruby accessor
+methods, attribute names cannot start with a capital letter.
+In this example, we have to use <code>rotation</code> instead of <code>Rotation</code>.
+<h3><a name="UB">Named Arguments</a></h3>
+<P></P>
+Other automation client languages such as Visual Basic have the
+concept of <em>named arguments</em>.  Suppose you had a Visual Basic
+routine with the signature:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song(artist,&nbsp;title,&nbsp;length):&nbsp;&nbsp;&nbsp;&nbsp;rem&nbsp;Visual&nbsp;Basic
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Instead of calling it with all three arguments in the order specified,
+you could use named arguments.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song&nbsp;title&nbsp;:=&nbsp;'Get&nbsp;It&nbsp;On':&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rem&nbsp;Visual&nbsp;Basic
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This is equivalent to the call <code>Song(nil, 'Get It On', nil)</code>.
+<P></P>
+In Ruby, you can use this feature by passing a hash with the named
+arguments.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song.new(&nbsp;'title'&nbsp;=&gt;&nbsp;'Get&nbsp;It&nbsp;On'&nbsp;)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UC">for each</a></h3>
+<P></P>
+Where Visual Basic has a ``for each'' statement to iterate over a
+collection of items in a server, a <code>WIN32OLE</code> object has an
+<code>each</code> method (which takes a block) to accomplish the same
+thing.
+<h3><a name="UD">An Example</a></h3>
+<P></P>
+The following example, using Microsoft Excel,
+illustrates most of
+these concepts.  First, we create a new <code>WIN32OLE</code> object attached
+to Excel and set some cell values. Next we select
+a range of cells and create a chart.  We set the <code>Type</code> property in 
+the <code>excelchart</code> object to make it a 3D chart. Next we'll loop
+through and change the chart rotation, 10° at a time. We'll add 
+a few charts, and we'll use <code>each</code> to step through and print them out.
+Finally, we'll close down the Excel application and exit.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'win32ole'
+<P></P>
+#&nbsp;-4100&nbsp;is&nbsp;the&nbsp;value&nbsp;for&nbsp;the&nbsp;Excel&nbsp;constant&nbsp;xl3DColumn.
+ChartTypeVal&nbsp;=&nbsp;-4100;
+<P></P>
+#&nbsp;Creates&nbsp;OLE&nbsp;object&nbsp;to&nbsp;Excel
+excel&nbsp;=&nbsp;WIN32OLE.new("excel.application")
+<P></P>
+#&nbsp;Create&nbsp;and&nbsp;rotate&nbsp;the&nbsp;chart
+<P></P>
+excel['Visible']&nbsp;=&nbsp;TRUE;
+workbook&nbsp;=&nbsp;excel.Workbooks.Add();
+excel.Range("a1")['Value']&nbsp;=&nbsp;3;
+excel.Range("a2")['Value']&nbsp;=&nbsp;2;
+excel.Range("a3")['Value']&nbsp;=&nbsp;1;
+excel.Range("a1:a3").Select();
+excelchart&nbsp;=&nbsp;workbook.Charts.Add();
+excelchart['Type']&nbsp;=&nbsp;ChartTypeVal;
+<P></P>
+30.step(180,&nbsp;10)&nbsp;do&nbsp;|rot|
+&nbsp;&nbsp;&nbsp;&nbsp;excelchart['Rotation']&nbsp;=&nbsp;rot
+end
+<P></P>
+excelchart2&nbsp;=&nbsp;workbook.Charts.Add();
+excelchart3&nbsp;=&nbsp;workbook.Charts.Add();
+<P></P>
+charts&nbsp;=&nbsp;workbook.Charts
+charts.each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+<P></P>
+excel.ActiveWorkbook.Close(0);
+excel.Quit();
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UE">Optimizing</a></h3>
+<P></P>
+As with most (if not all) high-level languages, it can be all too easy
+to churn out code that is unbearably slow, but that can be easily
+fixed with a little thought.
+<P></P>
+With <code>WIN32OLE</code>, you need to be careful with unnecessary dynamic
+lookups.  Where possible, it is better to assign a <code>WIN32OLE</code> object
+to a variable and then reference elements from it, rather than
+creating a long chain of ``.'' expressions.
+<P></P>
+For example, instead of writing
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+workbook.Worksheets(1).Range("A1").value&nbsp;=&nbsp;1
+workbook.Worksheets(1).Range("A2").value&nbsp;=&nbsp;2
+workbook.Worksheets(1).Range("A3").value&nbsp;=&nbsp;4
+workbook.Worksheets(1).Range("A4").value&nbsp;=&nbsp;8
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+we can eliminate the common subexpressions by
+saving the first part of the expression to a temporary
+variable and then make calls from that variable:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+worksheet&nbsp;=&nbsp;workbook.Worksheets(1)
+<P></P>
+worksheet.Range("A1").value&nbsp;=&nbsp;1
+worksheet.Range("A2").value&nbsp;=&nbsp;2
+worksheet.Range("A3").value&nbsp;=&nbsp;4
+worksheet.Range("A4").value&nbsp;=&nbsp;8
+</pre>
+        </td>
+      </tr>
+    </table>
+
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ext_tk.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ext_ruby.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

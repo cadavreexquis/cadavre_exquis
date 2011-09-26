@@ -1,0 +1,19 @@
+BODY    { margin-left: 1in;
+          width: 6in;
+          font-family: sans-serif;
+        }
+H1      { color: #000080;
+          font-family: sans-serif;
+          font-size: 22pt;
+          margin-left: 0in
+        }
+H2      { color: #000080;  font: bold x-large sans-serif;
+          margin-left: 0in }
+H3      { color: #000080;  font: bold   large sans-serif; }
+H4      { color: #000080;  font: italic large sans-serif; }
+.ruby   { background: #fff0f0 }
+.header { color: white }
+.subheader { color: #ffdddd }
+.sidebar   { width: 6in }
+.codebox   { background: #f8e4e4; width: 100% }
+span.sans { font-family: sans-serif }

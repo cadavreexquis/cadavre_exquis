@@ -1,0 +1,587 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="trouble.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="web.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Ruby and Its World</h1>
+    <hr>
+    <br>
+<P></P>
+It's an unfortunate fact of life that our applications have to deal
+with the big, bad world.  In this chapter, we'll look at how Ruby
+interacts with its environment.  Microsoft Windows users will probably
+also want to look at platform-specific information beginning
+on page 163.
+<h2><a name="S1">Command-Line Arguments</a></h2>
+<P></P>
+``In the Beginning was the Command Line.''<em>[Title of a
+  marvelous essay by Neal Stephenson  
+  (available online at 
+  <a href="http://www.spack.org/essays/commandline.html"pickaxe/>http://www.spack.org/essays/commandline.html</a>).]</em>
+Regardless of the system in which Ruby is deployed, whether it be a
+super high-end scientific graphics workstation or an embedded PDA
+device, you've got to start the Ruby interpreter somehow, and that
+gives us the opportunity to pass in command-line arguments.
+<P></P>
+A Ruby command line consists of three parts: options to the Ruby
+interpreter, optionally the name of a program to run, and optionally a 
+set of arguments for that program.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+ruby <i>[</i>
+            <i>options</i>
+            <i>]</i> <i>[</i>--<i>]</i> <i>[</i>
+            <i>programfile</i>
+            <i>]</i> <i>[</i>
+            <i>arguments</i>
+            <i>]</i>
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+The Ruby options are terminated by the first word on the command line
+that doesn't start with a hyphen, or by the special flag ``<code>--</code>''
+(two hyphens).
+<P></P>
+If no filename is present on the command line, or if the filename is
+a single hyphen (<code>-</code>), Ruby reads the program source from standard
+input.
+<P></P>
+Arguments for the program itself follow the program name. For example:
+<P></P>
+<pre>
+<code>%&nbsp;ruby -w - "Hello World"</code>
+</pre>
+<P></P>
+will enable warnings, read a program from standard input, and pass it
+the quoted string <code>"Hello World"</code> as an argument.
+<h3><a name="UA">Command-Line Options</a></h3>
+<P></P>
+<dl>
+    <dt>-0[<em>octal</em>}</dt>
+      <dd></dd>' 
+  The number ``0'' flag specifies the record  
+  separator character (\0, if no digit follows).  <code>-00</code> indicates
+  paragraph mode: records are separated by two successive default
+  record separator characters. <code>-0777</code> reads the entire file at once (as it
+  is an illegal character). Sets <code>$/</code>.
+<P></P>
+  <dt>-a</dt>
+      <dd></dd>'
+  Auto split mode when used with <code>-n</code> or <code>-p</code>;  
+  equivalent to executing
+  <code></code>{$F at the top of each loop iteration.    
+<P></P>
+  <dt>-C <em>directory</em>
+      </dt>
+      <dd></dd>'
+  Changes working directory to <em>directory</em> before executing.
+<P></P>
+  <dt>-c</dt>
+      <dd></dd>'
+  Checks syntax only; does not execute the program.
+<P></P>
+  <dt>
+        <code>--copyright</code>
+      </dt>
+      <dd></dd>      
+  Prints the copyright notice and exits.
+<P></P>
+  <dt>-d, --debug</dt>
+      <dd></dd>'
+  Sets  <code>$DEBUG</code> to true.  
+  This can be used by your programs to
+  enable additional tracing.
+<P></P>
+  <dt>-e '<em>command</em>'</dt>
+      <dd></dd>'
+  Executes <em>command</em> as one line of Ruby source. Several <code>-e</code>'s
+  are allowed, and the commands are treated as multiple lines in the
+  same program. If <em>programfile</em> is omitted when <code>-e</code> is
+  present, execution stops after the <code>-e</code> commands have been run.
+<P></P>
+  <dt>-F <em>pattern</em>
+      </dt>
+      <dd></dd>'
+  Specifies the input field separator (<code>$;</code>) used as the default for
+  <code>split()</code> (affects <code>-a</code>).
+<P></P>
+  <dt>-h, --help</dt>
+      <dd></dd>'
+  Displays a short help screen.
+<P></P>
+  <dt>-I <em>directories</em>
+      </dt>
+      <dd></dd>'
+  Specifies directories to be prepended to <code>$LOAD_PATH</code>  
+  (<code>$:</code>). Multiple <code>-I</code> options may be present, and
+  multiple directories may appear following each <code>-I</code>. Directories
+  are separated by a ``:'' on Unix-like systems and by a ``;'' on
+  DOS/Windows systems.
+<P></P>
+  <dt>-i [<em>extension</em>}</dt>
+      <dd></dd>'
+  Edits <code>ARGV</code> files in place.    
+  For each
+  file named in <code>ARGV</code>, anything you write to standard output will
+  be saved back as the contents of that file.
+  A backup copy of the file will be made if
+  <em>extension</em> is supplied.
+<pre>
+<code>%&nbsp;ruby -pi.bak -e "gsub(/Perl/, 'Ruby')" *.txt</code>
+</pre>
+<P></P>
+  <dt>-K <em>kcode</em>
+      </dt>
+      <dd></dd>'
+  Specifies the code set to be used. This  
+  option is useful mainly when Ruby is used for Japanese-language
+  processing. <em>kcode</em> may be one of: e, E for EUC; s, S for SJIS;
+  u, U for UTF-8; or a, A, n, N for ASCII.
+<P></P>
+  <dt>-l</dt>
+      <dd></dd>'
+  Enables automatic line-ending processing;
+  sets <code>$\</code> to the value of <code>$/</code> and chops every input line
+  automatically.
+<P></P>
+  <dt>-n</dt>
+      <dd></dd>'
+  Assumes ``<code>while gets; ...; end</code>'' loop around your program.
+  For example, a simple <code>grep</code> command might be implemented as:
+<pre>
+<code>%&nbsp;ruby -n -e "print if /wombat/"  *.txt</code>
+</pre>
+<P></P>
+  <dt>-p</dt>
+      <dd></dd>'
+  Places your program code within the loop
+  ``<code>while gets; ...; print; end</code>.''
+<pre>
+<code>%&nbsp;ruby -p -e "$_.downcase!" *.txt</code>
+</pre>
+  <dt>-r <em>library</em>
+      </dt>
+      <dd></dd>'
+  <code>require</code>s the named library before executing.
+<P></P>
+  <dt>-S</dt>
+      <dd></dd>'
+  Looks for the program file using <code>RUBYPATH</code>
+  or <code>PATH</code> environment
+  variable.
+<P></P>
+  <dt>-s</dt>
+      <dd></dd>' Any command line switches found after the program filename, but
+  before any filename arguments or before a <code>--</code>, are removed
+  from <code>ARGV</code> and set to a global variable named for the switch. In
+  the following example, the effect of this would be to set the variable
+  <code>$opt</code> to ``<code>electric</code>''.
+<P></P>
+<pre>
+<code>%&nbsp;ruby -s prog -opt=electric ./mydata</code>
+</pre>
+<P></P>
+  <dt>-T[<em>level</em>}</dt>
+      <dd></dd>'
+  Sets the safe level, which among other things enables tainting
+  checks
+  (see page 253). Sets <code>$SAFE</code>.  
+<P></P>
+  <dt>-v, --verbose</dt>
+      <dd></dd>'
+  Enables verbose mode and print the version number.
+  In verbose mode, compilation warnings are
+  printed. If no program filename appears on the command line, Ruby exits.
+<P></P>
+  <dt>
+        <code>--version</code>
+      </dt>
+      <dd></dd>      
+  Displays the Ruby version number and exits.
+<P></P>
+  <dt>-w</dt>
+      <dd></dd>'
+  Enables verbose mode. Unlike <code>-v</code>, reads program from
+  standard input if no program files are present on the command line.
+  We recommend running your Ruby programs with <code>-w</code>.
+<P></P>
+  <dt>-X <em>directory</em>
+      </dt>
+      <dd></dd>'
+  Changes working directory to <em>directory</em> before executing.
+  Same as <code>-C</code>&nbsp;<em>directory</em>.
+<P></P>
+  <dt>-x [<em>directory</em>}</dt>
+      <dd></dd>'
+  Strips off text before <code>#!ruby</code> line and changes working
+  directory to <em>directory</em> if given.
+<P></P>
+  <dt>-y, --yydebug</dt>
+      <dd></dd>'
+  Enables yacc debugging in the parser <em>(waaay too much
+    information)</em>.  
+</dl>
+<h3><a name="UB">ARGV</a></h3>
+<P></P>
+Any command-line arguments after the program filename
+are available to your Ruby program in the global array
+<code>ARGV</code>.
+For instance, invoking Ruby as
+<P></P>
+<pre>
+<code>%&nbsp;ruby -w ptest "Hello World" a1 1.6180</code>
+</pre>
+<P></P>
+yields an <code>ARGV</code> array containing <code>["Hello World", a1,
+  1.6180]</code>.  There's a gotcha here for all you C
+programmers---<code>ARGV[0]</code> is the first argument to the program, not
+the program name.
+The name of the current program is
+available in the global variable <code>$0</code>.
+<h2><a name="S2">Program Termination</a></h2>
+<P></P>
+The method <a href="ref_m_kernel.html#Kernel.exit">
+      <code>Kernel#exit</code>
+    </a> terminates your program, returning a
+status value to the operating system. However, unlike some languages,
+<code>exit</code> doesn't just terminate the program immediately.
+<a href="ref_m_kernel.html#Kernel.exit">
+      <code>Kernel#exit</code>
+    </a> first raises a
+<code>SystemExit</code> exception, which you may catch, and then performs a
+number of cleanup actions, including running any registered
+<code>at_exit</code> methods and object finalizers.  See the reference for
+<a href="ref_m_kernel.html#Kernel.exit">
+      <code>Kernel#exit</code>
+    </a> beginning on page 415 for details.
+<h2><a name="S3">Environment Variables</a></h2>
+<P></P>
+You can access operating system environment variables using
+the predefined variable <code>ENV</code>.  It responds to the same
+methods as <code>Hash</code>.<em>[<code>ENV</code> is not actually a hash, but
+  if you need to, you can convert it into a <code>Hash</code> using
+  <code>ENV#to_hash</code>.]</em>
+<P></P>
+The values of some environment variables are read by Ruby
+when it first starts. These variables modify the behavior of the interpreter, 
+as shown in Table 13.1 on page 139.
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+<b>Environment variables used by Ruby</b>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Variable Name</b>
+              </td>
+  <td valign="top">
+                <b>Description</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RUBYOPT</code>
+              </td>
+  <td valign="top">Additional command-line options to Ruby; examined after
+                     real command-line options are parsed (<code>$SAFE</code>
+                     must be 0).</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RUBYLIB</code>
+              </td>
+  <td valign="top">Additional search path for Ruby programs
+                     (<code>$SAFE</code> must be 0).</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RUBYPATH</code>
+              </td>
+  <td valign="top">With <code>-S</code> option, search path for Ruby 
+                     programs (defaults to <code>PATH</code>).</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RUBYSHELL</code>
+              </td>
+  <td valign="top">Shell to use when spawning a process; if not
+                    set, will also check <code>SHELL</code> or <code>COMSPEC</code>.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>DLN_LIBRARY_PATH</code>
+              </td>
+  <td valign="top">Search path for dynamically loaded
+                              modules.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RUBYLIB_PREFIX</code>
+              </td>
+  <td valign="top">(Windows only) Mangle the RUBYLIB search path by
+                              adding this prefix to each component.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+<h3><a name="UC">Writing to Environment Variables</a></h3>
+<P></P>
+A Ruby program may write to the <code>ENV</code> object, which on most systems
+changes the values of the corresponding environment variables. However,
+this change is local to the process that makes it and to any
+subsequently spawned child processes.
+This inheritance of environment variables is illustrated in the code
+that follows. A subprocess changes an environment variable and this
+change is seen in a process that it then starts. However, the change
+is not visible to the original parent. (This just goes to prove that
+parents never really know what their children are doing.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+puts&nbsp;"In&nbsp;parent,&nbsp;term&nbsp;=&nbsp;#{ENV['TERM']}"
+fork&nbsp;do
+&nbsp;&nbsp;puts&nbsp;"Start&nbsp;of&nbsp;child&nbsp;1,&nbsp;term&nbsp;=&nbsp;#{ENV['TERM']}"
+&nbsp;&nbsp;ENV['TERM']&nbsp;=&nbsp;"ansi"
+&nbsp;&nbsp;fork&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Start&nbsp;of&nbsp;child&nbsp;2,&nbsp;term&nbsp;=&nbsp;#{ENV['TERM']}"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;Process.wait
+&nbsp;&nbsp;puts&nbsp;"End&nbsp;of&nbsp;child&nbsp;1,&nbsp;term&nbsp;=&nbsp;#{ENV['TERM']}"
+end
+Process.wait
+puts&nbsp;"Back&nbsp;in&nbsp;parent,&nbsp;term&nbsp;=&nbsp;#{ENV['TERM']}"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+In&nbsp;parent,&nbsp;term&nbsp;=&nbsp;xterm
+Start&nbsp;of&nbsp;child&nbsp;1,&nbsp;term&nbsp;=&nbsp;xterm
+Start&nbsp;of&nbsp;child&nbsp;2,&nbsp;term&nbsp;=&nbsp;ansi
+End&nbsp;of&nbsp;child&nbsp;1,&nbsp;term&nbsp;=&nbsp;ansi
+Back&nbsp;in&nbsp;parent,&nbsp;term&nbsp;=&nbsp;xterm
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S4">Where Ruby Finds Its Modules</a></h2>
+<P></P>
+You use <code>require</code> or <code>load</code> to bring a library module into your
+Ruby program. Some of these modules are supplied with Ruby, some you
+installed off the Ruby Application Archive, and some you wrote
+yourself. How does Ruby find them?
+<P></P>
+When Ruby is built for your particular machine, it predefines a set
+of standard directories to hold library stuff. Where these are
+depends on the machine in question. You can
+determine this from the command line with something like:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+%&nbsp;ruby&nbsp;-e&nbsp;'puts&nbsp;$:'
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+On a typical Linux box, you'll probably find something such as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+/usr/local/lib/ruby/site_ruby/1.6/i686-linux
+/usr/local/lib/ruby/site_ruby/1.6
+/usr/local/lib/ruby/site_ruby
+/usr/local/lib/ruby/1.6/i686-linux
+/usr/local/lib/ruby/1.6
+.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>site_ruby</code> directories are intended to hold modules and extensions that
+you've added.
+The architecture-dependent directories (<code>i686-linux</code>
+in this case) hold executables and other things specific to this
+particular machine. All these directories are automatically included
+in Ruby's search for modules.
+<P></P>
+Sometimes this isn't enough. Perhaps you're working on a large project
+written in Ruby, and you and your colleagues have built a substantial
+library of Ruby code. You want everyone on the team to have access to
+all of this code.  You have a couple of options to accomplish this. If
+your program runs at a safe level of zero (see 
+Chapter 20 beginning on page 253),
+you can set the environment variable
+<code>RUBYLIB</code> to a list of one or more directories to be
+searched.<em>[The separator between entries depends on your
+  platform. For Windows, it's a semicolon; for Unix, a colon.]</em> If your
+program is not <em>setuid</em>,
+you can use the command-line parameter <code>-I</code>
+to do the same thing.
+<P></P>
+Finally,
+the Ruby variable <code>$:</code> is an array of places to search
+for loaded files. This variable is initialized to the list of standard 
+directories, plus any additional ones you specified using <code>RUBYLIB</code> 
+and <code>-I</code>. You can always add additional directories to this array
+from within your running program. 
+<h2><a name="S5">Build Environment</a></h2>
+<P></P>
+When Ruby is compiled for a particular architecture, all of the
+relevant settings used to build it (including the architecture of the
+machine on which it was compiled, compiler options, source code
+directory, and so on) are written to the module <code>Config</code> within the 
+library file ``<code>rbconfig.rb</code>''.
+After installation, any Ruby program can use this module to get
+details on how Ruby was compiled.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;"rbconfig.rb"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>include&nbsp;Config</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>CONFIG["host"]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"i686-pc-linux"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>CONFIG["LDFLAGS"]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"-rdynamic"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Extension libraries use this configuration file in order to compile
+and link properly on any given architecture.  See Chapter
+17 beginning on page 169, and the reference
+for <code>mkmf</code> beginning on page 451 for details.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="trouble.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="web.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

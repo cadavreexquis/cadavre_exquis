@@ -1,0 +1,626 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="classes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ospace.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Locking Ruby in the Safe</h1>
+    <hr>
+    <br>
+<P></P>
+Walter Webcoder has a great idea for a portal site: The Web Arithmetic
+Page. Surrounded by all sorts of cool mathematical links and banner
+ads that will make him rich is a simple central frame, containing a
+text field and a button. Users type an arithmetic expression into the
+field, press the button, and the answer is displayed. All the world's
+calculators become obsolete overnight, and Walter cashes in and retires to
+devote his life to his collection of car license plate numbers.
+<P></P>
+Implementing the calculator is easy, thinks Walter. He accesses the
+contents of the form field using Ruby's CGI library, and uses
+the <code>eval</code> method to evaluate the string as an expression.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'cgi'
+<P></P>
+cgi&nbsp;=&nbsp;CGI::new("html4")
+<P></P>
+#&nbsp;Fetch&nbsp;the&nbsp;value&nbsp;of&nbsp;the&nbsp;form&nbsp;field&nbsp;"expression"
+expr&nbsp;=&nbsp;cgi["expression"].to_s
+<P></P>
+begin
+&nbsp;&nbsp;result&nbsp;=&nbsp;eval(expr)
+rescue&nbsp;Exception&nbsp;=&gt;&nbsp;detail
+&nbsp;&nbsp;#&nbsp;handle&nbsp;bad&nbsp;expressions
+end
+<P></P>
+#&nbsp;display&nbsp;result&nbsp;back&nbsp;to&nbsp;user...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Roughly seven seconds after Walter puts the application online, a
+twelve-year-old from Waxahachie with glandular problems and no real
+life types ``<code>system("rm&nbsp;*")</code>'' into the form and, like his
+application, Walter's dreams come tumbling down.
+<P></P>
+Walter learned an important lesson: <em>All external data is
+  dangerous. Don't let it close to interfaces that can modify your
+  system.</em> In this case, the content of the form field was the
+external data, and the call to <code>eval</code> was the security breach.
+<P></P>
+Fortunately, Ruby provides support for reducing this risk. All
+information from the outside world can be marked as
+<em>tainted</em>. When running in a safe mode, potentially dangerous
+methods will raise a <code>SecurityError</code> if passed a tainted object.
+<h2><a name="S1">Safe Levels</a></h2>
+<P></P>
+The variable <code>$SAFE</code> determines Ruby's level of paranoia.
+Table 20.1 on page 257 gives details of the checks performed at
+each safe level.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>$SAFE</b>
+        </td>
+  <td valign="top">
+          <b>Constraints</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">0</td>
+  <td valign="top">No checking of the use of externally supplied (tainted) data is
+  performed. This is Ruby's default mode.</td>
+</tr>
+<tr>
+  <td valign="top">&gt;= 1</td>
+  <td valign="top">Ruby disallows the use of tainted data by potentially
+  dangerous operations.</td>
+</tr>
+<tr>
+  <td valign="top">&gt;= 2</td>
+  <td valign="top">Ruby prohibits the loading of program files from globally
+  writable locations.</td>
+</tr>
+<tr>
+  <td valign="top">&gt;= 3</td>
+  <td valign="top">All newly created objects are considered tainted.</td>
+</tr>
+<tr>
+  <td valign="top">&gt;= 4</td>
+  <td valign="top">Ruby effectively partitions the running program in two. Nontainted
+  objects may not be modified. Typically, this will be used to create a 
+  sandbox: the program sets up an environment using a lower
+  <code>$SAFE</code> level, then resets <code>$SAFE</code> to 4 to prevent
+  subsequent changes to that environment.</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+The default value of <code>$SAFE</code> is zero under most circumstances.
+However, if a Ruby script is run <em>setuid</em> or
+<em>setgid</em>,<em>[A Unix script may be flagged to be run under a
+  different user or group id than the person running it. This allows
+  the script to have privileges that the user does not have; the
+  script can access resources that the user would otherwise be
+  prohibited from using.
+  These scripts are called <em>setuid</em> or <em>setgid</em>.]</em>
+its safe
+level is automatically set to 1. The safe level may also be set
+using the <code>-T</code>
+command-line option, and by assigning to
+<code>$SAFE</code> within the program. It is not possible to lower the value
+of <code>$SAFE</code> by assignment.
+<P></P>
+The current value of <code>$SAFE</code> is inherited when new threads are
+created. However, within each thread, the value of <code>$SAFE</code> may be
+changed without affecting the value in other threads. This facility
+may be used to implement secure ``sandboxes,'' areas where external
+code may run safely without risking the rest of your application or
+system. Do this by wrapping code that you load from a
+file in its own, anonymous module.
+This will protect your
+program's namespace from any unintended alteration.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+f=open(fileName,"w")
+f.print&nbsp;...&nbsp;&nbsp;&nbsp;#&nbsp;write&nbsp;untrusted&nbsp;program&nbsp;into&nbsp;file.
+f.close
+Thread.start&nbsp;{
+&nbsp;&nbsp;$SAFE&nbsp;=&nbsp;4
+&nbsp;&nbsp;load(fileName,&nbsp;true)
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+With a <code>$SAFE</code> level of 4, you can load <em>only</em> wrapped files.
+See <a href="ref_m_kernel.html#Kernel.load">
+      <code>Kernel::load</code>
+    </a> on page 418 for details.
+<h2><a name="S2">Tainted Objects</a></h2>
+<P></P>
+Any Ruby object derived from some external source (for example, a
+string read from a file, or an environment variable) is automatically
+marked as being tainted. If your program uses a tainted object to
+derive a new object, then that new object will also be tainted, as
+shown in the code below. Any
+object with external data somewhere in its past will be tainted. This
+tainting process is performed regardless of the current safe level. You
+can inspect the tainted status of an object using
+<a href="ref_c_object.html#Object.tainted_qm">
+      <code>Object#tainted?</code>
+    </a>.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+        <tr>
+          <td valign="top">
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+                <code>#&nbsp;internal&nbsp;data</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>#&nbsp;=============</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>x1&nbsp;=&nbsp;"a&nbsp;string"</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>x1.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>false</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code></code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>x2&nbsp;=&nbsp;x1[2,&nbsp;4]</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>x2.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>false</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code></code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>x1&nbsp;=~&nbsp;/([a-z])/</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>0</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>$1.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>false</code>
+              </td>
+</tr>
+</table>
+<P></P>
+
+</td>
+          <td width="5"></td>
+        <td bgcolor="#ffaaaa" width="2"><img src="dot.gif" width="1" height="1"></td>
+        <td width="5"></td>
+          <td valign="top">
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+                <code>#&nbsp;external&nbsp;data</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>#&nbsp;=============</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>y1&nbsp;=&nbsp;ENV["HOME"]</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>y1.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>true</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code></code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>y2&nbsp;=&nbsp;y1[2,&nbsp;4]</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>y2.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>true</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code></code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>y1&nbsp;=~&nbsp;/([a-z])/</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>1</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>$1.tainted?</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>true</code>
+              </td>
+</tr>
+</table>
+<P></P>
+
+</td>
+        </tr>
+        </table>
+<P></P>
+You can force any object to become tainted by invoking its
+<code>taint</code> method. If the safe level is less than 3, you can
+remove the taint from an object by invoking
+<code>untaint</code>.<em>[There are also some devious ways of doing
+  this without using <code>untaint</code>. We'll leave it up to your
+  darker side to find them.]</em> This is clearly not something to do
+lightly.
+<P></P>
+Clearly, Walter should have run his CGI script at a safe level of
+1. This would have raised an exception when the program tried to
+pass form data to <code>eval</code>. Once this had happened, Walter would
+have had
+a number of choices. He could have chosen to implement a proper expression
+parser, bypassing the risks inherent in using <code>eval</code>. However,
+being lazy, it's more likely he'd have performed some simple sanity check on
+the form data, and untaint it if it looked innocuous.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'cgi';
+<P></P>
+$SAFE&nbsp;=&nbsp;1
+<P></P>
+cgi&nbsp;=&nbsp;CGI::new("html4")
+<P></P>
+expr&nbsp;=&nbsp;cgi["field"].to_s
+<P></P>
+if&nbsp;expr&nbsp;=~&nbsp;%r{^-+*/\d\seE.()*$}
+&nbsp;&nbsp;expr.untaint
+&nbsp;&nbsp;result&nbsp;=&nbsp;eval(expr)
+&nbsp;&nbsp;#&nbsp;display&nbsp;result&nbsp;back&nbsp;to&nbsp;user...
+else
+&nbsp;&nbsp;#&nbsp;display&nbsp;error&nbsp;message...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Personally, we think Walter's still taking undue risks. We'd probably
+prefer to see a real parser here, but implementing one here has
+nothing to teach us about tainting, so we'll move on.
+<P></P>
+And remember---it's a dangerous world out there. Be careful.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+<P></P>
+  <b>Definition of the safe levels</b>  
+  <dl>
+            <dt>
+              <code>$SAFE</code> &gt;= 1</dt>
+            <dd>
+              <ul>
+    <li> The environment variables <code>RUBYLIB</code> and <code>RUBYOPT</code> are not
+      processed, and the current directory is not added to the path.            
+    </li>
+                <li> The command-line options <code>-e</code>, <code>-i</code>, <code>-I</code>, <code>-r</code>,
+      <code>-s</code>, <code>-S</code>, and <code>-x</code> are
+      not allowed.
+    </li>
+                <li> Can't start processes from <code>$PATH</code> if any directory
+      in it is world-writable.
+    </li>
+                <li> Can't manipulate or chroot to a directory whose name is a tainted string.
+    </li>
+                <li> Can't glob tainted strings.
+    </li>
+                <li> Can't eval tainted strings.
+    </li>
+                <li> Can't load or require a file whose name is a tainted string.
+    </li>
+                <li> Can't manipulate or query the status of a file or pipe whose
+      name is a tainted string.
+    </li>
+                <li> Can't execute a system command or exec a program from a
+      tainted string.
+    </li>
+                <li> Can't pass <code>trap</code> a tainted string.
+    </li>
+              </ul>    
+<P></P>
+  </dd>
+            <dt>
+              <code>$SAFE</code> &gt;= 2</dt>
+            <dd>
+              <ul>
+    <li> Can't change, make, or remove directories, or use chroot.
+    </li>
+                <li> Can't load a file from a world-writable directory.
+    </li>
+                <li> Can't load a file from a tainted filename starting with ~.
+    </li>
+                <li> Can't use
+      <a href="ref_c_file.html#File.chmod">
+                    <code>File#chmod</code>
+                  </a>,
+      <a href="ref_c_file.html#File.chown">
+                    <code>File#chown</code>
+                  </a>,
+      <a href="ref_c_file.html#File.lstat">
+                    <code>File#lstat</code>
+                  </a>,
+      <a href="ref_c_file.html#File.stat">
+                    <code>File.stat</code>
+                  </a>,
+      <a href="ref_c_file.html#File.truncate">
+                    <code>File#truncate</code>
+                  </a>,
+      <a href="ref_c_file.html#File.umask">
+                    <code>File.umask</code>
+                  </a>,
+      <a href="ref_c_file.html#File.flock">
+                    <code>File#flock</code>
+                  </a>,
+      <a href="ref_c_io.html#IO.ioctl">
+                    <code>IO#ioctl</code>
+                  </a>,
+      <a href="ref_c_io.html#IO.stat">
+                    <code>IO#stat</code>
+                  </a>,
+      <a href="ref_m_kernel.html#Kernel.fork">
+                    <code>Kernel#fork</code>
+                  </a>,
+      <a href="ref_m_kernel.html#Kernel.syscall">
+                    <code>Kernel#syscall</code>
+                  </a>,
+      <a href="ref_m_kernel.html#Kernel.trap">
+                    <code>Kernel#trap</code>
+                  </a>.
+      <a href="ref_m_process.html#Process.setpgid">
+                    <code>Process::setpgid</code>
+                  </a>,
+      <a href="ref_m_process.html#Process.setsid">
+                    <code>Process::setsid</code>
+                  </a>,
+      <a href="ref_m_process.html#Process.setpriority">
+                    <code>Process::setpriority</code>
+                  </a>, or
+      <a href="ref_m_process.html#Process.egid_eq">
+                    <code>Process::egid=</code>
+                  </a>.
+    </li>
+                <li> Can't handle signals using <code>trap</code>.
+    </li>
+              </ul>
+<P></P>
+  </dd>
+            <dt>
+              <code>$SAFE</code> &gt;= 3</dt>
+            <dd>
+              <ul>
+    <li> All objects are created tainted.
+    </li>
+                <li> Can't untaint objects.
+    </li>
+              </ul>
+<P></P>
+  </dd>
+            <dt>
+              <code>$SAFE</code> &gt;= 4</dt>
+            <dd>
+              <ul>
+    <li> Can't modify a nontainted array, hash, or string.
+    </li>
+                <li> Can't modify a global variable.
+    </li>
+                <li> Can't access instance variables of nontainted objects.
+    </li>
+                <li> Can't change an environment variable.
+    </li>
+                <li> Can't close or reopen nontainted files.
+    </li>
+                <li> Can't freeze nontainted objects.
+    </li>
+                <li> Can't change visibility of methods (private/public/protected).
+    </li>
+                <li> Can't make an alias in a nontainted class or module.
+    </li>
+                <li> Can't get meta information (such as method or variable lists).
+    </li>
+                <li> Can't define, redefine, remove, or undef a method in a nontainted
+      class or module.
+    </li>
+                <li> Can't modify <code>Object</code>.
+    </li>
+                <li> Can't remove instance variables or constants from nontainted
+      objects.
+    </li>
+                <li> Can't manipulate threads, terminate a thread other than the
+      current, or set <code>abort_on_exception</code>.
+    </li>
+                <li> Can't have thread local variables.
+    </li>
+                <li> Can't raise an exception in a thread with a lower <code>$SAFE</code> value.
+    </li>
+                <li> Can't move threads between ThreadGroups.
+    </li>
+                <li> Can't invoke <code>exit</code>, <code>exit!</code>, or <code>abort</code>.
+    </li>
+                <li> Can load only wrapped files, and can't include modules
+      in nontainted classes and modules.
+    </li>
+                <li> Can't convert symbol identifiers to object references.
+    </li>
+                <li> Can't write to files or pipes.
+    </li>
+                <li> Can't use <code>autoload</code>.
+    </li>
+                <li> Can't taint objects.
+    </li>
+              </ul>
+  </dd>
+          </dl>
+</td>
+      </tr>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="classes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ospace.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

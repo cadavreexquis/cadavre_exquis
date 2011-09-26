@@ -1,0 +1,1114 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_io.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="trouble.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Threads and Processes</h1>
+    <hr>
+    <br>
+<P></P>
+Ruby gives you two basic ways to organize your program so that you can
+run different parts of it ``at the same time.''  You can split
+up cooperating tasks <em>within</em> the program, using multiple
+threads, or you can split up tasks between different programs, using
+multiple processes.  Let's look at each in turn.
+<h2><a name="S1">Multithreading</a></h2>
+<P></P>
+Often the simplest way to do two things at once is by using <em>Ruby
+  threads</em>. These are totally in-process, implemented within the Ruby
+interpreter.  That makes the Ruby threads completely portable---there
+is no reliance on the operating system---but you don't get certain
+benefits from having native threads.  You may experience thread
+starvation (that's where a low-priority thread doesn't get a chance to
+run).  If you manage to get your threads deadlocked, the whole process
+may grind to a halt. And if some thread happens to make a call to the
+operating system that takes a long time to complete, all threads will
+hang until the interpreter gets control back. However, don't let these
+potential problems put you off---Ruby threads are a lightweight and
+efficient way to achieve parallelism in your code.
+<h3><a name="UA">Creating Ruby Threads</a></h3>
+<P></P>
+Creating a new thread is pretty straightforward.
+Here's a simple code
+fragment that downloads a set of Web pages in parallel. For each
+request it's given, the code creates a separate thread that handles
+the HTTP transaction.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/http'
+<P></P>
+pages&nbsp;=&nbsp;%w(&nbsp;www.rubycentral.com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.awl.com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;www.pragmaticprogrammer.com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+<P></P>
+threads&nbsp;=&nbsp;[]
+<P></P>
+for&nbsp;page&nbsp;in&nbsp;pages
+&nbsp;&nbsp;threads&nbsp;&lt;&lt;&nbsp;Thread.new(page)&nbsp;{&nbsp;|myPage|
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;h&nbsp;=&nbsp;Net::HTTP.new(myPage,&nbsp;80)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Fetching:&nbsp;#{myPage}"
+&nbsp;&nbsp;&nbsp;&nbsp;resp,&nbsp;data&nbsp;=&nbsp;h.get('/',&nbsp;nil&nbsp;)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Got&nbsp;#{myPage}:&nbsp;&nbsp;#{resp.message}"
+&nbsp;&nbsp;}
+end
+<P></P>
+threads.each&nbsp;{&nbsp;|aThread|&nbsp;&nbsp;aThread.join&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Fetching:&nbsp;www.rubycentral.com
+Fetching:&nbsp;www.awl.com
+Fetching:&nbsp;www.pragmaticprogrammer.com
+Got&nbsp;www.rubycentral.com:&nbsp;&nbsp;OK
+Got&nbsp;www.pragmaticprogrammer.com:&nbsp;&nbsp;OK
+Got&nbsp;www.awl.com:&nbsp;&nbsp;OK
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Let's look at this code in more detail, as there are a few subtle
+things going on.
+<P></P>
+New threads are created with the <a href="ref_c_thread.html#Thread.new">
+      <code>Thread.new</code>
+    </a> call. It is given a 
+block that contains the code to be run in a new thread. In our case,
+the block uses the <code>net/http</code> library to fetch the top page from
+each of our nominated sites. Our tracing clearly shows that these
+fetches are going on in parallel.
+<P></P>
+When we create the thread, we pass the required HTML page in as a
+parameter. This parameter is passed on to the block as <code>myPage</code>.
+Why do we do this, rather than simply using the value of the variable
+<code>page</code> within the block?
+<P></P>
+A thread shares all global, instance, and local variables that are in
+existence at the time the thread starts.
+As anyone with a kid brother
+can tell you, sharing isn't always a good thing.  In this case, all
+three threads would share the variable <code>page</code>. The first thread
+gets started, and <code>page</code> is set to <a href="http://www.rubycentral.com">http://www.rubycentral.com</a>. In
+the meantime, the loop creating the threads is still running. The
+second time around, <code>page</code> gets set to <a href="http://www.awl.com">http://www.awl.com</a>. If the
+first thread has not yet finished using the <code>page</code> variable, it
+will suddenly start using its new value. These bugs are difficult to
+track down.
+<P></P>
+However, local variables created within a thread's block are truly
+local to that thread---each thread will have its own copy of these
+variables. In our case, the variable <code>myPage</code> will be set at the
+time the thread is created, and each thread will have its own copy of
+the page address.
+<h3><a name="UB">Manipulating Threads</a></h3>
+<P></P>
+Another subtlety occurs on the last line in the program. Why do we call
+<code>join</code> on each of the threads we created?
+<P></P>
+When a Ruby program terminates, all running threads are killed,
+regardless of their states.  However, you can wait for a particular
+thread to finish by calling that thread's <a href="ref_c_thread.html#Thread.join">
+      <code>Thread#join</code>
+    </a> method.
+The calling thread will block until the given thread is finished.  By
+calling <code>join</code> on each of the requestor threads, you can make
+sure that all three requests have completed before you terminate the
+main program.
+<P></P>
+In addition to <code>join</code>, there are a few other handy routines that are
+used to manipulate threads.  First of all, the current thread is
+always accessible using <a href="ref_c_thread.html#Thread.current">
+      <code>Thread.current</code>
+    </a>.  You can obtain a list
+of all threads using <a href="ref_c_thread.html#Thread.list">
+      <code>Thread.list</code>
+    </a>, which returns a list of
+all <code>Thread</code> objects that are runnable or stopped.  To determine the 
+status of a particular thread, you can use <a href="ref_c_thread.html#Thread.status">
+      <code>Thread#status</code>
+    </a> and
+<a href="ref_c_thread.html#Thread.alive_qm">
+      <code>Thread#alive?</code>
+    </a>.
+<P></P>
+Also, you can adjust the priority of a thread using
+<a href="ref_c_thread.html#Thread.priority_eq">
+      <code>Thread#priority=</code>
+    </a>. Higher-priority threads will run before
+lower-priority threads.  We'll talk more about thread scheduling, and
+stopping and starting threads, in just a bit.
+<h3><a name="UC">Thread Variables</a></h3>
+<P></P>
+As we described in the previous section, a thread can normally access
+any variables that are in scope when the thread is created.  Variables
+local to the block of a thread are local to the thread, and are not
+shared.
+<P></P>
+But what if you need per-thread variables that can be accessed by
+other threads---including the main thread?  <code>Thread</code> features a
+special facility that allows thread-local variables to be created and
+accessed by name. You simply treat the thread object as if it were a
+<code>Hash</code>, writing to elements using <code>[]=</code> and reading them back
+using <code>[]</code>. In this example, each thread records the current
+value of the variable <code>count</code> in a thread-local variable with the
+key <code>mycount</code>. (There's a race condition in this code, but we haven't 
+talked about synchronization yet, so we'll just quietly ignore it for now.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+count&nbsp;=&nbsp;0
+arr&nbsp;=&nbsp;[]
+10.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;arr[i]&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;sleep(rand(0)/10.0)
+&nbsp;&nbsp;&nbsp;&nbsp;Thread.current["mycount"]&nbsp;=&nbsp;count
+&nbsp;&nbsp;&nbsp;&nbsp;count&nbsp;+=&nbsp;1
+&nbsp;&nbsp;}
+end
+arr.each&nbsp;{|t|&nbsp;t.join;&nbsp;print&nbsp;t["mycount"],&nbsp;",&nbsp;"&nbsp;}
+puts&nbsp;"count&nbsp;=&nbsp;#{count}"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+8,&nbsp;0,&nbsp;3,&nbsp;7,&nbsp;2,&nbsp;1,&nbsp;6,&nbsp;5,&nbsp;4,&nbsp;9,&nbsp;count&nbsp;=&nbsp;10
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The main thread waits for the subthreads to finish and then prints
+out the value of <code>count</code> captured by each. Just to make it more
+interesting, we have each thread wait a random time before recording
+the value.
+<h3><a name="UD">Threads and Exceptions</a></h3>
+<P></P>
+What happens if a thread raises an unhandled exception? It depends on
+the setting of the
+<a href="http://abort_on_exception">http://abort_on_exception</a>
+flag, documented on pages 384 and
+387.
+<P></P>
+If <code>abort_on_exception</code> is <code>false</code>, the default
+condition, an unhandled exception simply kills the current
+thread---all the rest continue to run. In the following example,
+thread number 3 blows up and fails to produce any output. However,
+you can still see the trace from the other threads.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+threads&nbsp;=&nbsp;[]
+6.times&nbsp;{&nbsp;|i|
+&nbsp;&nbsp;threads&nbsp;&lt;&lt;&nbsp;Thread.new(i)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;"Boom!"&nbsp;if&nbsp;i&nbsp;==&nbsp;3
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;i
+&nbsp;&nbsp;}
+}
+threads.each&nbsp;{|t|&nbsp;t.join&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+01
+2
+<P></P>
+45prog.rb:4:&nbsp;Boom!&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:8:in&nbsp;`join'
+	from&nbsp;prog.rb:8
+	from&nbsp;prog.rb:8:in&nbsp;`each'
+	from&nbsp;prog.rb:8
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+However, set <code>abort_on_exception</code> to <code>true</code>, and an
+unhandled exception kills all running threads. Once thread 3 dies, 
+no more output is produced.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Thread.abort_on_exception&nbsp;=&nbsp;true
+threads&nbsp;=&nbsp;[]
+6.times&nbsp;{&nbsp;|i|
+&nbsp;&nbsp;threads&nbsp;&lt;&lt;&nbsp;Thread.new(i)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;"Boom!"&nbsp;if&nbsp;i&nbsp;==&nbsp;3
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;i
+&nbsp;&nbsp;}
+}
+threads.each&nbsp;{|t|&nbsp;t.join&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+01
+2
+prog.rb:5:&nbsp;Boom!&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:7:in&nbsp;`initialize'
+	from&nbsp;prog.rb:7:in&nbsp;`new'
+	from&nbsp;prog.rb:7
+	from&nbsp;prog.rb:3:in&nbsp;`times'
+	from&nbsp;prog.rb:3
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S2">Controlling the Thread Scheduler</a></h2>
+<P></P>
+In a well-designed application, you'll normally just let threads do
+their thing; building timing dependencies into a multithreaded
+application is generally considered to be bad form.
+<P></P>
+However, there are times when you need to control threads. Perhaps the 
+jukebox has a thread that displays a light show. We might need to stop 
+it temporarily when the music stops. You might have two threads in a
+classic producer-consumer relationship, where the consumer has to
+pause if the producer gets backlogged.
+<P></P>
+Class <code>Thread</code> provides a number of methods to control the thread
+scheduler. Invoking <a href="ref_c_thread.html#Thread.stop">
+      <code>Thread.stop</code>
+    </a> stops the current thread, while
+<a href="ref_c_thread.html#Thread.run">
+      <code>Thread#run</code>
+    </a> arranges for a particular thread to be
+run. <a href="ref_c_thread.html#Thread.pass">
+      <code>Thread.pass</code>
+    </a> deschedules the current thread, allowing others
+to run, and <a href="ref_c_thread.html#Thread.join">
+      <code>Thread#join</code>
+    </a> and <a href="ref_c_thread.html#Thread.value">
+      <code>Thread#value</code>
+    </a> suspend the
+calling thread until a given thread finishes.
+<P></P>
+We can demonstrate these features in the following, totally pointless
+program.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>t&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;sleep&nbsp;.1;&nbsp;Thread.pass;&nbsp;Thread.stop;&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>t.status</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"sleep"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>t.run</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>t.status</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"run"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>t.run</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>t.status</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+However, using these primitives to achieve any kind of real
+synchronization is, at best, hit or miss; there will always be race
+conditions waiting to bite you. And when you're working with shared
+data, race conditions pretty much guarantee long and frustrating
+debugging sessions.  Fortunately, threads have one additional
+facility---the idea of a critical section. Using this, we can build a
+number of secure synchronization schemes.
+<h2><a name="S3">Mutual Exclusion</a></h2>
+<P></P>
+The lowest-level method of blocking other threads from running uses
+a global ``thread critical''
+condition.
+When the condition is set to <code>true</code> (using the
+<a href="ref_c_thread.html#Thread.critical_eq">
+      <code>Thread.critical=</code>
+    </a> method),
+the scheduler will not schedule any
+existing thread to run.
+However, this does not block new threads from
+being created and run. Certain thread operations (such as stopping or
+killing a thread, sleeping in the current thread, or raising an
+exception) may cause a thread to be scheduled even when in a critical
+section.
+<P></P>
+Using <a href="ref_c_thread.html#Thread.critical_eq">
+      <code>Thread.critical=</code>
+    </a> directly is certainly possible, but it
+isn't terribly convenient. Fortunately, Ruby comes packaged with
+several alternatives. Of these, two of the best, class <code>Mutex</code> and
+class <code>ConditionVariable</code>, are available in the <code>thread</code> library 
+module; see the documentation beginning on page 457.
+<h3><a name="UE">The Mutex Class</a></h3>
+<P></P>
+<code>Mutex</code> is a class that implements a simple
+semaphore lock for mutually exclusive access to some shared resource.
+That is, only one thread may hold the lock at a given time.  Other
+threads may choose to wait in line for the lock to become available,
+or may simply choose to get an immediate error indicating that the
+lock is not available.
+<P></P>
+A mutex is often used when updates to shared data need to be atomic.
+Say we need to update two variables as part of a transaction. We can
+simulate this in a trivial program by incrementing some counters. The
+updates are supposed to be atomic---the outside world should never see
+the counters with different values. Without any kind of mutex control,
+this just doesn't work.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>count1&nbsp;=&nbsp;count2&nbsp;=&nbsp;0</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>difference&nbsp;=&nbsp;0</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>counter&nbsp;=&nbsp;Thread.new&nbsp;do</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;loop&nbsp;do</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;count1&nbsp;+=&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;count2&nbsp;+=&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>spy&nbsp;=&nbsp;Thread.new&nbsp;do</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;loop&nbsp;do</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;difference&nbsp;+=&nbsp;(count1&nbsp;-&nbsp;count2).abs</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>sleep&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>Thread.critical&nbsp;=&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>count1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>184846</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>count2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>184846</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>difference</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>58126</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This example shows that the ``spy'' thread woke up a large number of
+times and found the values of <code>count1</code> and <code>count2</code> inconsistent.
+<P></P>
+Fortunately we can fix this using a mutex.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'thread'
+mutex&nbsp;=&nbsp;Mutex.new
+<P></P>
+count1&nbsp;=&nbsp;count2&nbsp;=&nbsp;0
+difference&nbsp;=&nbsp;0
+counter&nbsp;=&nbsp;Thread.new&nbsp;do
+&nbsp;&nbsp;loop&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;mutex.synchronize&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count1&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count2&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+spy&nbsp;=&nbsp;Thread.new&nbsp;do
+&nbsp;&nbsp;loop&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;mutex.synchronize&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;difference&nbsp;+=&nbsp;(count1&nbsp;-&nbsp;count2).abs
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>sleep&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>mutex.lock</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>count1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>21192</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>count2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>21192</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>difference</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+By placing all accesses to the shared data under control of a mutex,
+we ensure consistency. Unfortunately, as you can see from the numbers,
+we also suffer quite a performance penalty. 
+<h3><a name="UF">Condition Variables</a></h3>
+<P></P>
+Using a mutex to protect critical data is sometimes not enough.
+Suppose you are in a critical section, but you need to wait for some
+particular resource.  If your thread goes to sleep waiting for this
+resource, it is possible that no other thread will be able to release
+the resource because it cannot enter the critical section---the original
+process still has it locked. You need to be able to give up temporarily
+your exclusive use of the critical region and simultaneously tell
+people that you're waiting for a resource. When the resource becomes
+available, you need to be able to grab it <em>and</em> reobtain the
+lock on the critical region, all in one step.
+<P></P>
+This is where condition variables come in. A condition variable is
+simply a semaphore that is associated with a resource and is
+used within the protection of a particular mutex. When you need a
+resource that's unavailable, you wait on
+a condition variable. That action releases the lock on the
+corresponding mutex. When some other thread signals that the resource
+is available, the original thread comes off the wait and
+simultaneously regains the lock on the critical region.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'thread'
+mutex&nbsp;=&nbsp;Mutex.new
+cv&nbsp;=&nbsp;ConditionVariable.new
+<P></P>
+a&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;mutex.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"A:&nbsp;I&nbsp;have&nbsp;critical&nbsp;section,&nbsp;but&nbsp;will&nbsp;wait&nbsp;for&nbsp;cv"
+&nbsp;&nbsp;&nbsp;&nbsp;cv.wait(mutex)
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"A:&nbsp;I&nbsp;have&nbsp;critical&nbsp;section&nbsp;again!&nbsp;I&nbsp;rule!"
+&nbsp;&nbsp;}
+}
+<P></P>
+puts&nbsp;"(Later,&nbsp;back&nbsp;at&nbsp;the&nbsp;ranch...)"
+<P></P>
+b&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;mutex.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"B:&nbsp;Now&nbsp;I&nbsp;am&nbsp;critical,&nbsp;but&nbsp;am&nbsp;done&nbsp;with&nbsp;cv"
+&nbsp;&nbsp;&nbsp;&nbsp;cv.signal
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"B:&nbsp;I&nbsp;am&nbsp;still&nbsp;critical,&nbsp;finishing&nbsp;up"
+&nbsp;&nbsp;}
+}
+a.join
+b.join
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+A:&nbsp;I&nbsp;have&nbsp;critical&nbsp;section,&nbsp;but&nbsp;will&nbsp;wait&nbsp;for&nbsp;cv(Later,&nbsp;back&nbsp;at&nbsp;the&nbsp;ranch...)
+<P></P>
+B:&nbsp;Now&nbsp;I&nbsp;am&nbsp;critical,&nbsp;but&nbsp;am&nbsp;done&nbsp;with&nbsp;cv
+B:&nbsp;I&nbsp;am&nbsp;still&nbsp;critical,&nbsp;finishing&nbsp;up
+A:&nbsp;I&nbsp;have&nbsp;critical&nbsp;section&nbsp;again!&nbsp;I&nbsp;rule!
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+For alternative implementations of synchronization mechanisms, see
+<code>monitor.rb</code> and <code>sync.rb</code> in the <code>lib</code> subdirectory of the
+distribution.
+<h2><a name="S4">Running Multiple Processes</a></h2>
+<P></P>
+Sometimes
+you may want to split a task into several process-sized
+chunks---or perhaps you need to run a separate process that was not
+written in Ruby.  Not a problem: Ruby has a number of methods by which 
+you may spawn and manage separate processes.
+<h3><a name="UG">Spawning New Processes</a></h3>
+<P></P>
+There are several ways to spawn a separate process; the easiest is to
+run some command and wait for it to complete.  You might find yourself
+doing this to run some separate command or retrieve data from the host
+system. Ruby does this for you with the <code>system</code> and backquote
+methods.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>system("tar&nbsp;xzf&nbsp;test.tgz")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>tar:&nbsp;test.tgz:&nbsp;Cannot&nbsp;open:&nbsp;No&nbsp;such&nbsp;file&nbsp;or&nbsp;directory\ntar:&nbsp;Error&nbsp;is&nbsp;not&nbsp;recoverable:&nbsp;exiting&nbsp;now\ntar:&nbsp;Child&nbsp;returned&nbsp;status&nbsp;2\ntar:&nbsp;Error&nbsp;exit&nbsp;delayed&nbsp;from&nbsp;previous&nbsp;errors\nfalse</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>result&nbsp;=&nbsp;`date`</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>result</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:50&nbsp;CDT&nbsp;2002\n"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The method <a href="ref_m_kernel.html#Kernel.system">
+      <code>Kernel::system</code>
+    </a> executes the given command in a
+subprocess; it returns <code>true</code> if the command was
+found and executed properly, <code>false</code> otherwise. In case of
+failure, you'll find the subprocess's exit code in the global variable 
+<code>$?</code>.
+<P></P>
+One problem with <code>system</code> is that the command's output will
+simply go to the same destination as your program's output, which may
+not be what you want.  To capture the standard output of a
+subprocess, you can use the backquotes, as with <code>`date`</code> in
+the previous example.  Remember that you may need to use
+<a href="ref_c_string.html#String.chomp">
+      <code>String#chomp</code>
+    </a> to remove the line-ending characters from the
+result.
+<P></P>
+Okay, this is fine for simple cases---we can run some other process
+and get the return status.  But many times we need a bit more control
+than that. We'd like to carry on a conversation with the subprocess,
+possibly sending it data and possibly getting some back.
+The method <a href="ref_c_io.html#IO.popen">
+      <code>IO.popen</code>
+    </a> does just this. The <code>popen</code> method
+runs a command as a subprocess and connects that subprocess's
+standard input and standard output to a Ruby <code>IO</code> object. Write to
+the <code>IO</code> object, and the subprocess can read it on standard
+input. Whatever the subprocess writes is available in the Ruby program 
+by reading from the <code>IO</code> object.
+<P></P>
+For example, on our systems one of the more useful utilities is
+<code>pig</code>, a program that reads words from standard input and prints
+them in pig Latin (or igpay atinlay). We can use this when our Ruby
+programs need to send us output that our 5-year-olds shouldn't be able to
+understand.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+pig&nbsp;=&nbsp;IO.popen("pig",&nbsp;"w+")
+pig.puts&nbsp;"ice&nbsp;cream&nbsp;after&nbsp;they&nbsp;go&nbsp;to&nbsp;bed"
+pig.close_write
+puts&nbsp;pig.gets
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+iceway&nbsp;eamcray&nbsp;afterway&nbsp;eythay&nbsp;ogay&nbsp;otay&nbsp;edbay
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This example illustrates both the apparent simplicity and the real-world
+complexities involved in driving subprocesses through pipes. The code
+certainly looks simple enough: open the pipe, write a phrase, and read
+back the response. But it turns out that the <code>pig</code> program doesn't
+flush the output it writes. Our original attempt at this example,
+which had a <code>pig.puts</code> followed by a <code>pig.gets</code>, hung forever.
+The <code>pig</code> program processed our input, but its response was never
+written to the pipe. We had to insert the <code>pig.close_write</code> line.
+This sends an end-of-file to <code>pig</code>'s standard input, and the output
+we're looking for gets flushed as <code>pig</code> terminates.
+<P></P>
+There's one more twist to <code>popen</code>. If the command you pass it
+is a single minus sign (``--''), <code>popen</code> will fork a new Ruby
+interpreter.
+Both this and the original interpreter will continue
+running by returning from the <code>popen</code>. The original process
+will receive an <code>IO</code> object back, while the child will receive <code>nil</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+pipe&nbsp;=&nbsp;IO.popen("-","w+")
+if&nbsp;pipe
+&nbsp;&nbsp;pipe.puts&nbsp;"Get&nbsp;a&nbsp;job!"
+&nbsp;&nbsp;$stderr.puts&nbsp;"Child&nbsp;says&nbsp;'#{pipe.gets.chomp}'"
+else
+&nbsp;&nbsp;$stderr.puts&nbsp;"Dad&nbsp;says&nbsp;'#{gets.chomp}'"
+&nbsp;&nbsp;puts&nbsp;"OK"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Dad&nbsp;says&nbsp;'Get&nbsp;a&nbsp;job!'
+Child&nbsp;says&nbsp;'OK'
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In addition to <code>popen</code>, the traditional Unix calls
+<a href="ref_m_kernel.html#Kernel.fork">
+      <code>Kernel::fork</code>
+    </a>, <a href="ref_m_kernel.html#Kernel.exec">
+      <code>Kernel::exec</code>
+    </a>, and <a href="ref_c_io.html#IO.pipe">
+      <code>IO.pipe</code>
+    </a> are
+available on platforms that support them.  The file-naming convention
+of many <code>IO</code> methods and <a href="ref_m_kernel.html#Kernel.open">
+      <code>Kernel::open</code>
+    </a> will also spawn
+subprocesses if you put a ``<code>|</code>''
+as the first character of the
+filename (see the introduction to class <code>IO</code> on page 325 for
+details).  Note that you <em>cannot</em> create pipes using
+<a href="ref_c_file.html#File.new">
+      <code>File.new</code>
+    </a>; it's just for files.
+<h3><a name="UH">Independent Children</a></h3>
+<P></P>
+Sometimes we don't need to be quite so hands-on: we'd like to give
+the subprocess its assignment and then go on about our business. Some
+time later, we'll check in with it to see if it has finished. For 
+instance, we might want to kick off a long-running external sort.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+exec("sort&nbsp;testfile&nbsp;&gt;&nbsp;output.txt")&nbsp;if&nbsp;fork&nbsp;==&nbsp;nil
+#&nbsp;The&nbsp;sort&nbsp;is&nbsp;now&nbsp;running&nbsp;in&nbsp;a&nbsp;child&nbsp;process
+#&nbsp;carry&nbsp;on&nbsp;processing&nbsp;in&nbsp;the&nbsp;main&nbsp;program
+<P></P>
+#&nbsp;then&nbsp;wait&nbsp;for&nbsp;the&nbsp;sort&nbsp;to&nbsp;finish
+Process.wait
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The call to <a href="ref_m_kernel.html#Kernel.fork">
+      <code>Kernel::fork</code>
+    </a> returns a process id in the parent, and 
+<code>nil</code> in the child, so the child process will perform the
+<a href="ref_m_kernel.html#Kernel.exec">
+      <code>Kernel::exec</code>
+    </a> call and run sort. Sometime later, we issue a
+<a href="ref_m_process.html#Process.wait">
+      <code>Process::wait</code>
+    </a> call, which waits for the sort to complete (and
+returns its process id).
+<P></P>
+If you'd rather be notified when a child exits (instead of just
+waiting around), you can set up a signal handler using
+<a href="ref_m_kernel.html#Kernel.trap">
+      <code>Kernel::trap</code>
+    </a> (described on page 427).  Here we set
+up a trap on <code>SIGCLD</code>, which is the signal sent on ``death of child
+process.''
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+trap("CLD")&nbsp;{
+&nbsp;&nbsp;pid&nbsp;=&nbsp;Process.wait
+&nbsp;&nbsp;puts&nbsp;"Child&nbsp;pid&nbsp;#{pid}:&nbsp;terminated"
+&nbsp;&nbsp;exit
+}
+<P></P>
+exec("sort&nbsp;testfile&nbsp;&gt;&nbsp;output.txt")&nbsp;if&nbsp;fork&nbsp;==&nbsp;nil
+<P></P>
+#&nbsp;do&nbsp;other&nbsp;stuff...
+<P></P>
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Child&nbsp;pid&nbsp;31842:&nbsp;terminated
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UI">Blocks and Subprocesses</a></h3>
+<P></P>
+<a href="ref_c_io.html#IO.popen">
+      <code>IO.popen</code>
+    </a> works with a block in pretty much the same way as
+<a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> does.
+Pass <code>popen</code> a command, such as <code>date</code>, and the
+block will be passed an <code>IO</code> object as a parameter.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+IO.popen&nbsp;("date")&nbsp;{&nbsp;|f|&nbsp;puts&nbsp;"Date&nbsp;is&nbsp;#{f.gets}"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Date&nbsp;is&nbsp;Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:50&nbsp;CDT&nbsp;2002
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>IO</code> object will be closed automatically when the code block
+exits, just as it is with <a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a>.
+<P></P>
+If you associate a block with <a href="ref_m_kernel.html#Kernel.fork">
+      <code>Kernel::fork</code>
+    </a>, the code in the
+block will be run in a Ruby subprocess, and the parent will continue
+after the block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+fork&nbsp;do
+&nbsp;&nbsp;puts&nbsp;"In&nbsp;child,&nbsp;pid&nbsp;=&nbsp;#$$"
+&nbsp;&nbsp;exit&nbsp;99
+end
+pid&nbsp;=&nbsp;Process.wait
+puts&nbsp;"Child&nbsp;terminated,&nbsp;pid&nbsp;=&nbsp;#{pid},&nbsp;exit&nbsp;code&nbsp;=&nbsp;#{$?&nbsp;&gt;&gt;&nbsp;8}"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+In&nbsp;child,&nbsp;pid&nbsp;=&nbsp;31849
+Child&nbsp;terminated,&nbsp;pid&nbsp;=&nbsp;31849,&nbsp;exit&nbsp;code&nbsp;=&nbsp;99
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+One last thing. Why do we shift the exit code in <code>$?</code> 8 bits to
+the right before displaying it? This is a ``feature'' of Posix
+systems: the bottom 8 bits of an exit code contain the reason the
+program terminated, while the higher-order 8 bits hold the actual
+exit
+code.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_io.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="trouble.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

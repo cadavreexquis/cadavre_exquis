@@ -1,0 +1,2396 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Ruby Class and Library Reference</title>
+    <STYLE TYPE="text/css"><!--
+       BODY    { margin-left: .75in;
+                 margin-right: .5in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 32pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       --></STYLE>
+  </head>
+  <body bgcolor="white">
+    <table width="100%" bgcolor="#902020" cellpadding="20">
+      <tr>
+        <td width="40%">
+          <h1 class="header">Programming Ruby</h1>
+          <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+        </td>
+        <td width="45%" bgcolor="white"><img src="dot.gif"></td>
+        <td width="25%" align="right" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+          <a class="pickaxe/subheader" href="lib_standard.html">Next &gt;</a>
+          <br>
+          <a class="pickaxe/subheader" href="ospace.html">Previous &lt;</a>
+        </td>
+      </tr>
+    </table>
+   This page lists the built-in Ruby classes and modules, and the
+   methods they contain. Click on a class, module, or method name for
+   a detailed description.
+   <hr>
+    <table>
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+           classes
+         </font>
+        </td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_array.html">
+            <font size="+1">
+              <b>Array</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_array.html#Array._ob_cb">[ ]</a>
+	<a href="ref_c_array.html#Array.new">new</a>
+	<a href="ref_c_array.html#Array._et">
+            <i>&amp;</i>
+          </a>
+	<a href="ref_c_array.html#Array._st">
+            <i>*</i>
+          </a>
+	<a href="ref_c_array.html#Array._pl">
+            <i>+</i>
+          </a>
+	<a href="ref_c_array.html#Array._mi">
+            <i>-</i>
+          </a>
+	<a href="ref_c_array.html#Array._lt_lt">
+            <i>&lt;&lt;</i>
+          </a>
+	<a href="ref_c_array.html#Array._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_array.html#Array._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_array.html#Array._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_array.html#Array._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_array.html#Array._ob_cb_eq">
+            <i>[ ]=</i>
+          </a>
+	<a href="ref_c_array.html#Array._ba">
+            <i>|</i>
+          </a>
+	<a href="ref_c_array.html#Array.assoc">
+            <i>assoc</i>
+          </a>
+	<a href="ref_c_array.html#Array.at">
+            <i>at</i>
+          </a>
+	<a href="ref_c_array.html#Array.clear">
+            <i>clear</i>
+          </a>
+	<a href="ref_c_array.html#Array.collect">
+            <i>collect</i>
+          </a>
+	<a href="ref_c_array.html#Array.collect_oh">
+            <i>collect!</i>
+          </a>
+	<a href="ref_c_array.html#Array.compact">
+            <i>compact</i>
+          </a>
+	<a href="ref_c_array.html#Array.compact_oh">
+            <i>compact!</i>
+          </a>
+	<a href="ref_c_array.html#Array.concat">
+            <i>concat</i>
+          </a>
+	<a href="ref_c_array.html#Array.delete">
+            <i>delete</i>
+          </a>
+	<a href="ref_c_array.html#Array.delete_at">
+            <i>delete_at</i>
+          </a>
+	<a href="ref_c_array.html#Array.delete_if">
+            <i>delete_if</i>
+          </a>
+	<a href="ref_c_array.html#Array.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_array.html#Array.each_index">
+            <i>each_index</i>
+          </a>
+	<a href="ref_c_array.html#Array.empty_qm">
+            <i>empty?</i>
+          </a>
+	<a href="ref_c_array.html#Array.eql_qm">
+            <i>eql?</i>
+          </a>
+	<a href="ref_c_array.html#Array.fill">
+            <i>fill</i>
+          </a>
+	<a href="ref_c_array.html#Array.first">
+            <i>first</i>
+          </a>
+	<a href="ref_c_array.html#Array.flatten">
+            <i>flatten</i>
+          </a>
+	<a href="ref_c_array.html#Array.flatten_oh">
+            <i>flatten!</i>
+          </a>
+	<a href="ref_c_array.html#Array.include_qm">
+            <i>include?</i>
+          </a>
+	<a href="ref_c_array.html#Array.index">
+            <i>index</i>
+          </a>
+	<a href="ref_c_array.html#Array.indexes">
+            <i>indexes</i>
+          </a>
+	<a href="ref_c_array.html#Array.indices">
+            <i>indices</i>
+          </a>
+	<a href="ref_c_array.html#Array.join">
+            <i>join</i>
+          </a>
+	<a href="ref_c_array.html#Array.last">
+            <i>last</i>
+          </a>
+	<a href="ref_c_array.html#Array.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_array.html#Array.map_oh">
+            <i>map!</i>
+          </a>
+	<a href="ref_c_array.html#Array.nitems">
+            <i>nitems</i>
+          </a>
+	<a href="ref_c_array.html#Array.pack">
+            <i>pack</i>
+          </a>
+	<a href="ref_c_array.html#Array.pop">
+            <i>pop</i>
+          </a>
+	<a href="ref_c_array.html#Array.push">
+            <i>push</i>
+          </a>
+	<a href="ref_c_array.html#Array.rassoc">
+            <i>rassoc</i>
+          </a>
+	<a href="ref_c_array.html#Array.reject_oh">
+            <i>reject!</i>
+          </a>
+	<a href="ref_c_array.html#Array.replace">
+            <i>replace</i>
+          </a>
+	<a href="ref_c_array.html#Array.reverse">
+            <i>reverse</i>
+          </a>
+	<a href="ref_c_array.html#Array.reverse_oh">
+            <i>reverse!</i>
+          </a>
+	<a href="ref_c_array.html#Array.reverse_each">
+            <i>reverse_each</i>
+          </a>
+	<a href="ref_c_array.html#Array.rindex">
+            <i>rindex</i>
+          </a>
+	<a href="ref_c_array.html#Array.shift">
+            <i>shift</i>
+          </a>
+	<a href="ref_c_array.html#Array.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_array.html#Array.slice">
+            <i>slice</i>
+          </a>
+	<a href="ref_c_array.html#Array.slice_oh">
+            <i>slice!</i>
+          </a>
+	<a href="ref_c_array.html#Array.sort">
+            <i>sort</i>
+          </a>
+	<a href="ref_c_array.html#Array.sort_oh">
+            <i>sort!</i>
+          </a>
+	<a href="ref_c_array.html#Array.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_array.html#Array.to_ary">
+            <i>to_ary</i>
+          </a>
+	<a href="ref_c_array.html#Array.to_s">
+            <i>to_s</i>
+          </a>
+	<a href="ref_c_array.html#Array.uniq">
+            <i>uniq</i>
+          </a>
+	<a href="ref_c_array.html#Array.uniq_oh">
+            <i>uniq!</i>
+          </a>
+	<a href="ref_c_array.html#Array.unshift">
+            <i>unshift</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_bignum.html">
+            <font size="+1">
+              <b>Bignum</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_bignum.html#Bignum.Arithmeticoperations">
+            <i>Arithmetic operations</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum.Bitoperations">
+            <i>Bit operations</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum.to_f">
+            <i>to_f</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_bignum.html#Bignum.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_binding.html">
+            <font size="+1">
+              <b>Binding</b>
+            </font>
+          </a>
+        </td>
+        <td>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_class.html">
+            <font size="+1">
+              <b>Class</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_class.html#Class.inherited">inherited</a>
+	<a href="ref_c_class.html#Class.new">new</a>
+	<a href="ref_c_class.html#Class.new">
+            <i>new</i>
+          </a>
+	<a href="ref_c_class.html#Class.superclass">
+            <i>superclass</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_continuation.html">
+            <font size="+1">
+              <b>Continuation</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_continuation.html#Continuation.call">
+            <i>call</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_dir.html">
+            <font size="+1">
+              <b>Dir</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_dir.html#Dir._ob_cb">[ ]</a>
+	<a href="ref_c_dir.html#Dir.chdir">chdir</a>
+	<a href="ref_c_dir.html#Dir.chroot">chroot</a>
+	<a href="ref_c_dir.html#Dir.delete">delete</a>
+	<a href="ref_c_dir.html#Dir.entries">entries</a>
+	<a href="ref_c_dir.html#Dir.foreach">foreach</a>
+	<a href="ref_c_dir.html#Dir.getwd">getwd</a>
+	<a href="ref_c_dir.html#Dir.glob">glob</a>
+	<a href="ref_c_dir.html#Dir.mkdir">mkdir</a>
+	<a href="ref_c_dir.html#Dir.new">new</a>
+	<a href="ref_c_dir.html#Dir.open">open</a>
+	<a href="ref_c_dir.html#Dir.pwd">pwd</a>
+	<a href="ref_c_dir.html#Dir.rmdir">rmdir</a>
+	<a href="ref_c_dir.html#Dir.unlink">unlink</a>
+	<a href="ref_c_dir.html#Dir.close">
+            <i>close</i>
+          </a>
+	<a href="ref_c_dir.html#Dir.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_dir.html#Dir.read">
+            <i>read</i>
+          </a>
+	<a href="ref_c_dir.html#Dir.rewind">
+            <i>rewind</i>
+          </a>
+	<a href="ref_c_dir.html#Dir.seek">
+            <i>seek</i>
+          </a>
+	<a href="ref_c_dir.html#Dir.tell">
+            <i>tell</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_exception.html">
+            <font size="+1">
+              <b>Exception</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_exception.html#Exception.exception">exception</a>
+	<a href="ref_c_exception.html#Exception.backtrace">
+            <i>backtrace</i>
+          </a>
+	<a href="ref_c_exception.html#Exception.exception">
+            <i>exception</i>
+          </a>
+	<a href="ref_c_exception.html#Exception.message">
+            <i>message</i>
+          </a>
+	<a href="ref_c_exception.html#Exception.set_backtrace">
+            <i>set_backtrace</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_falseclass.html">
+            <font size="+1">
+              <b>FalseClass</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_falseclass.html#FalseClass._et">
+            <i>&amp;</i>
+          </a>
+	<a href="ref_c_falseclass.html#FalseClass._up">
+            <i>^</i>
+          </a>
+	<a href="ref_c_falseclass.html#FalseClass._ba">
+            <i>|</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_file__stat.html">
+            <font size="+1">
+              <b>File::Stat</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_file__stat.html#File::Stat._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.atime">
+            <i>atime</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.blksize">
+            <i>blksize</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.blockdev_qm">
+            <i>blockdev?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.blocks">
+            <i>blocks</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.chardev_qm">
+            <i>chardev?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.ctime">
+            <i>ctime</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.dev">
+            <i>dev</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.directory_qm">
+            <i>directory?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.executable_qm">
+            <i>executable?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.executable_real_qm">
+            <i>executable_real?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.file_qm">
+            <i>file?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.ftype">
+            <i>ftype</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.gid">
+            <i>gid</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.grpowned_qm">
+            <i>grpowned?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.ino">
+            <i>ino</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.mode">
+            <i>mode</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.mtime">
+            <i>mtime</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.nlink">
+            <i>nlink</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.owned_qm">
+            <i>owned?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.pipe_qm">
+            <i>pipe?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.rdev">
+            <i>rdev</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.readable_qm">
+            <i>readable?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.readable_real_qm">
+            <i>readable_real?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.setgid_qm">
+            <i>setgid?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.setuid_qm">
+            <i>setuid?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.size_qm">
+            <i>size?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.socket_qm">
+            <i>socket?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.sticky_qm">
+            <i>sticky?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.symlink_qm">
+            <i>symlink?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.uid">
+            <i>uid</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.writable_qm">
+            <i>writable?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.writable_real_qm">
+            <i>writable_real?</i>
+          </a>
+	<a href="ref_c_file__stat.html#File::Stat.zero_qm">
+            <i>zero?</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_file.html">
+            <font size="+1">
+              <b>File</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_file.html#File.atime">atime</a>
+	<a href="ref_c_file.html#File.basename">basename</a>
+	<a href="ref_c_file.html#File.chmod">chmod</a>
+	<a href="ref_c_file.html#File.chown">chown</a>
+	<a href="ref_c_file.html#File.ctime">ctime</a>
+	<a href="ref_c_file.html#File.delete">delete</a>
+	<a href="ref_c_file.html#File.dirname">dirname</a>
+	<a href="ref_c_file.html#File.expand_path">expand_path</a>
+	<a href="ref_c_file.html#File.ftype">ftype</a>
+	<a href="ref_c_file.html#File.join">join</a>
+	<a href="ref_c_file.html#File.link">link</a>
+	<a href="ref_c_file.html#File.lstat">lstat</a>
+	<a href="ref_c_file.html#File.mtime">mtime</a>
+	<a href="ref_c_file.html#File.new">new</a>
+	<a href="ref_c_file.html#File.open">open</a>
+	<a href="ref_c_file.html#File.readlink">readlink</a>
+	<a href="ref_c_file.html#File.rename">rename</a>
+	<a href="ref_c_file.html#File.size">size</a>
+	<a href="ref_c_file.html#File.split">split</a>
+	<a href="ref_c_file.html#File.stat">stat</a>
+	<a href="ref_c_file.html#File.symlink">symlink</a>
+	<a href="ref_c_file.html#File.truncate">truncate</a>
+	<a href="ref_c_file.html#File.umask">umask</a>
+	<a href="ref_c_file.html#File.unlink">unlink</a>
+	<a href="ref_c_file.html#File.utime">utime</a>
+	<a href="ref_c_file.html#File.atime">
+            <i>atime</i>
+          </a>
+	<a href="ref_c_file.html#File.chmod">
+            <i>chmod</i>
+          </a>
+	<a href="ref_c_file.html#File.chown">
+            <i>chown</i>
+          </a>
+	<a href="ref_c_file.html#File.ctime">
+            <i>ctime</i>
+          </a>
+	<a href="ref_c_file.html#File.flock">
+            <i>flock</i>
+          </a>
+	<a href="ref_c_file.html#File.lstat">
+            <i>lstat</i>
+          </a>
+	<a href="ref_c_file.html#File.mtime">
+            <i>mtime</i>
+          </a>
+	<a href="ref_c_file.html#File.path">
+            <i>path</i>
+          </a>
+	<a href="ref_c_file.html#File.truncate">
+            <i>truncate</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_fixnum.html">
+            <font size="+1">
+              <b>Fixnum</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_fixnum.html#Fixnum.Arithmeticoperations">
+            <i>Arithmetic operations</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.Bitoperations">
+            <i>Bit operations</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.id2name">
+            <i>id2name</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.to_f">
+            <i>to_f</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_fixnum.html#Fixnum.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_float.html">
+            <font size="+1">
+              <b>Float</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_float.html#Float.Arithmeticoperations">
+            <i>Arithmetic operations</i>
+          </a>
+	<a href="ref_c_float.html#Float._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_float.html#Float.ceil">
+            <i>ceil</i>
+          </a>
+	<a href="ref_c_float.html#Float.finite_qm">
+            <i>finite?</i>
+          </a>
+	<a href="ref_c_float.html#Float.floor">
+            <i>floor</i>
+          </a>
+	<a href="ref_c_float.html#Float.infinite_qm">
+            <i>infinite?</i>
+          </a>
+	<a href="ref_c_float.html#Float.nan_qm">
+            <i>nan?</i>
+          </a>
+	<a href="ref_c_float.html#Float.round">
+            <i>round</i>
+          </a>
+	<a href="ref_c_float.html#Float.to_f">
+            <i>to_f</i>
+          </a>
+	<a href="ref_c_float.html#Float.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_float.html#Float.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_hash.html">
+            <font size="+1">
+              <b>Hash</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_hash.html#Hash._ob_cb">[ ]</a>
+	<a href="ref_c_hash.html#Hash.new">new</a>
+	<a href="ref_c_hash.html#Hash._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_hash.html#Hash._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_hash.html#Hash._ob_cb_eq">
+            <i>[ ]=</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.clear">
+            <i>clear</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.default">
+            <i>default</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.default_eq">
+            <i>default=</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.delete">
+            <i>delete</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.delete_if">
+            <i>delete_if</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.each_key">
+            <i>each_key</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.each_pair">
+            <i>each_pair</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.each_value">
+            <i>each_value</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.empty_qm">
+            <i>empty?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.fetch">
+            <i>fetch</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.has_key_qm">
+            <i>has_key?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.has_value_qm">
+            <i>has_value?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.include_qm">
+            <i>include?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.index">
+            <i>index</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.indexes">
+            <i>indexes</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.indices">
+            <i>indices</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.invert">
+            <i>invert</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.key_qm">
+            <i>key?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.keys">
+            <i>keys</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.member_qm">
+            <i>member?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.rehash">
+            <i>rehash</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.reject">
+            <i>reject</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.reject_oh">
+            <i>reject!</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.replace">
+            <i>replace</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.shift">
+            <i>shift</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.sort">
+            <i>sort</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.store">
+            <i>store</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.to_s">
+            <i>to_s</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.update">
+            <i>update</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.value_qm">
+            <i>value?</i>
+          </a>
+	<a href="ref_c_hash.html#Hash.values">
+            <i>values</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_integer.html">
+            <font size="+1">
+              <b>Integer</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_integer.html#Integer.chr">
+            <i>chr</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.downto">
+            <i>downto</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.integer_qm">
+            <i>integer?</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.next">
+            <i>next</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.step">
+            <i>step</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.succ">
+            <i>succ</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.times">
+            <i>times</i>
+          </a>
+	<a href="ref_c_integer.html#Integer.upto">
+            <i>upto</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_io.html">
+            <font size="+1">
+              <b>IO</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_io.html#IO.foreach">foreach</a>
+	<a href="ref_c_io.html#IO.new">new</a>
+	<a href="ref_c_io.html#IO.pipe">pipe</a>
+	<a href="ref_c_io.html#IO.popen">popen</a>
+	<a href="ref_c_io.html#IO.readlines">readlines</a>
+	<a href="ref_c_io.html#IO.select">select</a>
+	<a href="ref_c_io.html#IO._lt_lt">
+            <i>&lt;&lt;</i>
+          </a>
+	<a href="ref_c_io.html#IO.binmode">
+            <i>binmode</i>
+          </a>
+	<a href="ref_c_io.html#IO.clone">
+            <i>clone</i>
+          </a>
+	<a href="ref_c_io.html#IO.close">
+            <i>close</i>
+          </a>
+	<a href="ref_c_io.html#IO.close_read">
+            <i>close_read</i>
+          </a>
+	<a href="ref_c_io.html#IO.close_write">
+            <i>close_write</i>
+          </a>
+	<a href="ref_c_io.html#IO.closed_qm">
+            <i>closed?</i>
+          </a>
+	<a href="ref_c_io.html#IO.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_io.html#IO.each_byte">
+            <i>each_byte</i>
+          </a>
+	<a href="ref_c_io.html#IO.each_line">
+            <i>each_line</i>
+          </a>
+	<a href="ref_c_io.html#IO.eof">
+            <i>eof</i>
+          </a>
+	<a href="ref_c_io.html#IO.eof_qm">
+            <i>eof?</i>
+          </a>
+	<a href="ref_c_io.html#IO.fcntl">
+            <i>fcntl</i>
+          </a>
+	<a href="ref_c_io.html#IO.fileno">
+            <i>fileno</i>
+          </a>
+	<a href="ref_c_io.html#IO.flush">
+            <i>flush</i>
+          </a>
+	<a href="ref_c_io.html#IO.getc">
+            <i>getc</i>
+          </a>
+	<a href="ref_c_io.html#IO.gets">
+            <i>gets</i>
+          </a>
+	<a href="ref_c_io.html#IO.ioctl">
+            <i>ioctl</i>
+          </a>
+	<a href="ref_c_io.html#IO.isatty">
+            <i>isatty</i>
+          </a>
+	<a href="ref_c_io.html#IO.lineno">
+            <i>lineno</i>
+          </a>
+	<a href="ref_c_io.html#IO.lineno_eq">
+            <i>lineno=</i>
+          </a>
+	<a href="ref_c_io.html#IO.pid">
+            <i>pid</i>
+          </a>
+	<a href="ref_c_io.html#IO.pos">
+            <i>pos</i>
+          </a>
+	<a href="ref_c_io.html#IO.pos_eq">
+            <i>pos=</i>
+          </a>
+	<a href="ref_c_io.html#IO.print">
+            <i>print</i>
+          </a>
+	<a href="ref_c_io.html#IO.printf">
+            <i>printf</i>
+          </a>
+	<a href="ref_c_io.html#IO.putc">
+            <i>putc</i>
+          </a>
+	<a href="ref_c_io.html#IO.puts">
+            <i>puts</i>
+          </a>
+	<a href="ref_c_io.html#IO.read">
+            <i>read</i>
+          </a>
+	<a href="ref_c_io.html#IO.readchar">
+            <i>readchar</i>
+          </a>
+	<a href="ref_c_io.html#IO.readline">
+            <i>readline</i>
+          </a>
+	<a href="ref_c_io.html#IO.readlines">
+            <i>readlines</i>
+          </a>
+	<a href="ref_c_io.html#IO.reopen">
+            <i>reopen</i>
+          </a>
+	<a href="ref_c_io.html#IO.rewind">
+            <i>rewind</i>
+          </a>
+	<a href="ref_c_io.html#IO.seek">
+            <i>seek</i>
+          </a>
+	<a href="ref_c_io.html#IO.stat">
+            <i>stat</i>
+          </a>
+	<a href="ref_c_io.html#IO.sync">
+            <i>sync</i>
+          </a>
+	<a href="ref_c_io.html#IO.sync_eq">
+            <i>sync=</i>
+          </a>
+	<a href="ref_c_io.html#IO.sysread">
+            <i>sysread</i>
+          </a>
+	<a href="ref_c_io.html#IO.syswrite">
+            <i>syswrite</i>
+          </a>
+	<a href="ref_c_io.html#IO.tell">
+            <i>tell</i>
+          </a>
+	<a href="ref_c_io.html#IO.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_io.html#IO.to_io">
+            <i>to_io</i>
+          </a>
+	<a href="ref_c_io.html#IO.tty_qm">
+            <i>tty?</i>
+          </a>
+	<a href="ref_c_io.html#IO.ungetc">
+            <i>ungetc</i>
+          </a>
+	<a href="ref_c_io.html#IO.write">
+            <i>write</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_matchdata.html">
+            <font size="+1">
+              <b>MatchData</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_matchdata.html#MatchData._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.begin">
+            <i>begin</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.end">
+            <i>end</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.offset">
+            <i>offset</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.post_match">
+            <i>post_match</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.pre_match">
+            <i>pre_match</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.string">
+            <i>string</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_matchdata.html#MatchData.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_method.html">
+            <font size="+1">
+              <b>Method</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_method.html#Method._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_method.html#Method.arity">
+            <i>arity</i>
+          </a>
+	<a href="ref_c_method.html#Method.call">
+            <i>call</i>
+          </a>
+	<a href="ref_c_method.html#Method.to_proc">
+            <i>to_proc</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_module.html">
+            <font size="+1">
+              <b>Module</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_module.html#Module.constants">constants</a>
+	<a href="ref_c_module.html#Module.nesting">nesting</a>
+	<a href="ref_c_module.html#Module.new">new</a>
+	<a href="ref_c_module.html#Module._lt_cm_lt_eq_cm_gt_cm_gt_eq">
+            <i>&lt;, &lt;=, &gt;, &gt;=</i>
+          </a>
+	<a href="ref_c_module.html#Module._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_module.html#Module._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_module.html#Module.ancestors">
+            <i>ancestors</i>
+          </a>
+	<a href="ref_c_module.html#Module.class_eval">
+            <i>class_eval</i>
+          </a>
+	<a href="ref_c_module.html#Module.class_variables">
+            <i>class_variables</i>
+          </a>
+	<a href="ref_c_module.html#Module.clone">
+            <i>clone</i>
+          </a>
+	<a href="ref_c_module.html#Module.const_defined_qm">
+            <i>const_defined?</i>
+          </a>
+	<a href="ref_c_module.html#Module.const_get">
+            <i>const_get</i>
+          </a>
+	<a href="ref_c_module.html#Module.const_set">
+            <i>const_set</i>
+          </a>
+	<a href="ref_c_module.html#Module.constants">
+            <i>constants</i>
+          </a>
+	<a href="ref_c_module.html#Module.included_modules">
+            <i>included_modules</i>
+          </a>
+	<a href="ref_c_module.html#Module.instance_methods">
+            <i>instance_methods</i>
+          </a>
+	<a href="ref_c_module.html#Module.method_defined_qm">
+            <i>method_defined?</i>
+          </a>
+	<a href="ref_c_module.html#Module.module_eval">
+            <i>module_eval</i>
+          </a>
+	<a href="ref_c_module.html#Module.name">
+            <i>name</i>
+          </a>
+	<a href="ref_c_module.html#Module.private_class_method">
+            <i>private_class_method</i>
+          </a>
+	<a href="ref_c_module.html#Module.private_instance_methods">
+            <i>private_instance_methods</i>
+          </a>
+	<a href="ref_c_module.html#Module.protected_instance_methods">
+            <i>protected_instance_methods</i>
+          </a>
+	<a href="ref_c_module.html#Module.public_class_method">
+            <i>public_class_method</i>
+          </a>
+	<a href="ref_c_module.html#Module.public_instance_methods">
+            <i>public_instance_methods</i>
+          </a>
+	<a href="ref_c_module.html#Module.alias_method">
+            <i>alias_method</i>
+          </a>
+	<a href="ref_c_module.html#Module.append_features">
+            <i>append_features</i>
+          </a>
+	<a href="ref_c_module.html#Module.attr">
+            <i>attr</i>
+          </a>
+	<a href="ref_c_module.html#Module.attr_accessor">
+            <i>attr_accessor</i>
+          </a>
+	<a href="ref_c_module.html#Module.attr_reader">
+            <i>attr_reader</i>
+          </a>
+	<a href="ref_c_module.html#Module.attr_writer">
+            <i>attr_writer</i>
+          </a>
+	<a href="ref_c_module.html#Module.extend_object">
+            <i>extend_object</i>
+          </a>
+	<a href="ref_c_module.html#Module.include">
+            <i>include</i>
+          </a>
+	<a href="ref_c_module.html#Module.method_added">
+            <i>method_added</i>
+          </a>
+	<a href="ref_c_module.html#Module.module_function">
+            <i>module_function</i>
+          </a>
+	<a href="ref_c_module.html#Module.private">
+            <i>private</i>
+          </a>
+	<a href="ref_c_module.html#Module.protected">
+            <i>protected</i>
+          </a>
+	<a href="ref_c_module.html#Module.public">
+            <i>public</i>
+          </a>
+	<a href="ref_c_module.html#Module.remove_const">
+            <i>remove_const</i>
+          </a>
+	<a href="ref_c_module.html#Module.remove_method">
+            <i>remove_method</i>
+          </a>
+	<a href="ref_c_module.html#Module.undef_method">
+            <i>undef_method</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_nilclass.html">
+            <font size="+1">
+              <b>NilClass</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_nilclass.html#NilClass._et">
+            <i>&amp;</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass._up">
+            <i>^</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass._ba">
+            <i>|</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass.nil_qm">
+            <i>nil?</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_nilclass.html#NilClass.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_numeric.html">
+            <font size="+1">
+              <b>Numeric</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_numeric.html#Numeric._pl_at">
+            <i>+@</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric._mi_at">
+            <i>-@</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.abs">
+            <i>abs</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.coerce">
+            <i>coerce</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.divmod">
+            <i>divmod</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.eql_qm">
+            <i>eql?</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.integer_qm">
+            <i>integer?</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.modulo">
+            <i>modulo</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.nonzero_qm">
+            <i>nonzero?</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.remainder">
+            <i>remainder</i>
+          </a>
+	<a href="ref_c_numeric.html#Numeric.zero_qm">
+            <i>zero?</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_object.html">
+            <font size="+1">
+              <b>Object</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_object.html#Object._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_object.html#Object._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_object.html#Object._eq_sd">
+            <i>=~</i>
+          </a>
+	<a href="ref_c_object.html#Object.__id__">
+            <i>__id__</i>
+          </a>
+	<a href="ref_c_object.html#Object.__send__">
+            <i>__send__</i>
+          </a>
+	<a href="ref_c_object.html#Object.class">
+            <i>class</i>
+          </a>
+	<a href="ref_c_object.html#Object.clone">
+            <i>clone</i>
+          </a>
+	<a href="ref_c_object.html#Object.display">
+            <i>display</i>
+          </a>
+	<a href="ref_c_object.html#Object.dup">
+            <i>dup</i>
+          </a>
+	<a href="ref_c_object.html#Object.eql_qm">
+            <i>eql?</i>
+          </a>
+	<a href="ref_c_object.html#Object.equal_qm">
+            <i>equal?</i>
+          </a>
+	<a href="ref_c_object.html#Object.extend">
+            <i>extend</i>
+          </a>
+	<a href="ref_c_object.html#Object.freeze">
+            <i>freeze</i>
+          </a>
+	<a href="ref_c_object.html#Object.frozen_qm">
+            <i>frozen?</i>
+          </a>
+	<a href="ref_c_object.html#Object.hash">
+            <i>hash</i>
+          </a>
+	<a href="ref_c_object.html#Object.id">
+            <i>id</i>
+          </a>
+	<a href="ref_c_object.html#Object.inspect">
+            <i>inspect</i>
+          </a>
+	<a href="ref_c_object.html#Object.instance_eval">
+            <i>instance_eval</i>
+          </a>
+	<a href="ref_c_object.html#Object.instance_of_qm">
+            <i>instance_of?</i>
+          </a>
+	<a href="ref_c_object.html#Object.instance_variables">
+            <i>instance_variables</i>
+          </a>
+	<a href="ref_c_object.html#Object.is_a_qm">
+            <i>is_a?</i>
+          </a>
+	<a href="ref_c_object.html#Object.kind_of_qm">
+            <i>kind_of?</i>
+          </a>
+	<a href="ref_c_object.html#Object.method">
+            <i>method</i>
+          </a>
+	<a href="ref_c_object.html#Object.method_missing">
+            <i>method_missing</i>
+          </a>
+	<a href="ref_c_object.html#Object.methods">
+            <i>methods</i>
+          </a>
+	<a href="ref_c_object.html#Object.nil_qm">
+            <i>nil?</i>
+          </a>
+	<a href="ref_c_object.html#Object.private_methods">
+            <i>private_methods</i>
+          </a>
+	<a href="ref_c_object.html#Object.protected_methods">
+            <i>protected_methods</i>
+          </a>
+	<a href="ref_c_object.html#Object.public_methods">
+            <i>public_methods</i>
+          </a>
+	<a href="ref_c_object.html#Object.respond_to_qm">
+            <i>respond_to?</i>
+          </a>
+	<a href="ref_c_object.html#Object.send">
+            <i>send</i>
+          </a>
+	<a href="ref_c_object.html#Object.singleton_methods">
+            <i>singleton_methods</i>
+          </a>
+	<a href="ref_c_object.html#Object.taint">
+            <i>taint</i>
+          </a>
+	<a href="ref_c_object.html#Object.tainted_qm">
+            <i>tainted?</i>
+          </a>
+	<a href="ref_c_object.html#Object.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_object.html#Object.to_s">
+            <i>to_s</i>
+          </a>
+	<a href="ref_c_object.html#Object.type">
+            <i>type</i>
+          </a>
+	<a href="ref_c_object.html#Object.untaint">
+            <i>untaint</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_proc.html">
+            <font size="+1">
+              <b>Proc</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_proc.html#Proc.new">new</a>
+	<a href="ref_c_proc.html#Proc._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_proc.html#Proc.arity">
+            <i>arity</i>
+          </a>
+	<a href="ref_c_proc.html#Proc.call">
+            <i>call</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_range.html">
+            <font size="+1">
+              <b>Range</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_range.html#Range.new">new</a>
+	<a href="ref_c_range.html#Range._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_range.html#Range.begin">
+            <i>begin</i>
+          </a>
+	<a href="ref_c_range.html#Range.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_range.html#Range.end">
+            <i>end</i>
+          </a>
+	<a href="ref_c_range.html#Range.exclude_end_qm">
+            <i>exclude_end?</i>
+          </a>
+	<a href="ref_c_range.html#Range.first">
+            <i>first</i>
+          </a>
+	<a href="ref_c_range.html#Range.last">
+            <i>last</i>
+          </a>
+	<a href="ref_c_range.html#Range.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_range.html#Range.size">
+            <i>size</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_regexp.html">
+            <font size="+1">
+              <b>Regexp</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_regexp.html#Regexp.compile">compile</a>
+	<a href="ref_c_regexp.html#Regexp.escape">escape</a>
+	<a href="ref_c_regexp.html#Regexp.last_match">last_match</a>
+	<a href="ref_c_regexp.html#Regexp.new">new</a>
+	<a href="ref_c_regexp.html#Regexp.quote">quote</a>
+	<a href="ref_c_regexp.html#Regexp._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp._eq_sd">
+            <i>=~</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp._sd">
+            <i>~</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp.casefold_qm">
+            <i>casefold?</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp.kcode">
+            <i>kcode</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp.match">
+            <i>match</i>
+          </a>
+	<a href="ref_c_regexp.html#Regexp.source">
+            <i>source</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_string.html">
+            <font size="+1">
+              <b>String</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_string.html#String.new">new</a>
+	<a href="ref_c_string.html#String._pc">
+            <i>%</i>
+          </a>
+	<a href="ref_c_string.html#String._st">
+            <i>*</i>
+          </a>
+	<a href="ref_c_string.html#String._pl">
+            <i>+</i>
+          </a>
+	<a href="ref_c_string.html#String._lt_lt">
+            <i>&lt;&lt;</i>
+          </a>
+	<a href="ref_c_string.html#String._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_string.html#String._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_string.html#String._eq_eq_eq">
+            <i>===</i>
+          </a>
+	<a href="ref_c_string.html#String._eq_sd">
+            <i>=~</i>
+          </a>
+	<a href="ref_c_string.html#String._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_string.html#String._ob_cb_eq">
+            <i>[ ]=</i>
+          </a>
+	<a href="ref_c_string.html#String._sd">
+            <i>~</i>
+          </a>
+	<a href="ref_c_string.html#String.capitalize">
+            <i>capitalize</i>
+          </a>
+	<a href="ref_c_string.html#String.capitalize_oh">
+            <i>capitalize!</i>
+          </a>
+	<a href="ref_c_string.html#String.center">
+            <i>center</i>
+          </a>
+	<a href="ref_c_string.html#String.chomp">
+            <i>chomp</i>
+          </a>
+	<a href="ref_c_string.html#String.chomp_oh">
+            <i>chomp!</i>
+          </a>
+	<a href="ref_c_string.html#String.chop">
+            <i>chop</i>
+          </a>
+	<a href="ref_c_string.html#String.chop_oh">
+            <i>chop!</i>
+          </a>
+	<a href="ref_c_string.html#String.concat">
+            <i>concat</i>
+          </a>
+	<a href="ref_c_string.html#String.count">
+            <i>count</i>
+          </a>
+	<a href="ref_c_string.html#String.crypt">
+            <i>crypt</i>
+          </a>
+	<a href="ref_c_string.html#String.delete">
+            <i>delete</i>
+          </a>
+	<a href="ref_c_string.html#String.delete_oh">
+            <i>delete!</i>
+          </a>
+	<a href="ref_c_string.html#String.downcase">
+            <i>downcase</i>
+          </a>
+	<a href="ref_c_string.html#String.downcase_oh">
+            <i>downcase!</i>
+          </a>
+	<a href="ref_c_string.html#String.dump">
+            <i>dump</i>
+          </a>
+	<a href="ref_c_string.html#String.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_string.html#String.each_byte">
+            <i>each_byte</i>
+          </a>
+	<a href="ref_c_string.html#String.each_line">
+            <i>each_line</i>
+          </a>
+	<a href="ref_c_string.html#String.empty_qm">
+            <i>empty?</i>
+          </a>
+	<a href="ref_c_string.html#String.gsub">
+            <i>gsub</i>
+          </a>
+	<a href="ref_c_string.html#String.gsub_oh">
+            <i>gsub!</i>
+          </a>
+	<a href="ref_c_string.html#String.hash">
+            <i>hash</i>
+          </a>
+	<a href="ref_c_string.html#String.hex">
+            <i>hex</i>
+          </a>
+	<a href="ref_c_string.html#String.include_qm">
+            <i>include?</i>
+          </a>
+	<a href="ref_c_string.html#String.index">
+            <i>index</i>
+          </a>
+	<a href="ref_c_string.html#String.intern">
+            <i>intern</i>
+          </a>
+	<a href="ref_c_string.html#String.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_string.html#String.ljust">
+            <i>ljust</i>
+          </a>
+	<a href="ref_c_string.html#String.next">
+            <i>next</i>
+          </a>
+	<a href="ref_c_string.html#String.next_oh">
+            <i>next!</i>
+          </a>
+	<a href="ref_c_string.html#String.oct">
+            <i>oct</i>
+          </a>
+	<a href="ref_c_string.html#String.replace">
+            <i>replace</i>
+          </a>
+	<a href="ref_c_string.html#String.reverse">
+            <i>reverse</i>
+          </a>
+	<a href="ref_c_string.html#String.reverse_oh">
+            <i>reverse!</i>
+          </a>
+	<a href="ref_c_string.html#String.rindex">
+            <i>rindex</i>
+          </a>
+	<a href="ref_c_string.html#String.rjust">
+            <i>rjust</i>
+          </a>
+	<a href="ref_c_string.html#String.scan">
+            <i>scan</i>
+          </a>
+	<a href="ref_c_string.html#String.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_string.html#String.slice">
+            <i>slice</i>
+          </a>
+	<a href="ref_c_string.html#String.slice_oh">
+            <i>slice!</i>
+          </a>
+	<a href="ref_c_string.html#String.split">
+            <i>split</i>
+          </a>
+	<a href="ref_c_string.html#String.squeeze">
+            <i>squeeze</i>
+          </a>
+	<a href="ref_c_string.html#String.squeeze_oh">
+            <i>squeeze!</i>
+          </a>
+	<a href="ref_c_string.html#String.strip">
+            <i>strip</i>
+          </a>
+	<a href="ref_c_string.html#String.strip_oh">
+            <i>strip!</i>
+          </a>
+	<a href="ref_c_string.html#String.sub">
+            <i>sub</i>
+          </a>
+	<a href="ref_c_string.html#String.sub_oh">
+            <i>sub!</i>
+          </a>
+	<a href="ref_c_string.html#String.succ">
+            <i>succ</i>
+          </a>
+	<a href="ref_c_string.html#String.succ_oh">
+            <i>succ!</i>
+          </a>
+	<a href="ref_c_string.html#String.sum">
+            <i>sum</i>
+          </a>
+	<a href="ref_c_string.html#String.swapcase">
+            <i>swapcase</i>
+          </a>
+	<a href="ref_c_string.html#String.swapcase_oh">
+            <i>swapcase!</i>
+          </a>
+	<a href="ref_c_string.html#String.to_f">
+            <i>to_f</i>
+          </a>
+	<a href="ref_c_string.html#String.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_string.html#String.to_s">
+            <i>to_s</i>
+          </a>
+	<a href="ref_c_string.html#String.to_str">
+            <i>to_str</i>
+          </a>
+	<a href="ref_c_string.html#String.tr">
+            <i>tr</i>
+          </a>
+	<a href="ref_c_string.html#String.tr_oh">
+            <i>tr!</i>
+          </a>
+	<a href="ref_c_string.html#String.tr_s">
+            <i>tr_s</i>
+          </a>
+	<a href="ref_c_string.html#String.tr_s_oh">
+            <i>tr_s!</i>
+          </a>
+	<a href="ref_c_string.html#String.unpack">
+            <i>unpack</i>
+          </a>
+	<a href="ref_c_string.html#String.upcase">
+            <i>upcase</i>
+          </a>
+	<a href="ref_c_string.html#String.upcase_oh">
+            <i>upcase!</i>
+          </a>
+	<a href="ref_c_string.html#String.upto">
+            <i>upto</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_struct.html">
+            <font size="+1">
+              <b>Struct</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_struct.html#Struct.new">new</a>
+	<a href="ref_c_struct.html#Struct.new">new</a>
+	<a href="ref_c_struct.html#Struct.members">members</a>
+	<a href="ref_c_struct.html#Struct._eq_eq">
+            <i>==</i>
+          </a>
+	<a href="ref_c_struct.html#Struct._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_struct.html#Struct._ob_cb_eq">
+            <i>[ ]=</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.each">
+            <i>each</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.length">
+            <i>length</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.members">
+            <i>members</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.size">
+            <i>size</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_struct.html#Struct.values">
+            <i>values</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_struct__tms.html">
+            <font size="+1">
+              <b>Struct::Tms</b>
+            </font>
+          </a>
+        </td>
+        <td>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_symbol.html">
+            <font size="+1">
+              <b>Symbol</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_symbol.html#Symbol.id2name">
+            <i>id2name</i>
+          </a>
+	<a href="ref_c_symbol.html#Symbol.inspect">
+            <i>inspect</i>
+          </a>
+	<a href="ref_c_symbol.html#Symbol.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_symbol.html#Symbol.to_s">
+            <i>to_s</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_threadgroup.html">
+            <font size="+1">
+              <b>ThreadGroup</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_threadgroup.html#ThreadGroup.new">new</a>
+	<a href="ref_c_threadgroup.html#ThreadGroup.add">
+            <i>add</i>
+          </a>
+	<a href="ref_c_threadgroup.html#ThreadGroup.list">
+            <i>list</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_thread.html">
+            <font size="+1">
+              <b>Thread</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_thread.html#Thread.abort_on_exception">abort_on_exception</a>
+	<a href="ref_c_thread.html#Thread.abort_on_exception_eq">abort_on_exception=</a>
+	<a href="ref_c_thread.html#Thread.critical">critical</a>
+	<a href="ref_c_thread.html#Thread.critical_eq">critical=</a>
+	<a href="ref_c_thread.html#Thread.current">current</a>
+	<a href="ref_c_thread.html#Thread.exit">exit</a>
+	<a href="ref_c_thread.html#Thread.fork">fork</a>
+	<a href="ref_c_thread.html#Thread.kill">kill</a>
+	<a href="ref_c_thread.html#Thread.list">list</a>
+	<a href="ref_c_thread.html#Thread.main">main</a>
+	<a href="ref_c_thread.html#Thread.new">new</a>
+	<a href="ref_c_thread.html#Thread.pass">pass</a>
+	<a href="ref_c_thread.html#Thread.start">start</a>
+	<a href="ref_c_thread.html#Thread.stop">stop</a>
+	<a href="ref_c_thread.html#Thread._ob_cb">
+            <i>[ ]</i>
+          </a>
+	<a href="ref_c_thread.html#Thread._ob_cb_eq">
+            <i>[ ]=</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.abort_on_exception">
+            <i>abort_on_exception</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.abort_on_exception_eq">
+            <i>abort_on_exception=</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.alive_qm">
+            <i>alive?</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.exit">
+            <i>exit</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.join">
+            <i>join</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.key_qm">
+            <i>key?</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.kill">
+            <i>kill</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.priority">
+            <i>priority</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.priority_eq">
+            <i>priority=</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.raise">
+            <i>raise</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.run">
+            <i>run</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.safe_level">
+            <i>safe_level</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.status">
+            <i>status</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.stop_qm">
+            <i>stop?</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.value">
+            <i>value</i>
+          </a>
+	<a href="ref_c_thread.html#Thread.wakeup">
+            <i>wakeup</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_c_time.html">
+            <font size="+1">
+              <b>Time</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_time.html#Time.at">at</a>
+	<a href="ref_c_time.html#Time.gm">gm</a>
+	<a href="ref_c_time.html#Time.local">local</a>
+	<a href="ref_c_time.html#Time.mktime">mktime</a>
+	<a href="ref_c_time.html#Time.new">new</a>
+	<a href="ref_c_time.html#Time.now">now</a>
+	<a href="ref_c_time.html#Time.times">times</a>
+	<a href="ref_c_time.html#Time.utc">utc</a>
+	<a href="ref_c_time.html#Time._pl">
+            <i>+</i>
+          </a>
+	<a href="ref_c_time.html#Time._mi">
+            <i>-</i>
+          </a>
+	<a href="ref_c_time.html#Time._lt_eq_gt">
+            <i>&lt;=&gt;</i>
+          </a>
+	<a href="ref_c_time.html#Time.asctime">
+            <i>asctime</i>
+          </a>
+	<a href="ref_c_time.html#Time.ctime">
+            <i>ctime</i>
+          </a>
+	<a href="ref_c_time.html#Time.day">
+            <i>day</i>
+          </a>
+	<a href="ref_c_time.html#Time.gmt_qm">
+            <i>gmt?</i>
+          </a>
+	<a href="ref_c_time.html#Time.gmtime">
+            <i>gmtime</i>
+          </a>
+	<a href="ref_c_time.html#Time.hour">
+            <i>hour</i>
+          </a>
+	<a href="ref_c_time.html#Time.isdst">
+            <i>isdst</i>
+          </a>
+	<a href="ref_c_time.html#Time.localtime">
+            <i>localtime</i>
+          </a>
+	<a href="ref_c_time.html#Time.mday">
+            <i>mday</i>
+          </a>
+	<a href="ref_c_time.html#Time.min">
+            <i>min</i>
+          </a>
+	<a href="ref_c_time.html#Time.mon">
+            <i>mon</i>
+          </a>
+	<a href="ref_c_time.html#Time.month">
+            <i>month</i>
+          </a>
+	<a href="ref_c_time.html#Time.sec">
+            <i>sec</i>
+          </a>
+	<a href="ref_c_time.html#Time.strftime">
+            <i>strftime</i>
+          </a>
+	<a href="ref_c_time.html#Time.to_a">
+            <i>to_a</i>
+          </a>
+	<a href="ref_c_time.html#Time.to_f">
+            <i>to_f</i>
+          </a>
+	<a href="ref_c_time.html#Time.to_i">
+            <i>to_i</i>
+          </a>
+	<a href="ref_c_time.html#Time.to_s">
+            <i>to_s</i>
+          </a>
+	<a href="ref_c_time.html#Time.tv_sec">
+            <i>tv_sec</i>
+          </a>
+	<a href="ref_c_time.html#Time.tv_usec">
+            <i>tv_usec</i>
+          </a>
+	<a href="ref_c_time.html#Time.usec">
+            <i>usec</i>
+          </a>
+	<a href="ref_c_time.html#Time.utc">
+            <i>utc</i>
+          </a>
+	<a href="ref_c_time.html#Time.utc_qm">
+            <i>utc?</i>
+          </a>
+	<a href="ref_c_time.html#Time.wday">
+            <i>wday</i>
+          </a>
+	<a href="ref_c_time.html#Time.yday">
+            <i>yday</i>
+          </a>
+	<a href="ref_c_time.html#Time.year">
+            <i>year</i>
+          </a>
+	<a href="ref_c_time.html#Time.zone">
+            <i>zone</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_c_trueclass.html">
+            <font size="+1">
+              <b>TrueClass</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_c_trueclass.html#TrueClass._et">
+            <i>&amp;</i>
+          </a>
+	<a href="ref_c_trueclass.html#TrueClass._up">
+            <i>^</i>
+          </a>
+	<a href="ref_c_trueclass.html#TrueClass._ba">
+            <i>|</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+           modules
+         </font>
+        </td>
+      </tr>
+      <tr>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_m_comparable.html">
+            <font size="+1">
+              <b>Comparable</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_comparable.html#Comparable.Comparisons">
+            <i>Comparisons</i>
+          </a>
+	<a href="ref_m_comparable.html#Comparable.between_qm">
+            <i>between?</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_m_enumerable.html">
+            <font size="+1">
+              <b>Enumerable</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_enumerable.html#Enumerable.collect">
+            <i>collect</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.detect">
+            <i>detect</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.each_with_index">
+            <i>each_with_index</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.entries">
+            <i>entries</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.find">
+            <i>find</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.find_all">
+            <i>find_all</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.grep">
+            <i>grep</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.include_qm">
+            <i>include?</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.map">
+            <i>map</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.max">
+            <i>max</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.member_qm">
+            <i>member?</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.min">
+            <i>min</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.reject">
+            <i>reject</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.select">
+            <i>select</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.sort">
+            <i>sort</i>
+          </a>
+	<a href="ref_m_enumerable.html#Enumerable.to_a">
+            <i>to_a</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_m_errno.html">
+            <font size="+1">
+              <b>Errno</b>
+            </font>
+          </a>
+        </td>
+        <td>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_m_filetest.html">
+            <font size="+1">
+              <b>FileTest</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_filetest.html#FileTest.blockdev_qm">
+            <i>blockdev?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.chardev_qm">
+            <i>chardev?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.directory_qm">
+            <i>directory?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.executable_qm">
+            <i>executable?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.executable_real_qm">
+            <i>executable_real?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.exist_qm">
+            <i>exist?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.exists_qm">
+            <i>exists?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.file_qm">
+            <i>file?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.grpowned_qm">
+            <i>grpowned?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.owned_qm">
+            <i>owned?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.pipe_qm">
+            <i>pipe?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.readable_qm">
+            <i>readable?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.readable_real_qm">
+            <i>readable_real?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.setgid_qm">
+            <i>setgid?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.setuid_qm">
+            <i>setuid?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.size">
+            <i>size</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.size_qm">
+            <i>size?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.socket_qm">
+            <i>socket?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.sticky_qm">
+            <i>sticky?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.symlink_qm">
+            <i>symlink?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.writable_qm">
+            <i>writable?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.writable_real_qm">
+            <i>writable_real?</i>
+          </a>
+	<a href="ref_m_filetest.html#FileTest.zero_qm">
+            <i>zero?</i>
+          </a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_m_gc.html">
+            <font size="+1">
+              <b>GC</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_gc.html#GC.disable">disable</a>
+	<a href="ref_m_gc.html#GC.enable">enable</a>
+	<a href="ref_m_gc.html#GC.start">start</a>
+	<a href="ref_m_gc.html#GC.garbage_collect">
+            <i>garbage_collect</i>
+          </a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_m_kernel.html">
+            <font size="+1">
+              <b>Kernel</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_kernel.html#Kernel.Array">Array</a>
+	<a href="ref_m_kernel.html#Kernel.Float">Float</a>
+	<a href="ref_m_kernel.html#Kernel.Integer">Integer</a>
+	<a href="ref_m_kernel.html#Kernel.String">String</a>
+	<a href="ref_m_kernel.html#Kernel._bq">` (backquote)</a>
+	<a href="ref_m_kernel.html#Kernel.abort">abort</a>
+	<a href="ref_m_kernel.html#Kernel.at_exit">at_exit</a>
+	<a href="ref_m_kernel.html#Kernel.autoload">autoload</a>
+	<a href="ref_m_kernel.html#Kernel.binding">binding</a>
+	<a href="ref_m_kernel.html#Kernel.block_given_qm">block_given?</a>
+	<a href="ref_m_kernel.html#Kernel.callcc">callcc</a>
+	<a href="ref_m_kernel.html#Kernel.caller">caller</a>
+	<a href="ref_m_kernel.html#Kernel.catch">catch</a>
+	<a href="ref_m_kernel.html#Kernel.chomp">chomp</a>
+	<a href="ref_m_kernel.html#Kernel.chomp_oh">chomp!</a>
+	<a href="ref_m_kernel.html#Kernel.chop">chop</a>
+	<a href="ref_m_kernel.html#Kernel.chop_oh">chop!</a>
+	<a href="ref_m_kernel.html#Kernel.eval">eval</a>
+	<a href="ref_m_kernel.html#Kernel.exec">exec</a>
+	<a href="ref_m_kernel.html#Kernel.exit">exit</a>
+	<a href="ref_m_kernel.html#Kernel.exit_oh">exit!</a>
+	<a href="ref_m_kernel.html#Kernel.fail">fail</a>
+	<a href="ref_m_kernel.html#Kernel.fork">fork</a>
+	<a href="ref_m_kernel.html#Kernel.format">format</a>
+	<a href="ref_m_kernel.html#Kernel.gets">gets</a>
+	<a href="ref_m_kernel.html#Kernel.global_variables">global_variables</a>
+	<a href="ref_m_kernel.html#Kernel.gsub">gsub</a>
+	<a href="ref_m_kernel.html#Kernel.gsub_oh">gsub!</a>
+	<a href="ref_m_kernel.html#Kernel.iterator_qm">iterator?</a>
+	<a href="ref_m_kernel.html#Kernel.lambda">lambda</a>
+	<a href="ref_m_kernel.html#Kernel.load">load</a>
+	<a href="ref_m_kernel.html#Kernel.local_variables">local_variables</a>
+	<a href="ref_m_kernel.html#Kernel.loop">loop</a>
+	<a href="ref_m_kernel.html#Kernel.open">open</a>
+	<a href="ref_m_kernel.html#Kernel.p">p</a>
+	<a href="ref_m_kernel.html#Kernel.print">print</a>
+	<a href="ref_m_kernel.html#Kernel.printf">printf</a>
+	<a href="ref_m_kernel.html#Kernel.proc">proc</a>
+	<a href="ref_m_kernel.html#Kernel.putc">putc</a>
+	<a href="ref_m_kernel.html#Kernel.puts">puts</a>
+	<a href="ref_m_kernel.html#Kernel.raise">raise</a>
+	<a href="ref_m_kernel.html#Kernel.rand">rand</a>
+	<a href="ref_m_kernel.html#Kernel.readline">readline</a>
+	<a href="ref_m_kernel.html#Kernel.readlines">readlines</a>
+	<a href="ref_m_kernel.html#Kernel.require">require</a>
+	<a href="ref_m_kernel.html#Kernel.scan">scan</a>
+	<a href="ref_m_kernel.html#Kernel.select">select</a>
+	<a href="ref_m_kernel.html#Kernel.set_trace_func">set_trace_func</a>
+	<a href="ref_m_kernel.html#Kernel.singleton_method_added">singleton_method_added</a>
+	<a href="ref_m_kernel.html#Kernel.sleep">sleep</a>
+	<a href="ref_m_kernel.html#Kernel.split">split</a>
+	<a href="ref_m_kernel.html#Kernel.sprintf">sprintf</a>
+	<a href="ref_m_kernel.html#Kernel.srand">srand</a>
+	<a href="ref_m_kernel.html#Kernel.sub">sub</a>
+	<a href="ref_m_kernel.html#Kernel.sub_oh">sub!</a>
+	<a href="ref_m_kernel.html#Kernel.syscall">syscall</a>
+	<a href="ref_m_kernel.html#Kernel.system">system</a>
+	<a href="ref_m_kernel.html#Kernel.test">test</a>
+	<a href="ref_m_kernel.html#Kernel.throw">throw</a>
+	<a href="ref_m_kernel.html#Kernel.trace_var">trace_var</a>
+	<a href="ref_m_kernel.html#Kernel.trap">trap</a>
+	<a href="ref_m_kernel.html#Kernel.untrace_var">untrace_var</a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_m_marshal.html">
+            <font size="+1">
+              <b>Marshal</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_marshal.html#Marshal.dump">dump</a>
+	<a href="ref_m_marshal.html#Marshal.load">load</a>
+	<a href="ref_m_marshal.html#Marshal.restore">restore</a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_m_math.html">
+            <font size="+1">
+              <b>Math</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_math.html#Math.atan2">atan2</a>
+	<a href="ref_m_math.html#Math.cos">cos</a>
+	<a href="ref_m_math.html#Math.exp">exp</a>
+	<a href="ref_m_math.html#Math.frexp">frexp</a>
+	<a href="ref_m_math.html#Math.ldexp">ldexp</a>
+	<a href="ref_m_math.html#Math.log">log</a>
+	<a href="ref_m_math.html#Math.log10">log10</a>
+	<a href="ref_m_math.html#Math.sin">sin</a>
+	<a href="ref_m_math.html#Math.sqrt">sqrt</a>
+	<a href="ref_m_math.html#Math.tan">tan</a>
+</td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="ref_m_objectspace.html">
+            <font size="+1">
+              <b>ObjectSpace</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_objectspace.html#ObjectSpace._id2ref">_id2ref</a>
+	<a href="ref_m_objectspace.html#ObjectSpace.define_finalizer">define_finalizer</a>
+	<a href="ref_m_objectspace.html#ObjectSpace.each_object">each_object</a>
+	<a href="ref_m_objectspace.html#ObjectSpace.garbage_collect">garbage_collect</a>
+	<a href="ref_m_objectspace.html#ObjectSpace.undefine_finalizer">undefine_finalizer</a>
+</td>
+      </tr>
+      <tr bgcolor="#ffcccc">
+        <td valign="top">
+          <a href="ref_m_process.html">
+            <font size="+1">
+              <b>Process</b>
+            </font>
+          </a>
+        </td>
+        <td>
+	<a href="ref_m_process.html#Process.egid">egid</a>
+	<a href="ref_m_process.html#Process.egid_eq">egid=</a>
+	<a href="ref_m_process.html#Process.euid">euid</a>
+	<a href="ref_m_process.html#Process.euid_eq">euid=</a>
+	<a href="ref_m_process.html#Process.exit_oh">exit!</a>
+	<a href="ref_m_process.html#Process.fork">fork</a>
+	<a href="ref_m_process.html#Process.getpgid">getpgid</a>
+	<a href="ref_m_process.html#Process.getpgrp">getpgrp</a>
+	<a href="ref_m_process.html#Process.getpriority">getpriority</a>
+	<a href="ref_m_process.html#Process.gid">gid</a>
+	<a href="ref_m_process.html#Process.gid_eq">gid=</a>
+	<a href="ref_m_process.html#Process.kill">kill</a>
+	<a href="ref_m_process.html#Process.pid">pid</a>
+	<a href="ref_m_process.html#Process.ppid">ppid</a>
+	<a href="ref_m_process.html#Process.setpgid">setpgid</a>
+	<a href="ref_m_process.html#Process.setpgrp">setpgrp</a>
+	<a href="ref_m_process.html#Process.setpriority">setpriority</a>
+	<a href="ref_m_process.html#Process.setsid">setsid</a>
+	<a href="ref_m_process.html#Process.uid">uid</a>
+	<a href="ref_m_process.html#Process.uid_eq">uid=</a>
+	<a href="ref_m_process.html#Process.wait">wait</a>
+	<a href="ref_m_process.html#Process.wait2">wait2</a>
+	<a href="ref_m_process.html#Process.waitpid">waitpid</a>
+	<a href="ref_m_process.html#Process.waitpid2">waitpid2</a>
+</td>
+      </tr>
+    </table>
+    <p></p>
+    <hr>
+    <font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. All Rights Reserved
+   </font>
+  </body>
+</html>

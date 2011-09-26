@@ -1,0 +1,837 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="web.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="win32.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+
+<h1>Ruby Tk</h1>
+    <hr>
+    <br>
+<P></P>
+The
+Ruby Application Archive contains several extensions that
+provide Ruby with a graphical user interface (GUI), including
+extensions for Tcl/Tk, GTK, OpenGL, and others.
+<P></P>
+The Tk extension is bundled in the main distribution and works on
+both Unix and Windows systems.  To use it, you need to have Tk
+installed on your system.  Tk is a large system, and entire books have
+been written about it, so we won't waste time or resources by delving
+too deeply into Tk itself, but instead concentrate on how to access Tk
+features from Ruby.  You'll need one of these reference books in order
+to use Tk with Ruby effectively.  The binding we use is closest to the
+Perl binding, so you probably want to get a copy of
+<em>Learning Perl/Tk</em>&nbsp; or <em>Perl/Tk
+  Pocket Reference</em>&nbsp;.
+<P></P>
+Tk works along a composition model---that is, you start off by
+creating a container widget (such as a <code>TkFrame</code> or <code>TkRoot</code>) and then
+create the widgets that populate it, such as buttons or labels.
+When you are ready to start the GUI, you invoke <code>Tk.mainloop</code>.  The
+Tk engine then takes control of the program, displaying widgets and
+calling your code in response to GUI events.
+<h2><a name="S1">Simple Tk Application</a></h2>
+<P></P>
+A simple Tk application in Ruby might look something like this:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'tk'
+root&nbsp;=&nbsp;TkRoot.new&nbsp;{&nbsp;title&nbsp;"Ex1"&nbsp;}
+TkLabel.new(root)&nbsp;{
+&nbsp;&nbsp;text&nbsp;&nbsp;'Hello,&nbsp;World!'
+&nbsp;&nbsp;pack&nbsp;&nbsp;{&nbsp;padx&nbsp;15&nbsp;;&nbsp;pady&nbsp;15;&nbsp;side&nbsp;'left'&nbsp;}
+}
+Tk.mainloop
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Let's look at the code a little more closely.
+After loading in the <code>tk</code> extension module, we create a
+root-level frame using <code>TkRoot.new</code>.  We then make a label widget
+as a child of the root frame, setting several options for the
+label.  Finally, we pack the root frame and enter the main GUI event loop.
+<P></P>
+It's a good habit to specify the root explicitly, but you could leave it 
+out---along with the extra options---and boil this down to a three-liner:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'tk'
+TkLabel.new&nbsp;{&nbsp;text&nbsp;'Hello,&nbsp;World!'&nbsp;}
+Tk.mainloop
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+That's all there is to it!  Armed with one of the Perl/Tk books we
+reference at the start of this chapter, you can now produce all the
+sophisticated GUIs you need.  But then again, if you'd like to stick
+around for some more details, here they come.
+<h2><a name="S2">Widgets</a></h2>
+<P></P>
+Creating widgets is easy.
+Take the name of the widget as given in the
+Tk documentation and add a <code>Tk</code> to the front of it.  For instance,
+the widgets Label, Button, and Entry become the classes <code>TkLabel</code>,
+<code>TkButton</code>, and <code>TkEntry</code>.  You create an instance of a widget
+using <code>new</code>, just as you would any other object.  If you don't
+specify a parent for a given widget, it will default to the root-level
+frame.  We usually want to specify the parent of a given widget, along
+with many other options---color, size, and so on. We also need to be
+able to get information back from our widgets while our program is
+running by setting up callbacks and sharing data.
+<h3><a name="UA">Setting Widget Options</a></h3>
+<P></P>
+If you look at a Tk reference manual (the one written for Perl/Tk, for
+example), you'll notice that options for widgets are usually listed
+with a hyphen---as a command-line option might be.  In Perl/Tk,
+options are passed to a widget in a <code>Hash</code>.  You can do that in Ruby
+as well, but you can also pass options using a code block; the name
+of the option is used as a method name within the block and arguments to
+the option appear as arguments to the method call.  Widgets take a
+parent as the first argument, followed by an optional hash of options
+or the code block of options.  Thus, the following two forms are
+equivalent.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+TkLabel.new(parent_widget)&nbsp;{
+&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;'Hello,&nbsp;World!'
+&nbsp;&nbsp;pack('padx'&nbsp;&nbsp;=&gt;&nbsp;5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'pady'&nbsp;&nbsp;=&gt;&nbsp;5,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'side'&nbsp;&nbsp;=&gt;&nbsp;'left')
+}
+#&nbsp;or
+TkLabel.new(parent_widget,&nbsp;text&nbsp;=&gt;&nbsp;'Hello,&nbsp;World!').pack(...)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+One small caution when using the code block form: the scope of
+variables is not what you think it is. The block is actually evaluated
+in the context of the widget's object, not the caller's. This means
+that the caller's instance variables will not be available in the
+block, but local variables from the enclosing scope and globals (not
+that you ever use <em>those</em>) will be.  We'll show option passing
+using both methods in the examples that follow.
+<P></P>
+Distances (as in the <code>padx</code> and <code>pady</code> options in these
+examples) are assumed to be in pixels, but may be specified in
+different units using one of the suffixes ``<code>c</code>'' (centimeter),
+``<code>i</code>'' (inch), ``<code>m</code>'' (millimeter), or ``<code>p</code>'' (point).
+<h3><a name="UB">Getting Widget Data</a></h3>
+<P></P>
+We can get information back from widgets with callbacks and by 
+binding variables.
+<P></P>
+Callbacks are very easy to set up.  The <code>command</code> option (shown in
+the <code>TkButton</code> call in the example that follows) takes a <code>Proc</code>
+object, which will be called when the callback fires.  Here we use
+<a href="ref_m_kernel.html#Kernel.proc">
+      <code>Kernel::proc</code>
+    </a> to convert the <code>{exit}</code> block to a <code>Proc</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+TkButton.new(bottom)&nbsp;{
+&nbsp;&nbsp;text&nbsp;"Ok"
+&nbsp;&nbsp;command&nbsp;proc&nbsp;{&nbsp;p&nbsp;mycheck.value;&nbsp;exit&nbsp;}
+&nbsp;&nbsp;pack('side'=&gt;'left',&nbsp;'padx'=&gt;10,&nbsp;'pady'=&gt;10)
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We can also bind a Ruby variable to a Tk widget's value using a
+<code>TkVariable</code> proxy.  We show this in the following example. Notice
+how the <code>TkCheckButton</code> is set up; the documentation says that the
+<code>variable</code> option takes a <em>var reference</em> as an argument.  For
+this, we create a Tk variable reference using <code>TkVariable.new</code>.
+Accessing <code>mycheck.value</code> will return the string ``<code>0</code>'' or
+``<code>1</code>'' depending on whether the checkbox is checked.  You can use
+the same mechanism for anything that supports a var reference, such as
+radio buttons and text fields.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+mycheck&nbsp;=&nbsp;TkVariable.new
+<P></P>
+TkCheckButton.new(top)&nbsp;{
+&nbsp;&nbsp;variable&nbsp;mycheck
+&nbsp;&nbsp;pack('padx'=&gt;5,&nbsp;'pady'=&gt;5,&nbsp;'side'&nbsp;=&gt;&nbsp;'left')
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UC">Setting/Getting Options Dynamically</a></h3>
+<P></P>
+In addition to setting a widget's options when it's created, you can
+reconfigure a widget while it's running.  Every widget supports the
+<code>configure</code> method, which takes a <code>Hash</code> or a code block in the
+same manner as <code>new</code>.  We can modify the first example to change
+the label text in response to a button press:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+lbl&nbsp;=&nbsp;TkLabel.new(top)&nbsp;{&nbsp;justify&nbsp;'center'
+&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;'Hello,&nbsp;World!';
+&nbsp;&nbsp;pack('padx'=&gt;5,&nbsp;'pady'=&gt;5,&nbsp;'side'&nbsp;=&gt;&nbsp;'top')&nbsp;}
+TkButton.new(top)&nbsp;{
+&nbsp;&nbsp;text&nbsp;"Cancel"
+&nbsp;&nbsp;command&nbsp;proc&nbsp;{&nbsp;lbl.configure('text'=&gt;"Goodbye,&nbsp;Cruel&nbsp;World!")&nbsp;}
+&nbsp;&nbsp;pack('side'=&gt;'right',&nbsp;'padx'=&gt;10,&nbsp;'pady'=&gt;10)
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Now when the <code>Cancel</code> button is pressed, the text in the label will
+change immediately from ``<code>Hello, World!</code>'' to ``<code>Goodbye, Cruel
+  World!</code>''
+<P></P>
+You can also query widgets for particular option values using
+<code>cget</code>:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;'tk'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>b&nbsp;=&nbsp;TkButton.new&nbsp;{</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;text&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"OK"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;justify&nbsp;&nbsp;'left'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;border&nbsp;&nbsp;&nbsp;5</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>}</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.cget('text')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"OK"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.cget('justify')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"left"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b.cget('border')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>5</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UD">Sample Application</a></h3>
+<P></P>
+Here's a slightly longer example, showing a genuine application---a
+``pig Latin'' generator.  
+Type in the phrase such as ``Ruby rules,''
+and the ``Pig It'' button will instantly translate it into pig Latin.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'tk'
+<P></P>
+class&nbsp;PigBox
+&nbsp;&nbsp;def&nbsp;pig(word)
+&nbsp;&nbsp;&nbsp;&nbsp;leadingCap&nbsp;=&nbsp;word&nbsp;=~&nbsp;/^A-Z/
+&nbsp;&nbsp;&nbsp;&nbsp;word.downcase!
+&nbsp;&nbsp;&nbsp;&nbsp;res&nbsp;=&nbsp;case&nbsp;word
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/^aeiouy/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word+"way"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/^([^aeiouy]+)(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$2+$1+"ay"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;word
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;leadingCap&nbsp;?&nbsp;res.capitalize&nbsp;:&nbsp;res
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;showPig
+&nbsp;&nbsp;&nbsp;&nbsp;@text.value&nbsp;=&nbsp;@text.value.split.collect{|w|&nbsp;pig(w)}.join("&nbsp;")
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;ph&nbsp;=&nbsp;{&nbsp;'padx'&nbsp;=&gt;&nbsp;10,&nbsp;'pady'&nbsp;=&gt;&nbsp;10&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;common&nbsp;options
+&nbsp;&nbsp;&nbsp;&nbsp;p&nbsp;=&nbsp;proc&nbsp;{showPig}
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;@text&nbsp;=&nbsp;TkVariable.new
+&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;=&nbsp;TkRoot.new&nbsp;{&nbsp;title&nbsp;"Pig"&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;top&nbsp;=&nbsp;TkFrame.new(root)
+&nbsp;&nbsp;&nbsp;&nbsp;TkLabel.new(top)&nbsp;{text&nbsp;&nbsp;&nbsp;&nbsp;'Enter&nbsp;Text:'&nbsp;;&nbsp;pack(ph)&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;@entry&nbsp;=&nbsp;TkEntry.new(top,&nbsp;'textvariable'&nbsp;=&gt;&nbsp;@text)
+&nbsp;&nbsp;&nbsp;&nbsp;@entry.pack(ph)
+&nbsp;&nbsp;&nbsp;&nbsp;TkButton.new(top)&nbsp;{text&nbsp;'Pig&nbsp;It';&nbsp;command&nbsp;p;&nbsp;pack&nbsp;ph}
+&nbsp;&nbsp;&nbsp;&nbsp;TkButton.new(top)&nbsp;{text&nbsp;'Exit';&nbsp;command&nbsp;{proc&nbsp;exit};&nbsp;pack&nbsp;ph}
+&nbsp;&nbsp;&nbsp;&nbsp;top.pack('fill'=&gt;'both',&nbsp;'side'&nbsp;=&gt;'top')
+&nbsp;&nbsp;end
+end
+<P></P>
+PigBox.new
+Tk.mainloop
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<p></p>
+    <table width="500" border="2" cellpadding="15" bgcolor="#ffe0e0" align="center">
+      <tr>
+        <td align="center">
+          <b>Sidebar: Geometry Management</b>
+        </td>
+      </tr>
+      <tr>
+        <td>
+<P></P>
+  In the example code in this chapter,    
+  you'll see references to the
+  widget method <code>pack</code>.  That's a very important call, as it
+  turns out---leave it off and you'll never see the widget.  <code>pack</code>
+  is a command that tells the geometry manager to place the widget
+  according to constraints that we specify.  Geometry managers
+  recognize three commands:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Command</b>
+              </td>
+  <td valign="top">
+                <b>Placement Specification</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>pack</code>
+              </td>
+  <td valign="top">Flexible, constraint-based placement</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>place</code>
+              </td>
+  <td valign="top">Absolute position</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>grid</code>
+              </td>
+  <td valign="top">Tabular (row/column) position</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+As <code>pack</code> is the most commonly used command, we'll use it
+in our examples.
+<P></P>
+</td>
+      </tr>
+    </table>
+    <p></p>
+<P></P>
+<h2><a name="S3">Binding Events</a></h2>
+<P></P>
+Our widgets are exposed to the real world; they get clicked on, the
+mouse moves over them, the user tabs into them; all these things, and
+more, generate <em>events</em> that we can capture.  You can create a
+<em>binding</em> from an event on a particular widget to a block of
+code, using the widget's <code>bind</code> method.
+<P></P>
+For instance, suppose we've created a button widget that displays an image.
+We'd like the image to change when the user's mouse is over the
+button.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+image1&nbsp;=&nbsp;TkPhotoImage.new&nbsp;{&nbsp;file&nbsp;"img1.gif"&nbsp;}
+image2&nbsp;=&nbsp;TkPhotoImage.new&nbsp;{&nbsp;file&nbsp;"img2.gif"&nbsp;}
+<P></P>
+b&nbsp;=&nbsp;TkButton.new(@root)&nbsp;{
+&nbsp;&nbsp;image&nbsp;&nbsp;&nbsp;&nbsp;image1
+&nbsp;&nbsp;command&nbsp;&nbsp;proc&nbsp;{&nbsp;doit&nbsp;}
+}
+<P></P>
+b.bind("Enter")&nbsp;{&nbsp;b.configure('image'=&gt;image2)&nbsp;}
+b.bind("Leave")&nbsp;{&nbsp;b.configure('image'=&gt;image1)&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+First, we create two GIF image objects
+from files on disk, using
+<code>TkPhotoImage</code>.  Next we create a button (very cleverly named
+``b''), which displays the image <code>image1</code>.  We then bind the
+``Enter'' event so that it dynamically changes the image displayed by
+the button to <code>image2</code>, and the ``Leave'' event to revert back to
+<code>image1</code>.
+<P></P>
+This example shows the simple events ``Enter'' and ``Leave.''  But the
+named event given as an argument to <code>bind</code> can be composed of
+several substrings, separated with dashes, in the order
+<em>modifier-modifier-type-detail</em>.  Modifiers are listed in the Tk
+reference and include <code>Button1</code>, <code>Control</code>, <code>Alt</code>,
+<code>Shift</code>, and so on.  <em>Type</em> is the name of the event (taken
+from the X11 naming conventions) and includes events such as
+<code>ButtonPress</code>, <code>KeyPress</code>, and <code>Expose</code>.  <em>Detail</em> is
+either a number from 1 to 5 for buttons or a keysym for keyboard
+input.  For instance, a binding that will trigger on mouse release of
+button&nbsp;1 while the control key is pressed could be specified as:
+<P></P>
+<code>Control-Button1-ButtonRelease</code>
+    <br>
+    <em>or</em>
+    <br>
+    <code>Control-ButtonRelease-1</code>
+<P></P>
+The event itself can contain certain fields such as the time of the event
+and the x and y positions.  <code>bind</code> can pass these items to the callback,
+using <em>event field codes</em>.  These are used like <code>printf</code>
+specifications.  For instance, to get the x and y coordinates on
+a mouse move, you'd specify the call to <code>bind</code> with three
+parameters. The second parameter is the <code>Proc</code> for the callback, and 
+the third parameter is the event field string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+canvas.bind("Motion",&nbsp;proc{|x,&nbsp;y|&nbsp;do_motion&nbsp;(x,&nbsp;y)},&nbsp;"%x&nbsp;%y")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S4">Canvas</a></h2>
+<P></P>
+Tk provides a <em>Canvas</em> widget with which you can draw and produce
+PostScript output.  Here's a simple bit of code (adapted from the
+distribution) that will draw straight lines. Clicking and holding
+button&nbsp;1 will start a line, which will be ``rubber-banded'' as you
+move the mouse around.  When you release button&nbsp;1, the line will be
+drawn in that position.  Pressing button&nbsp;2 on the mouse will dump out
+a PostScript representation of the drawing canvas, suitable for
+printing.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'tk'
+<P></P>
+class&nbsp;Draw
+&nbsp;&nbsp;def&nbsp;do_press(x,&nbsp;y)
+&nbsp;&nbsp;&nbsp;&nbsp;@start_x&nbsp;=&nbsp;x
+&nbsp;&nbsp;&nbsp;&nbsp;@start_y&nbsp;=&nbsp;y
+&nbsp;&nbsp;&nbsp;&nbsp;@current_line&nbsp;=&nbsp;TkcLine.new(@canvas,&nbsp;x,&nbsp;y,&nbsp;x,&nbsp;y)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;do_motion(x,&nbsp;y)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;@current_line
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.coords&nbsp;@start_x,&nbsp;@start_y,&nbsp;x,&nbsp;y
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;do_release(x,&nbsp;y)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;@current_line
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.coords&nbsp;@start_x,&nbsp;@start_y,&nbsp;x,&nbsp;y
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line.fill&nbsp;'black'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@current_line&nbsp;=&nbsp;nil
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;initialize(parent)
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas&nbsp;=&nbsp;TkCanvas.new(parent)
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.pack
+&nbsp;&nbsp;&nbsp;&nbsp;@start_x&nbsp;=&nbsp;@start_y&nbsp;=&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("1",&nbsp;proc{|e|&nbsp;do_press(e.x,&nbsp;e.y)})
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("2",&nbsp;proc{&nbsp;puts&nbsp;@canvas.postscript({})&nbsp;})
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("B1-Motion",&nbsp;proc{|x,&nbsp;y|&nbsp;do_motion(x,&nbsp;y)},&nbsp;"%x&nbsp;%y")
+&nbsp;&nbsp;&nbsp;&nbsp;@canvas.bind("ButtonRelease-1",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proc{|x,&nbsp;y|&nbsp;do_release&nbsp;(x,&nbsp;y)},&nbsp;"%x&nbsp;%y")
+&nbsp;&nbsp;end
+end
+<P></P>
+root&nbsp;=&nbsp;TkRoot.new{&nbsp;title&nbsp;'Canvas'&nbsp;}
+Draw.new(root)
+Tk.mainloop
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A few mouse clicks, and you've got an instant masterpiece:
+<P></P>
+    <em>Missing screenshots/canvas.ps</em>
+    <P></P>
+<P></P>
+``We couldn't find the artist, so we had to hang the picture....''
+<h2><a name="S5">Scrolling</a></h2>
+<P></P>
+Unless you plan on drawing very small pictures, the previous example
+may not be all that useful.
+<code>TkCanvas</code>, <code>TkListbox</code>, and
+<code>TkText</code> can be set up to use scrollbars, so you can work on a
+smaller subset of the ``big picture.''
+<P></P>
+Communication between a scrollbar and a widget is
+bidirectional. Moving the scrollbar means that the widget's view
+has to change; but when the widget's view is changed by some other
+means, the scrollbar has to change as well to reflect the new
+position.
+<P></P>
+Since we haven't done much with lists yet, our scrolling example will
+use a scrolling list of text.  In the following code fragment, we'll
+start off by creating a plain old <code>TkListbox</code>.  Then, we'll make a
+<code>TkScrollbar</code>.  The scrollbar's callback (set with <code>command</code>)
+will call the list widget's <code>yview</code> method, which will change the
+value of the visible portion of the list in the y-direction.
+<P></P>
+After that callback is set up, we make the inverse association: when the list
+feels the need to scroll, we'll set the appropriate range in the
+scrollbar using <code>TkScrollbar#set</code>.  
+We'll use this same fragment in a fully functional program in the next
+section.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+list_w&nbsp;=&nbsp;TkListbox.new(frame,&nbsp;'selectmode'&nbsp;=&gt;&nbsp;'single')
+<P></P>
+scroll_bar&nbsp;=&nbsp;TkScrollbar.new(frame,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'command'&nbsp;=&gt;&nbsp;proc&nbsp;{&nbsp;|*args|&nbsp;list_w.yview&nbsp;*args&nbsp;})
+<P></P>
+scroll_bar.pack('side'&nbsp;=&gt;&nbsp;'left',&nbsp;'fill'&nbsp;=&gt;&nbsp;'y')
+<P></P>
+list_w.yscrollcommand(proc&nbsp;{&nbsp;|first,last|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scroll_bar.set(first,last)&nbsp;})
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UE">Just One More Thing</a></h3>
+<P></P>
+We could go on about Tk for another few hundred pages, but that's
+another book.  The following program is our final Tk example---a
+simple GIF image viewer.  You can select a GIF filename from the
+scrolling list, and a thumb nail version of the image will be
+displayed.  There are just a <em>few</em> more things we'd like to point
+out.
+<P></P>
+Have you ever seen an application that creates a ``busy cursor'' and
+then forgets to reset it to normal?  There's a neat trick in 
+Ruby that will prevent this from happening.  Remember how
+<a href="ref_c_file.html#File.new">
+      <code>File.new</code>
+    </a> uses a block to ensure that the file is closed after it 
+is used? We can do a similar thing with the method <code>busy</code>, as shown
+in the next example.
+<P></P>
+This program also demonstrates some simple <code>TkListbox</code>
+manipulations---adding elements to the list, setting up a callback on a
+mouse button release,<em>[You probably want the button release,
+  not the press, as the widget gets selected on the button press.]</em> and
+retrieving the current selection.
+<P></P>
+So far, we've used <code>TkPhotoImage</code> to only display icons directly,
+but you can also zoom, subsample, and show portions of images as
+well.  Here we use the subsample feature to scale down the image for
+viewing.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'tk'
+<P></P>
+def&nbsp;busy
+&nbsp;&nbsp;begin
+&nbsp;&nbsp;&nbsp;&nbsp;$root.cursor&nbsp;"watch"&nbsp;#&nbsp;Set&nbsp;a&nbsp;watch&nbsp;cursor
+&nbsp;&nbsp;&nbsp;&nbsp;$root.update&nbsp;#&nbsp;Make&nbsp;sure&nbsp;it&nbsp;updates&nbsp;&nbsp;the&nbsp;screen
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;#&nbsp;Call&nbsp;the&nbsp;associated&nbsp;block
+&nbsp;&nbsp;ensure
+&nbsp;&nbsp;&nbsp;&nbsp;$root.cursor&nbsp;""&nbsp;#&nbsp;Back&nbsp;to&nbsp;original
+&nbsp;&nbsp;&nbsp;&nbsp;$root.update
+&nbsp;&nbsp;end
+end
+<P></P>
+$root&nbsp;=&nbsp;TkRoot.new&nbsp;{title&nbsp;'Scroll&nbsp;List'}
+frame&nbsp;=&nbsp;TkFrame.new($root)
+<P></P>
+list_w&nbsp;=&nbsp;TkListbox.new(frame,&nbsp;'selectmode'&nbsp;=&gt;&nbsp;'single')
+<P></P>
+scroll_bar&nbsp;=&nbsp;TkScrollbar.new(frame,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'command'&nbsp;=&gt;&nbsp;proc&nbsp;{&nbsp;|*args|&nbsp;list_w.yview&nbsp;*args&nbsp;})
+<P></P>
+scroll_bar.pack('side'&nbsp;=&gt;&nbsp;'left',&nbsp;'fill'&nbsp;=&gt;&nbsp;'y')
+<P></P>
+list_w.yscrollcommand(proc&nbsp;{&nbsp;|first,last|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;scroll_bar.set(first,last)&nbsp;})
+list_w.pack('side'=&gt;'left')
+<P></P>
+image_w&nbsp;=&nbsp;TkPhotoImage.new
+TkLabel.new(frame,&nbsp;'image'&nbsp;=&gt;&nbsp;image_w).pack('side'=&gt;'left')
+frame.pack
+<P></P>
+list_contents&nbsp;=&nbsp;Dir["screenshots/gifs/*.gif"]
+list_contents.each&nbsp;{|x|
+&nbsp;&nbsp;list_w.insert('end',x)&nbsp;#&nbsp;Insert&nbsp;each&nbsp;file&nbsp;name&nbsp;into&nbsp;the&nbsp;list
+}
+list_w.bind("ButtonRelease-1")&nbsp;{
+&nbsp;&nbsp;index&nbsp;=&nbsp;list_w.curselection[0]
+&nbsp;&nbsp;busy&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;tmp_img&nbsp;=&nbsp;TkPhotoImage.new('file'=&gt;&nbsp;list_contents[index])
+&nbsp;&nbsp;&nbsp;&nbsp;scale&nbsp;&nbsp;&nbsp;=&nbsp;tmp_img.height&nbsp;/&nbsp;100
+&nbsp;&nbsp;&nbsp;&nbsp;scale&nbsp;&nbsp;&nbsp;=&nbsp;1&nbsp;if&nbsp;scale&nbsp;&lt;&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;image_w.copy(tmp_img,&nbsp;'subsample'&nbsp;=&gt;&nbsp;[scale,scale])
+&nbsp;&nbsp;&nbsp;&nbsp;tmp_img&nbsp;=&nbsp;nil&nbsp;#&nbsp;Be&nbsp;sure&nbsp;to&nbsp;remove&nbsp;it,&nbsp;the
+&nbsp;&nbsp;&nbsp;&nbsp;GC.start&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;image&nbsp;may&nbsp;have&nbsp;been&nbsp;large
+&nbsp;&nbsp;}
+}
+<P></P>
+Tk.mainloop
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, a word about garbage collection---we happened to have a few
+very large GIF files lying about<em>[They were technical
+  documents!  Really!]</em> while testing this code.  We didn't want to
+carry these huge images around in memory any longer then necessary, so 
+we set the image reference to <code>nil</code> and call the garbage collector 
+immediately to remove the trash.
+<h2><a name="S6">Translating from Perl/Tk Documentation</a></h2>
+<P></P>
+That's it, you're on your own now.
+For the most part, you can easily translate the documentation given
+for Perl/Tk to Ruby.  But there are a few exceptions; some methods are 
+not implemented, and there is undocumented extra functionality.  Until a 
+Ruby/Tk book comes out, your best bet is to ask on the newsgroup or
+read the source code.
+<P></P>
+But in general, it's pretty easy to see what's going on.  Remember
+that options may be given as a hash, or in code block style, and the
+scope of the code block is within the <code>TkWidget</code> being used, not
+your class instance.
+<h3><a name="UF">Object Creation</a></h3>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Perl/Tk:&nbsp;&nbsp;$widget&nbsp;=&nbsp;$parent-&gt;Widget(&nbsp;[&nbsp;option&nbsp;=&gt;&nbsp;value&nbsp;]&nbsp;)
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;widget&nbsp;=&nbsp;TkWidget.new(parent,&nbsp;option-hash)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;widget&nbsp;=&nbsp;TkWidget.new(parent)&nbsp;{&nbsp;code&nbsp;block&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You may not need to save the returned value of the newly created
+widget, but it's there if you do.  Don't forget to pack a widget (or
+use one of the other geometry calls), or it won't show up.
+<h3><a name="UG">Options</a></h3>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Perl/Tk:&nbsp;&nbsp;-background&nbsp;=&gt;&nbsp;color
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'background'&nbsp;=&gt;&nbsp;color
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;background&nbsp;color&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Remember that the code block scope is different.
+<h3><a name="UH">Variable References</a></h3>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Perl/Tk:&nbsp;&nbsp;-textvariable&nbsp;=&gt;&nbsp;\$variable
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-textvariable&nbsp;=&gt;&nbsp;varRef
+Ruby:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ref&nbsp;=&nbsp;TkVariable.new
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'textvariable'&nbsp;=&gt;&nbsp;ref
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;textvariable&nbsp;ref&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Use <code>TkVariable</code> to attach a Ruby variable to a widget's value.
+You can then use the <code>value</code> accessors in <code>TkVariable</code>
+(<code>TkVariable#value</code> and <code>TkVariable#value=</code>) to 
+affect the contents of the widget directly.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="web.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="win32.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

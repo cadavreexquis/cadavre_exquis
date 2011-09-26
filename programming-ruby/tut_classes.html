@@ -1,0 +1,1702 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="intro.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_containers.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Classes, Objects, and Variables</h1>
+    <hr>
+    <br>
+<P></P>
+From the examples we've shown so far, you might be wondering about our
+earlier assertion that Ruby is an object-oriented language.  Well,
+this chapter is where we justify that claim. We're going to be looking
+at how you create classes and objects in Ruby, and at some of the ways
+in which Ruby is more powerful than most object-oriented languages.
+Along the way, we'll be implementing part of our next billion-dollar
+product, the Internet Enabled Jazz and Blue Grass jukebox.
+<P></P>
+After months of work, our highly paid Research and Development folks
+have determined that our jukebox needs <em>songs</em>. So it seems like
+a good idea to start off by setting up a Ruby class that represents
+things that are songs.  We know that a real song has a name, an artist, and
+a duration, so we'll want to make sure that the song objects in our
+program do, too.
+<P></P>
+We'll start off by creating a basic class <code>Song</code>,<em>[As we
+  mentioned on page 9, class names start with an
+  uppercase letter, while method names start with a lowercase letter.]</em>
+which contains just a single method, <code>initialize</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;name
+&nbsp;&nbsp;&nbsp;&nbsp;@artist&nbsp;&nbsp;&nbsp;=&nbsp;artist
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;duration
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<code>initialize</code> is a special method in Ruby programs. When you
+call <code>Song.new</code> to create a new <code>Song</code> object, Ruby creates an
+uninitialized object and then calls that object's <code>initialize</code>
+method, passing in any parameters that were passed to
+<code>new</code>. This gives you a chance to write code that sets up your
+object's state.
+<P></P>
+For class <code>Song</code>, the <code>initialize</code> method takes three
+parameters. These parameters act just like local variables within the
+method, so they follow the local variable naming convention of
+starting with a lowercase letter. 
+<P></P>
+Each object represents its own song, so we need each of our <code>Song</code>
+objects to carry around its own song name, artist, and duration.  This
+means we need to store these values as <em>instance variables</em>
+within the object.
+In Ruby, an instance variable is simply a name
+preceded by an ``at'' sign (``@''). In our example, the parameter
+<code>name</code> is assigned to the instance variable <code>@name</code>,
+<code>artist</code> is assigned to <code>@artist</code>, and <code>duration</code> (the
+length of the song in seconds) is assigned to <code>@duration</code>.
+<P></P>
+Let's test our spiffy new class.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.inspect</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"#&lt;Song:0x401b4924&nbsp;@duration=260,&nbsp;@artist=\"Fleck\",&nbsp;@name=\"Bicylops\"&gt;"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Well, it seems to work. By default, the <code>inspect</code> message,
+which can be sent to any object, dumps out the object's id and instance
+variables. It looks as though we have them set up correctly.
+<P></P>
+Our experience tells us that during development we'll be printing out
+the contents of a <code>Song</code> object many times, and <code>inspect</code>'s
+default formatting leaves something to be desired. Fortunately, Ruby
+has a standard message, <code>to_s</code>,
+which it
+sends to any object it wants to render as a string. Let's try it on
+our song.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"#&lt;Song:0x401b499c&gt;"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+That wasn't too useful---it just reported the object id. So, let's
+override <code>to_s</code> in our class.
+As we do this, we should also take a moment to talk about how we're
+showing the class definitions in this book.
+<P></P>
+In Ruby, classes are never closed: you can always add methods to an
+existing class.
+This applies to the classes you write as well as the
+standard, built-in classes. All you have to do is open up a class
+definition for an existing class, and the new contents you specify
+will be added to whatever's there.
+<P></P>
+This is great for our purposes. As we go through this chapter, adding
+features to our classes, we'll show just the class definitions for the 
+new methods; the old ones will still be there. It saves us having to
+repeat redundant stuff in each example. Obviously, though, if you were 
+creating this code from scratch, you'd probably just throw all the
+methods into a single class definition.
+<P></P>
+Enough detail! Let's get back to adding a <code>to_s</code> method to our 
+<code>Song</code> class.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"Song:&nbsp;#{@name}--#{@artist}&nbsp;(#{@duration})"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Song:&nbsp;Bicylops--Fleck&nbsp;(260)"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Excellent, we're making progress.  However, we've slipped in something
+subtle. We said that Ruby supports <code>to_s</code> for all objects, but
+we didn't say how. The answer has to do with inheritance, subclassing,
+and how Ruby determines what method to run when you send a message to
+an object. This is a subject for a new section, so....
+<h2><a name="S1">Inheritance and Messages</a></h2>
+<P></P>
+Inheritance allows you to create a class that is a refinement or
+specialization of another class.
+For example, our jukebox has the
+concept of songs, which we encapsulate in class <code>Song</code>. Then
+marketing comes along and tells us that we need to provide karaoke
+support. A karaoke song is just like any other (there's no vocal on
+it, but that doesn't concern us). However, it also has an associated
+set of lyrics, along with timing information. When our jukebox plays a 
+karaoke song, the lyrics should flow across the screen on the front of 
+the jukebox in time with the music.
+<P></P>
+An approach to this problem is to define a new class, <code>KaraokeSong</code>,
+which is just like <code>Song</code>, but with a lyric track.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;KaraokeSong&nbsp;&lt;&nbsp;Song
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration,&nbsp;lyrics)
+&nbsp;&nbsp;&nbsp;&nbsp;super(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@lyrics&nbsp;=&nbsp;lyrics
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The ``<code>&lt;&nbsp;Song</code>'' on the class definition line tells Ruby that a
+<code>KaraokeSong</code> is a <em>subclass</em> of <code>Song</code>.
+(Not surprisingly,
+this means that <code>Song</code> is a <em>superclass</em> of <code>KaraokeSong</code>. People
+also talk about parent-child relationships, so <code>KaraokeSong</code>'s
+parent would be <code>Song</code>.) For now, don't worry too much about the
+<code>initialize</code> method; we'll talk about that <code>super</code> call later.
+<P></P>
+Let's create a <code>KaraokeSong</code> and check that our code worked. (In the
+final system, the lyrics will be held in an object that includes the
+text and timing information. To test out our class, though, we'll just 
+use a string. This is another benefit of untyped languages---we don't
+have to define everything before we start running code.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Song:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Well, it ran, but why doesn't the <code>to_s</code> method show the
+lyric?
+<P></P>
+The answer has to do with the way Ruby determines which method should
+be called when you send a message to an object. When Ruby compiles the
+method invocation <code>aSong.to_s</code>, it doesn't actually know where to
+find the method <code>to_s</code>. Instead, it defers the decision until
+the program is run. At that time, it looks at the class of <code>aSong</code>.
+If that class implements a method with the same name as the message,
+that method is run. Otherwise, Ruby looks for a method in the parent
+class, and then in the grandparent, and so on up the ancestor chain.
+If it runs out of ancestors without finding the appropriate method, it
+takes a special action that normally results in an error being
+raised.<em>[In fact, you can intercept this error, which allows
+  you to fake out methods at runtime. This is described under
+  <a href="ref_c_object.html#Object.method_missing">
+        <code>Object#method_missing</code>
+      </a> on page 355.]</em>
+<P></P>
+So, back to our example. We sent the message <code>to_s</code> to
+<code>aSong</code>, an object of class <code>KaraokeSong</code>.
+Ruby looks in
+<code>KaraokeSong</code> for a method called <code>to_s</code>, but doesn't find
+it. The interpreter then looks in <code>KaraokeSong</code>'s parent, class
+<code>Song</code>, and there it finds the <code>to_s</code> method that we defined
+on page 18. That's why it prints out the song details but
+not the lyrics---class <code>Song</code> doesn't know anything about lyrics.
+<P></P>
+Let's fix this by implementing <code>KaraokeSong#to_s</code>. There are a
+number of ways to do this. Let's start with a bad way. We'll copy
+the <code>to_s</code> method from <code>Song</code> and add on the lyric.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;KaraokeSong</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;#&nbsp;...</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"KS:&nbsp;#{@name}--#{@artist}&nbsp;(#{@duration})&nbsp;[#{@lyrics}]"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"KS:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)&nbsp;[And&nbsp;now,&nbsp;the...]"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+We're correctly displaying the value of the <code>@lyrics</code> instance
+variable. To do this, the subclass directly accesses the instance
+variables of its ancestors. So why is this a bad way to implement
+<code>to_s</code>?
+<P></P>
+The answer has to do with good programming style (and something called
+<em>decoupling</em>). By poking around in our parent's internal state,
+we're tying ourselves tightly to its implementation. Say we decided to
+change <code>Song</code> to store the duration in milliseconds. Suddenly,
+<code>KaraokeSong</code> would start reporting ridiculous values. The idea of a
+karaoke version of ``My Way'' that lasts for 3750 minutes is just too
+frightening to consider.
+<P></P>
+We get around this problem by having each class handle its own
+internal state. When <code>KaraokeSong#to_s</code> is called, we'll have it call
+its parent's <code>to_s</code> method to get the song details. It will
+then append to this the lyric information and return the result. The
+trick here is the Ruby keyword ``<code>super</code>''. When you invoke
+<code>super</code> with no arguments, Ruby sends a message to the current
+object's parent, asking it to invoke a method of the same name as the
+current method, and passing it the parameters that were passed to the
+current method. Now we can implement our new and improved
+<code>to_s</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;KaraokeSong&nbsp;&lt;&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;#&nbsp;Format&nbsp;ourselves&nbsp;as&nbsp;a&nbsp;string&nbsp;by&nbsp;appending</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;#&nbsp;our&nbsp;lyrics&nbsp;to&nbsp;our&nbsp;parent's&nbsp;#to_s&nbsp;value.</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;super&nbsp;+&nbsp;"&nbsp;[#{@lyrics}]"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;KaraokeSong.new("My&nbsp;Way",&nbsp;"Sinatra",&nbsp;225,&nbsp;"And&nbsp;now,&nbsp;the...")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Song:&nbsp;My&nbsp;Way--Sinatra&nbsp;(225)&nbsp;[And&nbsp;now,&nbsp;the...]"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+We explicitly told Ruby that <code>KaraokeSong</code> was a subclass of
+<code>Song</code>, but we didn't specify a parent class for <code>Song</code> itself. If
+you don't specify a parent when defining a class, Ruby supplies
+class <code>Object</code> as a default. This means that all objects have
+<code>Object</code> as an ancestor, and that <code>Object</code>'s instance methods are
+available to every object in Ruby. Back on page 18 we said
+that <code>to_s</code> is available to all objects. Now we know why;
+<code>to_s</code> is one of more than 35 instance methods in
+class <code>Object</code>. The complete list begins on page 351.
+<h3><a name="UA">Inheritance and Mixins</a></h3>
+<P></P>
+Some object-oriented languages (notably C++) support
+multiple inheritance, where a class can have more than one immediate
+parent, inheriting functionality from each. Although powerful, this
+technique can be dangerous, as the inheritance hierarchy can
+become ambiguous.
+<P></P>
+Other languages, such as Java, support single inheritance. Here, a
+class can have only one immediate parent. Although cleaner (and easier
+to implement), single inheritance also has drawbacks---in the real
+world things often inherit attributes from multiple sources (a ball is
+both a <em>bouncing thing</em> and a <em>spherical thing</em>, for
+example).
+<P></P>
+Ruby offers an interesting and powerful compromise, giving you the
+simplicity of single inheritance and the power of multiple
+inheritance. A Ruby class can
+have only one direct parent, and so Ruby is a single-inheritance
+language. However, Ruby classes can include the functionality of any
+number of mixins (a mixin is like a partial class definition). This
+provides a controlled multiple-inheritance-like capability with none
+of the drawbacks. We'll explore mixins more beginning
+on page 98.
+<P></P>
+So far in this chapter we've been looking at classes and their
+methods. Now it's time to move on to the objects, such as the
+instances of class <code>Song</code>.
+<h2><a name="S2">Objects and Attributes</a></h2>
+<P></P>
+The <code>Song</code> objects we've created so far have an internal state (such as
+the song title and artist). That state is private to those
+objects---no other object can access an object's instance variables.
+In general, this is a Good Thing. It means that the object is solely
+responsible for maintaining its own consistency.
+<P></P>
+However, an object that is totally secretive is pretty useless---you
+can create it, but then you can't do anything with it. You'll normally
+define methods that let you access and manipulate the state of an
+object, allowing the outside world to interact with the object. These
+externally visible facets of an object are called its
+<em>attributes</em>.
+<P></P>
+For our <code>Song</code> objects, the first thing we may need is the ability
+to find out the title and artist (so we can display them while the
+song is playing) and the duration (so we can display some kind of
+progress bar).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;name</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@name</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;artist</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@artist</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;duration</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@duration</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.artist</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Fleck"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.name</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Bicylops"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.duration</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>260</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Here we've defined three accessor methods to return the values of the
+three instance attributes. Because this is such a common idiom, Ruby
+provides a convenient shortcut: <code>attr_reader</code> creates these
+accessor methods for you.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;attr_reader&nbsp;:name,&nbsp;:artist,&nbsp;:duration</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.artist</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Fleck"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.name</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Bicylops"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.duration</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>260</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This example has introduced something new. The construct <code>:artist</code>
+is an expression that returns a <code>Symbol</code> object corresponding to
+<code>artist</code>. You can think of <code>:artist</code> as meaning the <em>name</em>
+of the variable <code>artist</code>, while plain <code>artist</code> is the
+<em>value</em> of the variable. In this example, we named the accessor
+methods <code>name</code>, <code>artist</code>, and <code>duration</code>.  The
+corresponding instance variables, <code>@name</code>, <code>@artist</code>, and
+<code>@duration</code>, will be created automatically.  These accessor methods
+are identical to the ones we wrote by hand earlier.
+<h3><a name="UB">Writable Attributes</a></h3>
+<P></P>
+Sometimes you need to be able to set an attribute from outside the
+object. For example, let's assume that the duration that is initially
+associated with a song is an estimate (perhaps gathered from
+information on a CD or in the MP3 data). The first time we play the
+song, we get to find out how long it actually is, and we store this
+new value back in the <code>Song</code> object.
+<P></P>
+In languages such as C++ and Java, you'd do this with <em>setter
+  functions</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;JavaSong&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Java&nbsp;code
+&nbsp;&nbsp;private&nbsp;Duration&nbsp;myDuration;
+&nbsp;&nbsp;public&nbsp;void&nbsp;setDuration(Duration&nbsp;newDuration)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;myDuration&nbsp;=&nbsp;newDuration;
+&nbsp;&nbsp;}
+}
+s&nbsp;=&nbsp;new&nbsp;Song(....)
+s.setDuration(length)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In Ruby, the attributes of an object can be accessed as if they were
+any other variable. We've seen this above with phrases such as
+<code>aSong.name</code>. So, it seems natural to be able to assign to these
+variables when you want to set the value of an attribute. In keeping
+with the Principle of Least Surprise, that's just what you do in Ruby.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;duration=(newDuration)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;newDuration</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.duration</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>260</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong.duration&nbsp;=&nbsp;257&nbsp;&nbsp;&nbsp;#&nbsp;set&nbsp;attribute&nbsp;with&nbsp;updated&nbsp;value</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.duration</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>257</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The assignment ``<code>aSong.duration&nbsp;=&nbsp;257</code>'' invokes the method
+<code>duration=</code> in the <code>aSong</code> object, passing it <code>257</code> as
+an argument. In fact, defining a method name ending in an equals sign
+makes that name eligible to appear on the left-hand side of an
+assignment.
+<P></P>
+Again, Ruby provides a shortcut for creating these simple attribute
+setting methods.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;attr_writer&nbsp;:duration
+end
+aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)
+aSong.duration&nbsp;=&nbsp;257
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UC">Virtual Attributes</a></h3>
+<P></P>
+These attribute accessing methods do not have to be just simple
+wrappers around an object's instance variables. For example, you might 
+want to access the duration in minutes and fractions of a minute,
+rather than in seconds as we've been doing.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Song</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;durationInMinutes</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@duration/60.0&nbsp;&nbsp;&nbsp;#&nbsp;force&nbsp;floating&nbsp;point</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;durationInMinutes=(value)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;(value*60).to_i</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.durationInMinutes</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>4.333333333</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>aSong.durationInMinutes&nbsp;=&nbsp;4.2</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>aSong.duration</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>252</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Here we've used attribute methods to create a virtual instance
+variable. To the outside world, <code>durationInMinutes</code> seems to be an
+attribute like any other. Internally, though, there is no
+corresponding instance variable.
+<P></P>
+This is more than a curiosity. In his landmark book
+<em>Object-Oriented Software Construction</em>&nbsp;,
+Bertrand Meyer
+calls this the <em>Uniform Access Principle</em>.
+By hiding the
+difference between instance variables and calculated values, you are
+shielding the rest of the world from the implementation of your class.
+You're free to change how things work in the future without impacting
+the millions of lines of code that use your class. This is a big win.
+<h2><a name="S3">Class Variables and Class Methods</a></h2>
+<P></P>
+So far, all the classes we've created have contained instance
+variables and instance methods: variables that are associated with a
+particular instance of the class, and methods that work on those
+variables.  Sometimes classes themselves need to have their own states.
+This is where class variables come in.
+<h3><a name="UD">Class Variables</a></h3>
+<P></P>
+A class variable is shared among all objects of a class, and it is also
+accessible to the class methods that we'll describe later.
+There is
+only one copy of a particular class variable for a given class. Class
+variable names start with two ``at'' signs, such as ``<code>@@count</code>''.
+Unlike global and instance variables, class variables must be
+initialized before they are used.  Often this initialization is just a
+simple assignment in the body of the class definition.
+<P></P>
+For example, our jukebox may want to record how many times each
+particular song has been played. This count would probably be an
+instance variable of the <code>Song</code> object. When a song is played, the
+value in the instance is incremented. But say we also want to know
+how many songs have been played in total. We could do this by
+searching for all the <code>Song</code> objects and adding up their counts, or
+we could risk excommunication from the Church of Good Design and use a
+global variable. Instead, we'll use a class variable.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;@@plays&nbsp;=&nbsp;0
+&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;artist,&nbsp;duration)
+&nbsp;&nbsp;&nbsp;&nbsp;@name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;name
+&nbsp;&nbsp;&nbsp;&nbsp;@artist&nbsp;&nbsp;&nbsp;=&nbsp;artist
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;duration
+&nbsp;&nbsp;&nbsp;&nbsp;@plays&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;0
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;play
+&nbsp;&nbsp;&nbsp;&nbsp;@plays&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;@@plays&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;&nbsp;song:&nbsp;#@plays&nbsp;plays.&nbsp;Total&nbsp;#@@plays&nbsp;plays."
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+For debugging purposes, we've arranged for <code>Song#play</code> to return a 
+string containing the number of times this song has been played, along 
+with the total number of plays for all songs. We can test this easily.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>s1&nbsp;=&nbsp;Song.new("Song1",&nbsp;"Artist1",&nbsp;234)&nbsp;&nbsp;#&nbsp;test&nbsp;songs..</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s2&nbsp;=&nbsp;Song.new("Song2",&nbsp;"Artist2",&nbsp;345)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s1.play</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"This&nbsp;&nbsp;song:&nbsp;1&nbsp;plays.&nbsp;Total&nbsp;1&nbsp;plays."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s2.play</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"This&nbsp;&nbsp;song:&nbsp;1&nbsp;plays.&nbsp;Total&nbsp;2&nbsp;plays."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s1.play</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"This&nbsp;&nbsp;song:&nbsp;2&nbsp;plays.&nbsp;Total&nbsp;3&nbsp;plays."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s1.play</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"This&nbsp;&nbsp;song:&nbsp;3&nbsp;plays.&nbsp;Total&nbsp;4&nbsp;plays."</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Class variables are private to a class and its instances. If you want
+to make them accessible to the outside world, you'll need to write an
+accessor method. This method could be either an instance method or,
+leading us neatly to the next section, a class method.
+<h3><a name="UE">Class Methods</a></h3>
+<P></P>
+Sometimes a class needs to provide methods that work without being tied 
+to any particular object.
+<P></P>
+We've already come across one such method.
+The <code>new</code> method creates a new <code>Song</code> object but is not
+itself associated with a particular song. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aSong&nbsp;=&nbsp;Song.new(....)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You'll find class methods sprinkled throughout the Ruby libraries. For
+example, objects of class <code>File</code> represent open files
+in the underlying file system. However, class <code>File</code> also provides
+several class methods for manipulating files that aren't open and
+therefore don't have a <code>File</code> object. If you want to delete a file,
+you call the class method <a href="ref_c_file.html#File.delete">
+      <code>File.delete</code>
+    </a>, passing in the name.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+File.delete("doomedFile")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Class methods are distinguished from instance methods by their
+definition.
+Class methods are defined by placing the class name and a period in
+front of the method name.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Example
+<P></P>
+&nbsp;&nbsp;def&nbsp;instMeth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;instance&nbsp;method
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;Example.classMeth&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;class&nbsp;method
+&nbsp;&nbsp;end
+<P></P>
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Jukeboxes charge money
+for each song played, not by the minute. That makes short songs more
+profitable than long ones. We may want to prevent songs that take too
+long from being available on the SongList. We could define a class
+method in <code>SongList</code> that checked to see if a particular song
+exceeded the limit. We'll set this limit using a class constant, which 
+is simply a constant (remember constants? they start with an uppercase 
+letter) that is initialized in the class body.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;SongList</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;MaxTime&nbsp;=&nbsp;5*60&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;5&nbsp;minutes</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;SongList.isTooLong(aSong)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;aSong.duration&nbsp;&gt;&nbsp;MaxTime</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>song1&nbsp;=&nbsp;Song.new("Bicylops",&nbsp;"Fleck",&nbsp;260)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>SongList.isTooLong(song1)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>song2&nbsp;=&nbsp;Song.new("The&nbsp;Calling",&nbsp;"Santana",&nbsp;468)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>SongList.isTooLong(song2)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UF">Singletons and Other Constructors</a></h3>
+<P></P>
+Sometimes you want to override the default way in which Ruby creates
+objects.  As an example, let's look at our jukebox. Because we'll have
+many jukeboxes, spread all over the country, we want to make
+maintenance as easy as possible. Part of the requirement is to log
+everything that happens to a jukebox: the songs that are played, the
+money received, the strange fluids poured into it, and so on. Because
+we want to reserve the network bandwidth for music, we'll store these
+logfiles locally.  This means we'll need a class that handles logging.
+However, we want only one logging object per jukebox, and we want
+that object to be shared among all the other objects that use it.
+<P></P>
+Enter the Singleton pattern, documented in <em>Design
+  Patterns</em>&nbsp;.
+We'll arrange things so that the
+only way to create a logging object is to call <code>Logger.create</code>,
+and we'll ensure that only one logging object is ever created.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Logger
+&nbsp;&nbsp;private_class_method&nbsp;:new
+&nbsp;&nbsp;@@logger&nbsp;=&nbsp;nil
+&nbsp;&nbsp;def&nbsp;Logger.create
+&nbsp;&nbsp;&nbsp;&nbsp;@@logger&nbsp;=&nbsp;new&nbsp;unless&nbsp;@@logger
+&nbsp;&nbsp;&nbsp;&nbsp;@@logger
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+By making <code>Logger</code>'s method <code>new</code> private, we prevent anyone from
+creating a logging object using the conventional constructor. Instead, we provide a class method,
+<code>Logger.create</code>. This uses the class variable <code>@@logger</code> to
+keep a reference to a single instance of the logger, returning that
+instance every time it is called.<em>[The implementation of
+  singletons that we present here is not thread-safe; if multiple
+  threads were running, it would be possible to create multiple logger
+  objects. Rather than add thread safety ourselves, however, we'd
+  probably use the <code>Singleton</code> mixin supplied with Ruby, which is
+  documented on page 468.]</em> We can check this by looking
+at the object identifiers the method returns.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>Logger.create.id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>537766930</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Logger.create.id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>537766930</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Using class methods as pseudo-constructors can also make life easier
+for users of your class. As a trivial example, let's look at a class
+<code>Shape</code> that represents a regular polygon. Instances of <code>Shape</code>
+are created by giving the constructor the required number of sides and 
+the total perimeter.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Shape
+&nbsp;&nbsp;def&nbsp;initialize(numSides,&nbsp;perimeter)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+However, a couple of years later, this class is used in a different
+application, where the programmers are used to creating shapes by
+name, and by specifying the length of the side, not the
+perimeter. Simply add some class methods to <code>Shape</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Shape
+&nbsp;&nbsp;def&nbsp;Shape.triangle(sideLength)
+&nbsp;&nbsp;&nbsp;&nbsp;Shape.new(3,&nbsp;sideLength*3)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Shape.square(sideLength)
+&nbsp;&nbsp;&nbsp;&nbsp;Shape.new(4,&nbsp;sideLength*4)
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There are many interesting and powerful uses of class methods, but
+exploring them won't get our jukebox finished any sooner, so let's
+move on.
+<h2><a name="S4">Access Control</a></h2>
+<P></P>
+When designing a class interface, it's important to consider just how
+much access to your class you'll be exposing to the outside world.
+Allow too much access into your class, and you risk increasing the
+coupling in your application---users of your class will be tempted to
+rely on details of your class's implementation, rather than on its
+logical interface.  The good news is that the only way to change an
+object's state in Ruby is by calling one of its methods.  Control
+access to the methods and you've controlled access to the object.
+A good rule of thumb is never to expose methods that could leave an
+object in an invalid state.  Ruby gives us three levels of protection.
+<P></P>
+<ul>
+<li> <b>Public methods</b> can be called by anyone---there is no
+  access control. Methods are public by default (except for
+  <code>initialize</code>, which is always private).
+</li>
+      <li> <b>Protected methods</b> can be invoked only by objects of the
+  defining class and its subclasses. Access is kept within the family.
+</li>
+      <li> <b>Private methods</b> cannot be called with an explicit
+  receiver. Because you cannot specify an object when using them,
+  private methods can be called only in the defining class and by
+  direct descendents within that same object.
+</li>
+    </ul>
+<P></P>
+The difference between ``protected'' and ``private'' is fairly subtle,
+and is different in Ruby than in most common OO languages. If a method is
+protected, it may be called by <em>any</em> instance of the defining
+class or its subclasses. If a method is private, it may  be called only
+within the context of the calling object---it is never possible to
+access another object's private methods directly, even if the object
+is of the same class as the caller.
+<P></P>
+Ruby differs from other OO languages in another important way. Access
+control is determined dynamically, as the program runs, not
+statically. You will get an access violation only when the code
+attempts to execute the restricted method.
+<h3><a name="UG">Specifying Access Control</a></h3>
+<P></P>
+You specify access levels to methods within class or module
+definitions using one or more of the three functions <code>public</code>,
+<code>protected</code>, and <code>private</code>. Each function can be used in two
+different ways.
+<P></P>
+If used with no arguments, the three functions set the default access
+control of subsequently defined methods. This is probably familiar
+behavior if you're a C++ or Java programmer, where you'd use keywords
+such as <code>public</code> to achieve the same effect.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;MyClass
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method1&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;default&nbsp;is&nbsp;'public'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;protected&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;subsequent&nbsp;methods&nbsp;will&nbsp;be&nbsp;'protected'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method2&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;will&nbsp;be&nbsp;'protected'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;private&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;subsequent&nbsp;methods&nbsp;will&nbsp;be&nbsp;'private'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method3&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;will&nbsp;be&nbsp;'private'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;subsequent&nbsp;methods&nbsp;will&nbsp;be&nbsp;'public'
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;method4&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;and&nbsp;this&nbsp;will&nbsp;be&nbsp;'public'
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Alternatively, you can set access levels of named methods by listing
+them as arguments to the access control functions.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;MyClass
+<P></P>
+&nbsp;&nbsp;def&nbsp;method1
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;#&nbsp;...&nbsp;and&nbsp;so&nbsp;on
+<P></P>
+&nbsp;&nbsp;public&nbsp;&nbsp;&nbsp;&nbsp;:method1,&nbsp;:method4
+&nbsp;&nbsp;protected&nbsp;:method2
+&nbsp;&nbsp;private&nbsp;&nbsp;&nbsp;:method3
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A class's <code>initialize</code> method is automatically declared 
+to be private.
+<P></P>
+It's time for some examples.  Perhaps we're modeling an accounting
+system where every debit has a corresponding credit. Because we want
+to ensure that no one can break this rule, we'll make the methods that
+do the debits and credits private, and we'll define our external
+interface in terms of transactions.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Accounts
+<P></P>
+&nbsp;&nbsp;private
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;debit(account,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;account.balance&nbsp;-=&nbsp;amount
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;credit(account,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;account.balance&nbsp;+=&nbsp;amount
+&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;public
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;#...
+&nbsp;&nbsp;&nbsp;&nbsp;def&nbsp;transferToSavings(amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;debit(@checking,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;credit(@savings,&nbsp;amount)
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;#...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Protected access is used when objects need to access the internal
+state of other objects of the same class.  For example, we may want to
+allow the individual <code>Account</code> objects to compare their raw
+balances, but may want to hide those balances from the rest of the
+world (perhaps because we present them in a different form).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Account
+&nbsp;&nbsp;attr_reader&nbsp;:balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;accessor&nbsp;method&nbsp;'balance'
+<P></P>
+&nbsp;&nbsp;protected&nbsp;:balance&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;and&nbsp;make&nbsp;it&nbsp;protected
+<P></P>
+&nbsp;&nbsp;def&nbsp;greaterBalanceThan(other)
+&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;@balance&nbsp;&gt;&nbsp;other.balance
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Because the attribute <code>balance</code> is protected, it's available
+only within <code>Account</code> objects.
+<h2><a name="S5">Variables</a></h2>
+<P></P>
+Now that we've gone to the trouble to create all these objects,
+let's make sure we don't lose them.  Variables are used to keep track
+of objects; each variable holds a reference to an object.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+Let's confirm this with some code.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>person&nbsp;=&nbsp;"Tim"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person.id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>537771100</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>String</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Tim"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+On the first line, Ruby creates a new <code>String</code> object with the
+value ``Tim.'' A reference to this object is placed in the local
+variable <code>person</code>.
+A quick check shows that the variable has indeed taken on the
+personality of a string, with an object id, a type, and a value.
+<P></P>
+So, is a variable an object?
+<P></P>
+In Ruby, the answer is ``no.'' A variable is simply a reference to an
+object. Objects float around in a big pool somewhere (the heap, most
+of the time) and are pointed to by variables.
+<P></P>
+Let's make the example slightly more complicated.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>person1&nbsp;=&nbsp;"Tim"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>person2&nbsp;=&nbsp;person1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>person1[0]&nbsp;=&nbsp;'J'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Jim"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Jim"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+What happened here? We changed the first character of
+<code>person1</code>, but both <code>person1</code> and <code>person2</code>
+changed from ``Tim'' to ``Jim.''
+<P></P>
+It all comes back to the fact that variables hold references to
+objects, not the objects themselves. The assignment of <code>person1</code>
+to <code>person2</code> doesn't create any new objects; it simply copies
+<code>person1</code>'s object reference to <code>person2</code>, so that both
+<code>person1</code> and <code>person2</code> refer to the same object.  We show
+this in Figure 3.1 on page 31.
+<P></P>
+Assignment <em>aliases</em> objects, potentially giving you multiple
+variables that reference the same object.
+But can't this cause problems in your code?  It can, but not
+as often as you'd think (objects in Java, for example, work exactly
+the same way).  For instance, in the example in Figure
+3.1, you could avoid aliasing by using the <code>dup</code>
+method of <code>String</code>, which creates a new <code>String</code> object with identical
+contents.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>person1&nbsp;=&nbsp;"Tim"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>person2&nbsp;=&nbsp;person1.dup</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>person1[0]&nbsp;=&nbsp;"J"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Jim"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>person2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Tim"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+You can also prevent anyone from changing a particular object by
+freezing it (we talk more about freezing objects
+on page 251). Attempt to alter a frozen object, and Ruby
+will raise a <code>TypeError</code> exception.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+person1&nbsp;=&nbsp;"Tim"
+person2&nbsp;=&nbsp;person1
+person1.freeze&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;prevent&nbsp;modifications&nbsp;to&nbsp;the&nbsp;object
+person2[0]&nbsp;=&nbsp;"J"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+prog.rb:4:in&nbsp;`=':&nbsp;can't&nbsp;modify&nbsp;frozen&nbsp;string&nbsp;(TypeError)
+	from&nbsp;prog.rb:4
+</pre>
+        </td>
+      </tr>
+    </table>
+
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="intro.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_containers.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

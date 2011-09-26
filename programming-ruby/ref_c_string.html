@@ -1,0 +1,4346 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_regexp.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_struct.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class String</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#String.new">new</a> 
+     <i>
+      <a href="#String._pc">%</a>
+    </i> <i>
+      <a href="#String._st">*</a>
+    </i> <i>
+      <a href="#String._pl">+</a>
+    </i> <i>
+      <a href="#String._lt_lt">&lt;&lt;</a>
+    </i> <i>
+      <a href="#String._lt_eq_lt">&lt;=&gt;</a>
+    </i> <i>
+      <a href="#String._eq_eq">==</a>
+    </i> <i>
+      <a href="#String._eq_eq_eq">===</a>
+    </i> <i>
+      <a href="#String._eq_sd">=~</a>
+    </i> <i>
+      <a href="#String._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#String._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#String._sd">~</a>
+    </i> <i>
+      <a href="#String.capitalize">capitalize</a>
+    </i> <i>
+      <a href="#String.capitalize_oh">capitalize!</a>
+    </i> <i>
+      <a href="#String.center">center</a>
+    </i> <i>
+      <a href="#String.chomp">chomp</a>
+    </i> <i>
+      <a href="#String.chomp_oh">chomp!</a>
+    </i> <i>
+      <a href="#String.chop">chop</a>
+    </i> <i>
+      <a href="#String.chop_oh">chop!</a>
+    </i> <i>
+      <a href="#String.concat">concat</a>
+    </i> <i>
+      <a href="#String.count">count</a>
+    </i> <i>
+      <a href="#String.crypt">crypt</a>
+    </i> <i>
+      <a href="#String.delete">delete</a>
+    </i> <i>
+      <a href="#String.delete_oh">delete!</a>
+    </i> <i>
+      <a href="#String.downcase">downcase</a>
+    </i> <i>
+      <a href="#String.downcase_oh">downcase!</a>
+    </i> <i>
+      <a href="#String.dump">dump</a>
+    </i> <i>
+      <a href="#String.each">each</a>
+    </i> <i>
+      <a href="#String.each_byte">each_byte</a>
+    </i> <i>
+      <a href="#String.each_line">each_line</a>
+    </i> <i>
+      <a href="#String.empty_qm">empty?</a>
+    </i> <i>
+      <a href="#String.gsub">gsub</a>
+    </i> <i>
+      <a href="#String.gsub_oh">gsub!</a>
+    </i> <i>
+      <a href="#String.hash">hash</a>
+    </i> <i>
+      <a href="#String.hex">hex</a>
+    </i> <i>
+      <a href="#String.include_qm">include?</a>
+    </i> <i>
+      <a href="#String.index">index</a>
+    </i> <i>
+      <a href="#String.intern">intern</a>
+    </i> <i>
+      <a href="#String.length">length</a>
+    </i> <i>
+      <a href="#String.ljust">ljust</a>
+    </i> <i>
+      <a href="#String.next">next</a>
+    </i> <i>
+      <a href="#String.next_oh">next!</a>
+    </i> <i>
+      <a href="#String.oct">oct</a>
+    </i> <i>
+      <a href="#String.replace">replace</a>
+    </i> <i>
+      <a href="#String.reverse">reverse</a>
+    </i> <i>
+      <a href="#String.reverse_oh">reverse!</a>
+    </i> <i>
+      <a href="#String.rindex">rindex</a>
+    </i> <i>
+      <a href="#String.rjust">rjust</a>
+    </i> <i>
+      <a href="#String.scan">scan</a>
+    </i> <i>
+      <a href="#String.size">size</a>
+    </i> <i>
+      <a href="#String.slice">slice</a>
+    </i> <i>
+      <a href="#String.slice_oh">slice!</a>
+    </i> <i>
+      <a href="#String.split">split</a>
+    </i> <i>
+      <a href="#String.squeeze">squeeze</a>
+    </i> <i>
+      <a href="#String.squeeze_oh">squeeze!</a>
+    </i> <i>
+      <a href="#String.strip">strip</a>
+    </i> <i>
+      <a href="#String.strip_oh">strip!</a>
+    </i> <i>
+      <a href="#String.sub">sub</a>
+    </i> <i>
+      <a href="#String.sub_oh">sub!</a>
+    </i> <i>
+      <a href="#String.succ">succ</a>
+    </i> <i>
+      <a href="#String.succ_oh">succ!</a>
+    </i> <i>
+      <a href="#String.sum">sum</a>
+    </i> <i>
+      <a href="#String.swapcase">swapcase</a>
+    </i> <i>
+      <a href="#String.swapcase_oh">swapcase!</a>
+    </i> <i>
+      <a href="#String.to_f">to_f</a>
+    </i> <i>
+      <a href="#String.to_i">to_i</a>
+    </i> <i>
+      <a href="#String.to_s">to_s</a>
+    </i> <i>
+      <a href="#String.to_str">to_str</a>
+    </i> <i>
+      <a href="#String.tr">tr</a>
+    </i> <i>
+      <a href="#String.tr_oh">tr!</a>
+    </i> <i>
+      <a href="#String.tr_s">tr_s</a>
+    </i> <i>
+      <a href="#String.tr_s_oh">tr_s!</a>
+    </i> <i>
+      <a href="#String.unpack">unpack</a>
+    </i> <i>
+      <a href="#String.upcase">upcase</a>
+    </i> <i>
+      <a href="#String.upcase_oh">upcase!</a>
+    </i> <i>
+      <a href="#String.upto">upto</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+      A <code>String</code> object holds and manipulates an arbitrary sequence
+      of bytes, typically representing characters. String objects may
+      be created using <a href="ref_c_string.html#String.new">
+      <code>String.new</code>
+    </a> or as literals (see page
+      202).
+<P></P>
+  Because of aliasing issues, users of strings should be aware of the
+  methods that modify the contents of a <code>String</code> object. Typically,
+  methods with names ending in ``!'' modify their receiver, while those
+  without a ``!'' return a new <code>String</code>. However, there are exceptions, such 
+  as <a href="ref_c_string.html#String._ob_cb_eq">
+      <code>String#[]=</code>
+    </a>.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>Comparable:
+    </td>
+        <td>
+   &lt;, &lt;=, ==, &gt;=, &gt;, between?</td>
+      </tr>
+    <tr>
+        <td>Enumerable:
+    </td>
+        <td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        String.new( <i>aString</i> )
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new string object containing a copy of <i>aString</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._pc">%</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> % <i>arg</i>
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Format---Uses <i>str</i> as a format
+      specification, and returns the result of applying it to
+      <i>arg</i>. If the format specification contains more than one
+      substitution, then <i>arg</i> must be an <code>Array</code> containing the
+      values to be substituted. See <a href="ref_m_kernel.html#Kernel.sprintf">
+          <code>Kernel::sprintf</code>
+        </a>
+      on page 423 for details of the format string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"%05d"&nbsp;%&nbsp;123</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"00123"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"%-5s:&nbsp;%08x"&nbsp;%&nbsp;[&nbsp;"ID",&nbsp;self.id&nbsp;]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ID<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">:<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">200e1670"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._st">*</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> * <i>anInteger</i>
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Copy---Returns a new <code>String</code> containing <i>anInteger</i> copies of
+      the receiver.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"Ho!&nbsp;"&nbsp;*&nbsp;3</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Ho!&nbsp;Ho!&nbsp;Ho!&nbsp;"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._pl">+</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> + <i>aString</i>
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Concatenation---Returns a new <code>String</code> containing 
+      <i>aString</i> concatenated to <i>str</i>. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"Hello&nbsp;from&nbsp;"&nbsp;+&nbsp;self.to_s</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello&nbsp;from&nbsp;main"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._lt_lt">&lt;&lt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i> &lt;&lt; <i>aFixnum</i> -&gt; <i>str</i>
+          <br>
+          <i>str</i> &lt;&lt; <i>anObject</i> -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Append---Concatenates the given object to <i>str</i>. If the object is a
+      <code>Fixnum</code> between 0 and 255, it is converted to a character
+      before concatenation.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"hello&nbsp;"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;&lt;&lt;&nbsp;"world"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello&nbsp;world"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;&lt;&lt;&nbsp;33</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello&nbsp;world!"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello&nbsp;world!"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._lt_eq_lt">&lt;=&gt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> &lt;=&gt; <i>aString</i>
+        -&gt; -1, 0, +1
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Comparison---Returns -1 if <i>str</i> is less than, 0
+      if <i>str</i> is equal to, and +1 if <i>str</i> is greater than
+      <i>aString</i>. If the strings are of different lengths, and the
+      strings are equal when compared up to the shortest length, then
+      the longer string is considered greater than the shorter one. If
+      the variable <code>$=</code> is <code>false</code>, the comparison is based
+      on comparing the binary values of each character in the string.
+      If <code>$=</code> is not <code>false</code>, then the comparison is
+      case insensitive.<em>[The locale is ignored when
+        case-insensitive comparisons are performed, so ``\"o'' will not
+        match ``\"O''.]</em>
+<P></P>
+      <code>&lt;=&gt;</code> is the basis for the methods <code>&lt;</code>,
+      <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>, and <code>between?</code>,
+      included from module <code>Comparable</code>. The method <a href="ref_c_string.html#String._eq_eq">
+          <code>String#==</code>
+        </a>
+      does not use <a href="ref_m_comparable.html#Comparable._eq_eq">
+          <code>Comparable#==</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"abcdef"&nbsp;&lt;=&gt;&nbsp;"abcde"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"abcdef"&nbsp;&lt;=&gt;&nbsp;"abcdef"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"abcdef"&nbsp;&lt;=&gt;&nbsp;"abcdefg"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>-1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"abcdef"&nbsp;&lt;=&gt;&nbsp;"ABCDEF"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>$=&nbsp;=&nbsp;true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"abcdef"&nbsp;&lt;=&gt;&nbsp;"ABCDEF"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._eq_eq">==</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> == <i>anObject</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equality---If <i>anObject</i> is not a <code>String</code>, returns
+      <code>false</code>. Otherwise, returns <code>true</code> if <i>str</i> <code>&lt;=&gt;</code>
+      <i>anObject</i> returns zero.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._eq_eq_eq">===</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> === <i>anObject</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Case Equality---Synonym for <a href="ref_c_string.html#String._eq_eq">
+          <code>String#==</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._eq_sd">=~</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i> =~ <i>anObject</i>
+        -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Match---If <i>anObject</i> is a <code>Regexp</code> or a <code>String</code>, uses it as a
+      pattern to match against <i>str</i>.  Returns
+      the position the match starts, or <code>nil</code> if there is no match.
+      Otherwise, invokes
+      <i>anObject.=~</i>, passing <i>str</i> as an argument. The
+      default <code>=~</code> in <code>Object</code> returns <code>false</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"cat&nbsp;o'&nbsp;9&nbsp;tails"&nbsp;=~&nbsp;"\\d"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>7</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"cat&nbsp;o'&nbsp;9&nbsp;tails"&nbsp;=~&nbsp;/\d/</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>7</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"cat&nbsp;o'&nbsp;9&nbsp;tails"&nbsp;=~&nbsp;9</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>[ <i>aFixnum</i> ] -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>[ <i>aFixnum</i>, <i>aFixnum</i> ] -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>[ <i>aRange</i> ] -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>[ <i>aRegexp</i> ] -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>[ <i>aString</i> ] -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Element Reference---If passed a single <code>Fixnum</code>, returns the
+        code of the character at that position. If passed two
+        <code>Fixnum</code> objects, returns a substring starting at the offset given
+        by the first, and a length given by the second. If given a
+        range, a substring containing characters at offsets given by
+        the range is returned. In all three cases, if an offset is
+        negative, it is counted from the end of <i>str</i>. Returns <code>nil</code>
+        if the initial offset falls outside the string, the length is
+        negative, or the beginning of the range is greater than the
+        end.
+<P></P>
+      If a <code>Regexp</code> is supplied, the matching portion of <i>str</i> is
+      returned. If a <code>String</code> is given, that string is returned if it 
+      occurs in <i>str</i>. In both cases, <code>nil</code> is returned if there
+      is no match.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"hello&nbsp;there"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[1]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>101</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[1,3]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ell"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[1..3]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ell"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[-3,2]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"er"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[-4..-2]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"her"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[-2..-4]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a[/th[aeiou]/]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"the"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a["lo"]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"lo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a["bye"]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>[ <i>aFixnum</i> ] = <i>aFixnum</i>
+          <br>
+          <i>str</i>[ <i>aFixnum</i> ] = <i>aString</i>
+          <br>
+          <i>str</i>[ <i>aFixnum</i>, <i>aFixnum</i> ] = <i>aString</i>
+          <br>
+          <i>str</i>[ <i>aRange</i> ] = <i>aString</i>
+          <br>
+          <i>str</i>[ <i>aRegexp</i> ] = <i>aString</i>
+          <br>
+          <i>str</i>[ <i>aString</i> ] = <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Element Assignment---Replaces some or all of the content of
+        <i>str</i>. The portion of the string affected is determined using
+        the same criteria as <a href="ref_c_string.html#String._ob_cb">
+          <code>String#[]</code>
+        </a>. If the replacement
+        string is not the same length as the text it is replacing, the
+        string will be adjusted accordingly.  
+                The forms that take a <code>Fixnum</code> will raise an
+        <code>IndexError</code> if the value is out of range; the <code>Range</code>
+        form will raise a <code>RangeError</code>, and the <code>Regexp</code> and
+        <code>String</code> forms will silently ignore the assignment.
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;96;&nbsp;&nbsp;&nbsp;&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"he`lo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[2,&nbsp;4]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hexyz"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[-4,&nbsp;2]&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hxyzlo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[2..4]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hexyz"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[-4..-2]&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hxyzo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[/[el]+/]&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hxyzo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a["l"]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hexyzlo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a["ll"]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hexyzo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a["bad"]&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;=&nbsp;"hello";&nbsp;a[2,&nbsp;0]&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"xyz";&nbsp;a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hexyzllo"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String._sd">~</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        ~<i>str</i>
+        -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>$_</code>
+        <code>&nbsp;=~&nbsp;<i>str</i>
+        </code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.capitalize">capitalize</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.capitalize
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with the first character converted to
+      uppercase and the remainder to lowercase.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".capitalize</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"HELLO".capitalize</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"123ABC".capitalize</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"123abc"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.capitalize_oh">capitalize!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.capitalize!
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Modifies <i>str</i> by converting  the first character to
+      uppercase and the remainder to lowercase. Returns <code>nil</code> if 
+      no changes are made. 
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.capitalize!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.capitalize!</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.center">center</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.center( <i>anInteger</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>anInteger</i> is greater than the length of <i>str</i>, returns a
+      new <code>String</code> of length <i>anInteger</i> with <i>str</i> centered
+      between spaces; otherwise,
+      returns <i>str</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".center(4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".center(20)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">hello<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.chomp">chomp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.chomp( <i>aString</i>=<code>$/</code> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns a new <code>String</code> with the given record separator removed 
+      from the end of <i>str</i> (if present).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".chomp</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello\n".chomp</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello&nbsp;\n&nbsp;there".chomp</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello&nbsp;\n&nbsp;there"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".chomp("llo")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"he"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.chomp_oh">chomp!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.chomp!( <i>aString</i>=<code>$/</code> )
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Modifies <i>str</i> in place as described for <a href="ref_c_string.html#String.chomp">
+          <code>String#chomp</code>
+        </a>,
+      returning <i>str</i>, or <code>nil</code> if no modifications were made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.chop">chop</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.chop
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Returns a new <code>String</code> with the last character removed. If the 
+      string ends with <code>\r\n</code>, both characters are
+      removed. Applying <code>chop</code> to an empty string returns an
+      empty string. <a href="ref_c_string.html#String.chomp">
+          <code>String#chomp</code>
+        </a> is often a safer alternative,
+      as it leaves the string unchanged  if it doesn't end in a record 
+      separator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"string\r\n".chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"string"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"string\n\r".chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"string\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"string\n".chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"string"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"string".chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"strin"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"x".chop.chop</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>""</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.chop_oh">chop!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.chop!
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Processes <i>str</i> as for <a href="ref_c_string.html#String.chop">
+          <code>String#chop</code>
+        </a>, returning <i>str</i>,
+      or <code>nil</code> if <i>str</i> is the empty string.  See also
+      <a href="ref_c_string.html#String.chomp_oh">
+          <code>String#chomp!</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.concat">concat</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.concat( <i>aFixnum</i> ) -&gt; <i>str</i>
+          <br>
+          <i>str</i>.concat( <i>anObject</i> ) -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String._lt_lt">
+          <code>String#&lt;&lt;</code>
+        </a>. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.count">count</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.count( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Each <i>aString</i> parameter defines a set of characters to
+      count. The intersection of these sets defines the characters to count
+      in <i>str</i>. Any <i>aString</i> that starts with a caret (^) is
+      negated. The sequence c<sub>1</sub>--c<sub>2</sub> means all characters between
+      c<sub>1</sub> and c<sub>2</sub>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"hello&nbsp;world"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.count&nbsp;"lo"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.count&nbsp;"lo",&nbsp;"o"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.count&nbsp;"hello",&nbsp;"^l"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.count&nbsp;"ej-m"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.crypt">crypt</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.crypt( <i>aString</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Applies a one-way      
+      cryptographic hash to <i>str</i> by invoking the standard library
+      function <code>crypt</code>. The argument is the salt
+      string, which should be two characters long, each character
+      drawn from <code>[a-zA-Z0-9./]</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.delete">delete</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.delete( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with all characters in the intersection of
+      its arguments deleted. Uses the same rules for building the set
+      of characters as <a href="ref_c_string.html#String.count">
+          <code>String#count</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".delete&nbsp;"l","lo"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"heo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".delete&nbsp;"lo"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"he"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".delete&nbsp;"aeiou",&nbsp;"^e"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hell"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".delete&nbsp;"ej-m"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ho"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.delete_oh">delete!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.delete!( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs a <code>delete</code> operation in place, returning <i>str</i>, or 
+      <code>nil</code> if <i>str</i> was not modified. </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.downcase">downcase</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.downcase -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with all uppercase letters replaced
+      with their lowercase counterparts. The operation is locale
+      insensitive---only characters ``A'' to ``Z'' are affected. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hEllO".downcase</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.downcase_oh">downcase!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.downcase!
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Downcases the contents of <i>str</i>, returning <code>nil</code> if no
+      changes were made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.dump">dump</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.dump -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Produces a version of <i>str</i> with all nonprinting characters
+      replaced by <code>\nnn</code> notation and all special characters
+      escaped. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.each( <i>aString</i>=<code>$/</code> )
+        {| substr | block }
+ -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Splits <i>str</i> using the supplied parameter as the record
+      separator (<code>$/</code> by default), passing each substring in turn 
+      to the supplied block. If a zero-length record separator is
+      supplied, the string is split on <code>\n</code> characters, except
+      that multiple successive newlines are appended together.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+print&nbsp;"Example&nbsp;one\n"
+"hello\nworld".each&nbsp;{|s|&nbsp;p&nbsp;s}
+print&nbsp;"Example&nbsp;two\n"
+"hello\nworld".each('l')&nbsp;{|s|&nbsp;p&nbsp;s}
+print&nbsp;"Example&nbsp;three\n"
+"hello\n\n\nworld".each('')&nbsp;{|s|&nbsp;p&nbsp;s}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Example&nbsp;one
+"hello\n"
+"world"
+Example&nbsp;two
+"hel"
+"l"
+"o\nworl"
+"d"
+Example&nbsp;three
+"hello\n\n\n"
+"world"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.each_byte">each_byte</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.each_byte {| aFixnum | block }
+<P></P>
+        -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Passes each byte in <i>str</i> to the given block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+"hello".each_byte&nbsp;{|c|&nbsp;print&nbsp;c,&nbsp;'&nbsp;'&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+104&nbsp;101&nbsp;108&nbsp;108&nbsp;111
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.each_line">each_line</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.each_line( <i>aString</i>=<code>$/</code> )
+        {| substr | block }
+ -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String.each">
+          <code>String#each</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.empty_qm">empty?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.empty? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>str</i> has a length of zero.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".empty?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"".empty?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.gsub">gsub</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.gsub( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>aString</i>
+          <br>
+          <i>str</i>.gsub( <i>pattern</i> ) {| match | block }
+<P></P>
+          -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with <em>all</em> occurrences of
+      <i>pattern</i> replaced with either <i>replacement</i> or the
+      value of the block. If a string is used as the replacement,
+      special variables from the match (such as <code>$&amp;</code> and
+      <code>$1</code>) cannot be substituted into it, as substitution into
+      the string occurs before the pattern match starts. However, the
+      sequences <code>\1</code>, <code>\2</code>, and so on may be used to
+      interpolate successive groups in the match. These sequences are shown in
+      Table 22.7 on page 371.
+<P></P>
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+        <b>Backslash sequences in substitution
+          strings</b>        
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Sequence</b>
+                  </td>
+  <td valign="top">
+                    <b>Text That Is Substituted</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>\1, \2, ... \9</code>
+                  </td>
+  <td valign="top">The value matched by the
+          <em>n</em>th grouped subexpression</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>\&amp;</code>
+                  </td>
+  <td valign="top">The last match</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>\`</code>
+                  </td>
+  <td valign="top">The part of the string before the match</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>\'</code>
+                  </td>
+  <td valign="top">The part of the string after the match</td>
+</tr>
+<tr>
+  <td valign="top">
+                    <code>\+</code>
+                  </td>
+  <td valign="top">The highest-numbered group matched</td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+      In the block form, the current match is passed in as a
+      parameter, and variables such as <code>$1</code>, <code>$2</code>,
+      <code>$`</code>, <code>$&amp;</code>, and <code>$'</code> will be set
+      appropriately. The value returned by the block will be
+      substituted for the match on each call.
+<P></P>
+      The result inherits any tainting in the original string or any
+      supplied replacement string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".gsub(/[aeiou]/,&nbsp;'*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h*ll*"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".gsub(/([aeiou])/,&nbsp;'&lt;\1&gt;')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h&lt;e&gt;ll&lt;o&gt;"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".gsub('.')&nbsp;{|s|&nbsp;s[0].to_s&nbsp;+&nbsp;'&nbsp;'}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"104&nbsp;101&nbsp;108&nbsp;108&nbsp;111&nbsp;"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.gsub_oh">gsub!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.gsub!( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>str</i> or <code>nil</code>
+          <br>
+          <i>str</i>.gsub!( <i>pattern</i> ) {| match | block }
+<P></P>
+          -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs the substitutions of <a href="ref_c_string.html#String.gsub">
+          <code>String#gsub</code>
+        </a> in place,
+      returning <i>str</i>, or <code>nil</code> if no substitutions were
+      performed.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.hash">hash</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.hash -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Generates a <code>Fixnum</code> hash value for <i>str</i>. If <code>$=</code> is
+      <code>true</code>, the hash will be case insensitive.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>$=&nbsp;=&nbsp;true</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>hash&nbsp;=&nbsp;{&nbsp;'cat'&nbsp;=&gt;&nbsp;'Feline',&nbsp;'dog'&nbsp;=&gt;&nbsp;'canine'&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash['cat']</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Feline"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash['cAt']</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Feline"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>$=&nbsp;=&nbsp;false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash.rehash&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;re-calculate&nbsp;hash&nbsp;values</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>{"cat"=&gt;"Feline",&nbsp;"dog"=&gt;"canine"}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash['cat']</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Feline"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>hash['cAt']</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.hex">hex</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.hex -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Treats leading characters from <i>str</i> as a string of hexadecimal
+      digits (with an optional sign and an optional <code>0x</code>) and
+      returns the corresponding number. Zero is returned on error.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"0x0a".hex</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"-1234".hex</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>-4660</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"0".hex</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"wombat".hex</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.include_qm">include?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.include? <i>aString</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>str</i>.include? <i>aFixnum</i> -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>str</i> contains the given string or character.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".include?&nbsp;"lo"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".include?&nbsp;"ol"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".include?&nbsp;?h</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.index">index</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.index( <i>aString</i> <i>[</i>, <i>anOffset</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.index( <i>aFixnum</i> <i>[</i>, <i>anOffset</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.index( <i>aRegexp</i> <i>[</i>, <i>anOffset</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the index of the first occurrence of the given substring,
+      character, or pattern in <i>str</i>. Returns <code>nil</code> if not found.
+      If the second parameter is present, it specifies the position in
+      the string to begin the search.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".index('e')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".index('lo')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>3</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".index('a')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".index(101)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".index(/[aeiou]/,&nbsp;-3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.intern">intern</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.intern -&gt; <i>aSymbol</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Returns the <code>Symbol</code> corresponding to <i>str</i>, creating the
+      symbol if it did not previously exist. See <a href="ref_c_symbol.html#Symbol.id2name">
+          <code>Symbol#id2name</code>
+        </a>
+      on page 384. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"Koala".intern</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>:Koala</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.length">length</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.length -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the length of <i>str</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.ljust">ljust</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.ljust( <i>anInteger</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>anInteger</i> is greater than the length of <i>str</i>, returns a
+      new <code>String</code> of length <i>anInteger</i> with <i>str</i> left
+      justified and space padded; otherwise, returns <i>str</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".ljust(4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".ljust(20)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.next">next</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.next
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String.succ">
+          <code>String#succ</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.next_oh">next!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.next! -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String.succ_oh">
+          <code>String#succ!</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.oct">oct</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.oct
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Treats leading characters of <i>str</i> as a string of octal digits (with an optional 
+      sign) and returns the corresponding number.  Returns 0 if the
+      conversion fails.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"123".oct</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>83</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"-377".oct</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>-255</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"bad".oct</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"0377bad".oct</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>255</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.replace">replace</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.replace( <i>aString</i> )
+        -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Replaces the contents and taintedness of <i>str</i> with the
+      corresponding values in <i>aString</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>s&nbsp;=&nbsp;"hello"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s.replace&nbsp;"world"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"world"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.reverse">reverse</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.reverse
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new string  with the characters from <i>str</i> in
+      reverse order.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"stressed".reverse</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"desserts"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.reverse_oh">reverse!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.reverse! -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reverses <i>str</i> in place.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.rindex">rindex</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.rindex( <i>aString</i> <i>[</i>, <i>aFixnum</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.rindex( <i>aFixnum</i> <i>[</i>, <i>aFixnum</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.rindex( <i>aRegexp</i> <i>[</i>, <i>aFixnum</i>
+          <i>]</i> )
+            -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the index of the last occurrence of the given substring,
+      character, or pattern in <i>str</i>. Returns <code>nil</code> if not found.
+      If the second parameter is present, it specifies the position in
+      the string to end the search---characters beyond this point will 
+      not be considered.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".rindex('e')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".rindex('l')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>3</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".rindex('a')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".rindex(101)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".rindex(/[aeiou]/,&nbsp;-2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.rjust">rjust</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.rjust( <i>anInteger</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>anInteger</i> is greater than the length of <i>str</i>,
+      returns a new <code>String</code> of length
+      <i>anInteger</i> with <i>str</i> right justified and space padded;
+      otherwise, returns <i>str</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".rjust(4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".rjust(20)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">hello"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.scan">scan</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.scan( <i>pattern</i> ) -&gt; <i>anArray</i>
+          <br>
+          <i>str</i>.scan( <i>pattern</i> ) {| match, ...| block }
+ -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Both forms iterate through <i>str</i>, matching the pattern (which
+      may be a <code>Regexp</code> or a <code>String</code>). For each match, a result
+      is generated and either added 
+      to the result array or passed to the block. If the pattern
+      contains no groups, each individual result consists of the matched
+      string, <code>$&amp;</code>. If the pattern contains groups, each
+      individual result is itself an array containing one entry per group.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"cruel&nbsp;world"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.scan(/\w+/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["cruel",&nbsp;"world"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.scan(/.../)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["cru",&nbsp;"el&nbsp;",&nbsp;"wor"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.scan(/(...)/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[["cru"],&nbsp;["el&nbsp;"],&nbsp;["wor"]]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.scan(/(..)(..)/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[["cr",&nbsp;"ue"],&nbsp;["l&nbsp;",&nbsp;"wo"]]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      And the block form:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a.scan(/\w+/)&nbsp;{|w|&nbsp;print&nbsp;"&lt;&lt;#{w}&gt;&gt;&nbsp;"&nbsp;}
+print&nbsp;"\n"
+a.scan(/(.)(.)/)&nbsp;{|a,b|&nbsp;print&nbsp;b,&nbsp;a&nbsp;}
+print&nbsp;"\n"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+&lt;&lt;cruel&gt;&gt;&nbsp;&lt;&lt;world&gt;&gt;
+rceu&nbsp;lowlr
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.size -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String.length">
+          <code>String#length</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.slice">slice</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>str</i>.slice( <i>aFixnum</i> ) -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice( <i>aFixnum</i>, <i>aFixnum</i> )
+                                        -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice( <i>aRange</i> ) -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice( <i>aRegexp</i> ) -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice( <i>aString</i> ) -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String._ob_cb">
+          <code>String#[ ]</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;"hello&nbsp;there"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(1)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>101</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(1,3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ell"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(1..3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ell"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(-3,2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"er"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(-4..-2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"her"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>a.slice(-2..-4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice(/th[aeiou]/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"the"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice("lo")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"lo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.slice("bye")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.slice_oh">slice!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>str</i>.slice!( <i>aFixnum</i> ) -&gt; <i>aFixnum</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice!( <i>aFixnum</i>, <i>aFixnum</i> )
+                                        -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice!( <i>aRange</i> ) -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice!( <i>aRegexp</i> ) -&gt; <i>aString</i> or <code>nil</code>
+          <br>
+          <i>str</i>.slice!( <i>aString</i> ) -&gt; <i>aString</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Deletes the specified portion from <i>str</i>, and returns the portion
+      deleted.         The forms that take a <code>Fixnum</code> will raise an
+        <code>IndexError</code> if the value is out of range; the <code>Range</code>
+        form will raise a <code>RangeError</code>, and the <code>Regexp</code> and
+        <code>String</code> forms will silently ignore the assignment.
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>string&nbsp;=&nbsp;"this&nbsp;is&nbsp;a&nbsp;string"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>string.slice!(2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>105</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>string.slice!(3..6)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"&nbsp;is&nbsp;"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>string.slice!(/s.*t/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"sa&nbsp;st"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>string.slice!("r")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"r"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>string</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"thing"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.split">split</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.split( <i>pattern</i>=<code>$;</code>,
+          <i>[</i>
+          <i>limit</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Divides <i>str</i> into substrings based on a delimiter, returning
+      an array of these substrings.
+<P></P>
+      If <i>pattern</i> is a <code>String</code>, then its contents are used as 
+      the delimiter when splitting <i>str</i>. If <i>pattern</i> is a
+      single space, <i>str</i> is split on whitespace, with leading
+      whitespace and runs of contiguous whitespace characters ignored.
+<P></P>
+      If <i>pattern</i> is a <code>Regexp</code>, <i>str</i> is divided where the
+      pattern matches. Whenever the pattern matches a zero-length string,
+      <i>str</i> is split into individual characters.
+<P></P>
+      If <i>pattern</i> is omitted, the value of <code>$;</code> is
+      used. If <code>$;</code> is <code>nil</code> (which is the default),
+      <i>str</i> is split on whitespace as if `<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">' were specified.
+<P></P>
+      If the <i>limit</i> parameter is omitted, trailing null fields are
+      supressed. If <i>limit</i> is a positive number, at most that
+      number of fields will be returned (if <i>limit</i> is <code>1</code>,
+      the entire string is returned as the only entry in an array). If
+      negative, there is no limit to the number of fields returned,
+      and trailing null fields are not supressed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"&nbsp;now's&nbsp;&nbsp;the&nbsp;time".split</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["now's",&nbsp;"the",&nbsp;"time"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"&nbsp;now's&nbsp;&nbsp;the&nbsp;time".split('&nbsp;')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["now's",&nbsp;"the",&nbsp;"time"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"&nbsp;now's&nbsp;&nbsp;the&nbsp;time".split(/&nbsp;/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["",&nbsp;"now's",&nbsp;"",&nbsp;"the",&nbsp;"time"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"1,&nbsp;2.34,56,&nbsp;7".split(/,\s*/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["1",&nbsp;"2.34",&nbsp;"56",&nbsp;"7"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".split(//)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["h",&nbsp;"e",&nbsp;"l",&nbsp;"l",&nbsp;"o"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".split(//,&nbsp;3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["h",&nbsp;"e",&nbsp;"llo"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hi&nbsp;mom".split(/\s*/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["h",&nbsp;"i",&nbsp;"m",&nbsp;"o",&nbsp;"m"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"mellow&nbsp;yellow".split("ello")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["m",&nbsp;"w&nbsp;y",&nbsp;"w"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"1,2,,3,4,,".split(',')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["1",&nbsp;"2",&nbsp;"",&nbsp;"3",&nbsp;"4"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"1,2,,3,4,,".split(',',&nbsp;4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["1",&nbsp;"2",&nbsp;"",&nbsp;"3,4,,"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"1,2,,3,4,,".split(',',&nbsp;-4)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["1",&nbsp;"2",&nbsp;"",&nbsp;"3",&nbsp;"4",&nbsp;"",&nbsp;""]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.squeeze">squeeze</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.squeeze( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Builds a set of characters from the <i>aString</i> parameter(s)
+      using the procedure described for <a href="ref_c_string.html#String.count">
+          <code>String#count</code>
+        </a>
+      on page 368. Returns a new string where runs of
+      the same character that occur in this set are replaced
+      by a single character. If no arguments are given,
+      all runs of identical characters are replaced by a single
+      character.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"yellow&nbsp;moon".squeeze</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"yelow&nbsp;mon"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"&nbsp;&nbsp;now&nbsp;&nbsp;&nbsp;is&nbsp;&nbsp;the".squeeze("&nbsp;")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"&nbsp;now&nbsp;is&nbsp;the"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"putters&nbsp;shoot&nbsp;balls".squeeze("m-z")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"puters&nbsp;shot&nbsp;balls"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.squeeze_oh">squeeze!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.squeeze!( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>*</sup>
+          </i> )
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Squeezes <i>str</i> in place, returning either <i>str</i>, or
+      <code>nil</code> if no changes were made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.strip">strip</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.strip -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with leading and trailing whitespace removed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"&nbsp;&nbsp;&nbsp;&nbsp;hello&nbsp;&nbsp;&nbsp;&nbsp;".strip</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"\tgoodbye\r\n".strip</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"goodbye"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.strip_oh">strip!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.strip! -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Removes leading and trailing whitespace from <i>str</i>. Returns
+      <code>nil</code> if <i>str</i> was not altered.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.sub">sub</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.sub( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>aString</i>
+          <br>
+          <i>str</i>.sub( <i>pattern</i> ) {| match | block }
+ -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a copy of <i>str</i> with the <em>first</em> occurrence of
+        <i>pattern</i> replaced with either <i>replacement</i> or the
+        value of the block. If the string form of the method is used,
+        special variables such as <code>$&amp;</code> will not be useful, as
+        substitution into the string occurs before the pattern match
+        starts. However, the sequences <code>\1</code>, <code>\2</code>,
+        listed in Table 22.7 on page 371 may be used.
+<P></P>
+        In the block form, the current match is passed in as a
+        parameter, and variables such as <code>$1</code>,
+        <code>$2</code>, <code>$`</code>,         <code>$&amp;</code>, and <code>$'</code>        will be set appropriately. The value returned by the block
+        will be substituted for the match on each call.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".sub(/[aeiou]/,&nbsp;'*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h*llo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".sub(/([aeiou])/,&nbsp;'&lt;\1&gt;')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h&lt;e&gt;llo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".sub('.')&nbsp;{|s|&nbsp;s[0].to_s&nbsp;+&nbsp;'&nbsp;'&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"104&nbsp;ello"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.sub_oh">sub!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>str</i>.sub!( <i>pattern</i>, <i>replacement</i> )
+          -&gt; <i>str</i> or <code>nil</code>
+          <br>
+          <i>str</i>.sub!( <i>pattern</i> ) {| match | block }
+<P></P>
+          -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs the substitutions of <a href="ref_c_string.html#String.sub">
+          <code>String#sub</code>
+        </a> in place,
+      returning <i>str</i>, or <code>nil</code> if no substitutions were
+      performed.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.succ">succ</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.succ
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns the successor to <i>str</i>. The successor is calculated by
+      incrementing characters starting from the rightmost 
+      alphanumeric (or the rightmost character if there are no
+      alphanumerics) in the string. Incrementing a digit always results
+      in another digit, and incrementing a letter results in another
+      letter of the same case. Incrementing nonalphanumerics uses the 
+      underlying character set's collating sequence.
+<P></P>
+      If the increment generates a ``carry,'' the character to the
+      left of it is incremented. This process repeats until there is
+      no carry, adding an additional character if necessary.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"abcd".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"abce"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"THX1138".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"THX1139"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"&lt;&lt;koala&gt;&gt;".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"&lt;&lt;koalb&gt;&gt;"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"1999zzz".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"2000aaa"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"ZZZ9999".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"AAAA0000"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"***".succ</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"**+"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.succ_oh">succ!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.succ! -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <a href="ref_c_string.html#String.succ">
+          <code>String#succ</code>
+        </a>, but modifies the receiver in place.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.sum">sum</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.sum( <i>aFixnum</i>=16 )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a basic      
+      <em>n</em>-bit checksum of the characters in
+      <i>str</i>, where <em>n</em> is the optional parameter, defaulting to 16. The
+      result is simply the sum of the binary value of each character
+      in <i>str</i> modulo 2<sup>n</sup> - 1. This is not a particularly good checksum.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.swapcase">swapcase</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.swapcase -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with uppercase alphabetic characters 
+      converted to lowercase and lowercase characters converted to uppercase.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"Hello".swapcase</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hELLO"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"cYbEr_PuNk11".swapcase</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"CyBeR_pUnK11"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.swapcase_oh">swapcase!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.swapcase! -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <a href="ref_c_string.html#String.swapcase">
+          <code>String#swapcase</code>
+        </a>, but modifies the receiver in
+      place, returning <i>str</i>, or <code>nil</code> if no changes were
+      made. </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.to_f">to_f</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.to_f -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the result of interpreting leading characters in <i>str</i>
+      as a floating point number. Extraneous characters past the end
+      of a valid number are ignored. If there is not a valid number at 
+      the start of <i>str</i>, <code>0.0</code> is returned. The method never
+      raises an exception.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"123.45e1".to_f</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1234.5</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"45.67&nbsp;degrees".to_f</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>45.67</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"thx1138".to_f</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0.0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.to_i">to_i</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.to_i -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the result of interpreting leading characters in <i>str</i>
+      as a decimal integer. Extraneous characters past the end
+      of a valid number are ignored. If there is not a valid number at 
+      the start of <i>str</i>, <code>0</code> is returned. The method never
+      raises an exception.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"12345".to_i</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>12345</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"99&nbsp;red&nbsp;balloons".to_i</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>99</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"0x0a".to_i</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".to_i</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.to_s">to_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.to_s -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the receiver.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.to_str">to_str</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.to_str -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_string.html#String.to_s">
+          <code>String#to_s</code>
+        </a>. <code>to_str</code> is
+      used by methods such as <a href="ref_c_string.html#String.concat">
+          <code>String#concat</code>
+        </a> to convert their
+      arguments to a string. Unlike <code>to_s</code>, which is supported 
+      by almost all classes, <code>to_str</code> is normally implemented
+      only by those classes that act like strings. Of the built-in
+      classes, only <code>Exception</code>
+      and <code>String</code> implement <code>to_str</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.tr">tr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.tr( <i>fromString</i>, <i>toString</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with the characters in
+      <i>fromString</i> replaced by the corresponding characters in
+      <i>toString</i>. If <i>toString</i> is shorter than
+      <i>fromString</i>, it is padded with its last character. Both
+      strings may use the c<sub>1</sub>--c<sub>2</sub> notation to denote ranges of
+      characters, and <i>fromString</i> may start with a <code>^</code>,
+      which denotes all characters except those listed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".tr('aeiou',&nbsp;'*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h*ll*"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".tr('^aeiou',&nbsp;'*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"*e**o"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".tr('el',&nbsp;'ip')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hippo"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".tr('a-y',&nbsp;'b-z')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ifmmp"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.tr_oh">tr!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.tr!( <i>fromString</i>, <i>toString</i> )
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Translates <i>str</i> in place, using the same rules as
+      <a href="ref_c_string.html#String.tr">
+          <code>String#tr</code>
+        </a>. Returns <i>str</i>, or <code>nil</code> if no changes were 
+      made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.tr_s">tr_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.tr_s( <i>fromString</i>, <i>toString</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Processes a copy of <i>str</i> as described under <a href="ref_c_string.html#String.tr">
+          <code>String#tr</code>
+        </a>,
+      then removes duplicate characters in regions that were affected
+      by the translation.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hello".tr_s('l',&nbsp;'r')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hero"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".tr_s('el',&nbsp;'*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"h*o"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".tr_s('el',&nbsp;'hx')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hhxo"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.tr_s_oh">tr_s!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.tr_s!( <i>fromString</i>, <i>toString</i> )
+        -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs <a href="ref_c_string.html#String.tr_s">
+          <code>String#tr_s</code>
+        </a> processing on <i>str</i> in place,
+      returning <i>str</i>, or <code>nil</code> if no changes were made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.unpack">unpack</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.unpack( <i>format</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Decodes      
+      <i>str</i> (which may contain binary data) according to the format
+      string, returning an array of each value extracted.  The format
+      string consists of a sequence of single-character directives,
+      summarized in Table 22.8 on page 379.  Each directive may be
+      followed by a number, indicating the number of times to repeat
+      with this directive.  An asterisk (``<code>*</code>'') will use up all
+      remaining elements.  The directives <code>sSiIlL</code> may each be followed
+      by an underscore (``<code>_</code>'') to use the underlying platform's
+      native size for the specified type; otherwise, it uses a
+      platform-independent consistent size.  Spaces are ignored in the format
+      string. See also <a href="ref_c_array.html#Array.pack">
+          <code>Array#pack</code>
+        </a> on page 286.
+      <table border="2" width="500" bgcolor="#ffe0e0">
+          <tr>
+            <td>
+<P></P>
+        <b>Directives for <a href="ref_c_string.html#String.unpack">
+                  <code>String#unpack</code>
+                </a>
+              </b>        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                    <b>Format</b>
+                  </td>
+  <td valign="top">
+                    <b>Function</b>
+                  </td>
+  <td valign="top">
+                    <b>Returns</b>
+                  </td>
+</tr>
+<tr>
+  <td valign="top">A</td>
+  <td valign="top">String with trailing nulls and spaces removed.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">a</td>
+  <td valign="top">String.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">B</td>
+  <td valign="top">Extract bits from each character (msb first).</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">b</td>
+  <td valign="top">Extract bits from each character (lsb first).</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">C</td>
+  <td valign="top">Extract a character as an unsigned integer.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">c</td>
+  <td valign="top">Extract a character as an integer.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">d</td>
+  <td valign="top">Treat <em>sizeof(double)</em> characters as a native
+          double.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">E</td>
+  <td valign="top">Treat <em>sizeof(double)</em> characters as a double in
+          little-endian byte order.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">e</td>
+  <td valign="top">Treat <em>sizeof(float)</em> characters as a float in
+          little-endian byte order.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">f</td>
+  <td valign="top">Treat <em>sizeof(float)</em> characters as a native float.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">G</td>
+  <td valign="top">Treat <em>sizeof(double)</em> characters as a double in
+          network byte order.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">g</td>
+  <td valign="top">Treat <em>sizeof(float)</em> characters as a float in
+          network byte order.</td>
+  <td valign="top">Float</td>
+</tr>
+<tr>
+  <td valign="top">H</td>
+  <td valign="top">Extract hex nibbles from each character (most
+          significant first).</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">h</td>
+  <td valign="top">Extract hex nibbles from each character (least
+          significant first).</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">I</td>
+  <td valign="top">Treat <em>sizeof(int)</em>
+                    <sup>1</sup> successive
+          characters as an unsigned native integer.</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">i</td>
+  <td valign="top">Treat <em>sizeof(int)</em>
+                    <sup>1</sup> successive
+          characters as a signed native integer.</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">L</td>
+  <td valign="top">Treat four<sup>1</sup> successive
+          characters as an unsigned native
+          long integer.</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">l</td>
+  <td valign="top">Treat four<sup>1</sup> successive
+          characters as a signed native
+          long integer.</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">M</td>
+  <td valign="top">Extract a quoted-printable string.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">m</td>
+  <td valign="top">Extract a base64 encoded string.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">N</td>
+  <td valign="top">Treat four characters as an unsigned long in network
+          byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">n</td>
+  <td valign="top">Treat two characters as an unsigned short in network
+          byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">P</td>
+  <td valign="top">Treat <em>sizeof(char *)</em> characters as a pointer, and 
+          return <em>len</em> characters from the referenced location.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">p</td>
+  <td valign="top">Treat <em>sizeof(char *)</em> characters as a pointer to a 
+          null-terminated string.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">S</td>
+  <td valign="top">Treat two<sup>1</sup> successive characters as an unsigned
+          short in
+          native byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">s</td>
+  <td valign="top">Treat two<sup>1</sup> successive
+          characters as a signed short in
+          native byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">U</td>
+  <td valign="top">Extract UTF-8 characters as unsigned integers.</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">u</td>
+  <td valign="top">Extract a UU-encoded string.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">V</td>
+  <td valign="top">Treat four characters as an unsigned long in little-endian
+          byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">v</td>
+  <td valign="top">Treat two characters as an unsigned short in little-endian
+          byte order.</td>
+  <td valign="top">Fixnum</td>
+</tr>
+<tr>
+  <td valign="top">X</td>
+  <td valign="top">Skip backward one character.</td>
+  <td valign="top">---</td>
+</tr>
+<tr>
+  <td valign="top">x</td>
+  <td valign="top">Skip forward one character.</td>
+  <td valign="top">---</td>
+</tr>
+<tr>
+  <td valign="top">Z</td>
+  <td valign="top">String with trailing nulls removed.</td>
+  <td valign="top">String</td>
+</tr>
+<tr>
+  <td valign="top">@</td>
+  <td valign="top">Skip to the offset given by the length argument.</td>
+  <td valign="top">---</td>
+</tr>
+<tr>
+                  <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+                </tr>
+              </table>
+<P></P>
+        <sup>1</sup>&nbsp;May be modified by appending ``_'' to the directive.
+<P></P>
+      </td>
+          </tr>
+        </table>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"abc&nbsp;\0\0abc&nbsp;\0\0".unpack('A6Z6')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["abc",&nbsp;"abc&nbsp;"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"abc&nbsp;\0\0".unpack('a3a3')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["abc",&nbsp;"&nbsp;\000\000"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"aa".unpack('b8B8')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["10000110",&nbsp;"01100001"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"aaa".unpack('h2H2c')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["16",&nbsp;"61",&nbsp;97]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"\xfe\xff\xfe\xff".unpack('sS')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[-2,&nbsp;65534]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"now=20is".unpack('M*')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["now&nbsp;is"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"whole".unpack('xax2aX2aX1aX2a')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["h",&nbsp;"e",&nbsp;"l",&nbsp;"l",&nbsp;"o"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.upcase">upcase</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.upcase -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a copy of <i>str</i> with all lowercase letters replaced
+      with their uppercase counterparts. The operation is locale
+      insensitive---only characters ``a'' to ``z'' are affected.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>"hEllO".upcase</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"HELLO"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.upcase_oh">upcase!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.upcase! -&gt; <i>str</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Upcases the contents of <i>str</i>, returning <code>nil</code> if no
+      changes were made.
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="String.upto">upto</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>str</i>.upto( <i>aString</i> )
+        {| s | block }
+ -&gt; <i>str</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates through successive values, starting at <i>str</i> and
+      ending at <i>aString</i> inclusive, passing each value in turn to
+      the block. The <a href="ref_c_string.html#String.succ">
+          <code>String#succ</code>
+        </a> method is used to generate each
+      value.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+"a8".upto("b6")&nbsp;{|s|&nbsp;print&nbsp;s,&nbsp;'&nbsp;'&nbsp;}
+for&nbsp;s&nbsp;in&nbsp;"a8".."b6"
+&nbsp;&nbsp;print&nbsp;s,&nbsp;'&nbsp;'
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a8&nbsp;a9&nbsp;b0&nbsp;b1&nbsp;b2&nbsp;b3&nbsp;b4&nbsp;b5&nbsp;b6
+a8&nbsp;a9&nbsp;b0&nbsp;b1&nbsp;b2&nbsp;b3&nbsp;b4&nbsp;b5&nbsp;b6
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_regexp.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_struct.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

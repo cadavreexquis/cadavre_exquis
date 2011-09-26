@@ -1,0 +1,1800 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ext_ruby.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="classes.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+
+<h1>The Ruby Language</h1>
+    <hr>
+    <br>
+<P></P>
+This chapter is a bottom-up look at the Ruby language. Unlike the
+previous tutorial, here we're concentrating on presenting facts,
+rather than motivating some of the language design features. We also
+ignore the built-in classes and modules where possible. These are
+covered in depth starting on page 275.
+<P></P>
+If the content of this chapter looks familiar, it's because it should;
+we've covered just about all of this in the earlier tutorial chapters.
+Consider this chapter to be a self-contained reference to the core Ruby 
+language.
+<h2><a name="S1">Source Layout</a></h2>
+<P></P>
+Ruby programs are written in 7-bit
+ASCII.<em>[Ruby also has extensive support for Kanji,    
+   using the
+  EUC, SJIS, or UTF-8 coding system. If a
+  code set
+  other than 7-bit ASCII is used, the <code>KCODE</code> option must be
+  set appropriately, as shown on page 137.]</em>
+<P></P>
+Ruby is a line-oriented language. Ruby expressions and statements are
+terminated at the end of a line unless the statement is obviously
+incomplete---for example if the last token on a line is an operator or
+comma.
+A semicolon can be used to separate
+multiple expressions on a line.  You can also put a backslash at the
+end of a line to continue it onto the next.  Comments start
+with `#' and run to the end of the
+physical line. Comments are ignored during compilation.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;1
+<P></P>
+b&nbsp;=&nbsp;2;&nbsp;c&nbsp;=&nbsp;3
+<P></P>
+d&nbsp;=&nbsp;4&nbsp;+&nbsp;5&nbsp;+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;no&nbsp;'\'&nbsp;needed
+&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;+&nbsp;7
+<P></P>
+e&nbsp;=&nbsp;8&nbsp;+&nbsp;9&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;'\'&nbsp;needed
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Physical lines between a line starting with =begin and{=begin...=end@<code></code>{=begin documentation}
+a line starting with =end are
+ignored by the compiler and may be used for embedded documentation
+(see Appendix A, which begins on page 511).
+<P></P>
+Ruby reads its program input in a single pass, so you can pipe
+programs to the compiler's <code>stdin</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+echo&nbsp;'print&nbsp;"Hello\n"'&nbsp;|&nbsp;ruby
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If the compiler comes across a line anywhere in the source containing
+just ``<code>__END__</code>'',
+with no leading or trailing whitespace, it
+treats that line as the end of the program---any subsequent lines will not be
+compiled. However, these lines can be read into the running program
+using the global <code>IO</code> object <code>DATA</code>, described
+on page 217.
+<h3><a name="UA">BEGIN and END Blocks</a></h3>
+<P></P>
+Every Ruby source file can declare blocks of code to be run as the
+file is being loaded (the <code>BEGIN</code> blocks) and after the program
+has finished executing (the <code>END</code> blocks).
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+BEGIN {
+  <i>begin code</i>
+}
+<P></P>
+END {
+  <i>end code</i>
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+<P></P>
+A program may include multiple <code>BEGIN</code> and <code>END</code> blocks.
+<code>BEGIN</code> blocks are executed in the order they are encountered.
+<code>END</code> blocks are executed in reverse order.
+<h3><a name="UB">General Delimited Input</a></h3>
+<P></P>
+There are alternative forms of literal strings, arrays, regular
+expressions, and shell commands that are specified using a generalized
+delimited syntax.
+All these literals start with a percent character,
+followed by a single character that identifies the literal's type.
+These
+characters are summarized in Table 18.1 on page 200; the actual
+literals are described in the corresponding sections later in this
+chapter.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>General delimited input</b>
+  <center>
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                  <b>Type</b>
+                </td>
+  <td valign="top">
+                  <b>Meaning</b>
+                </td>
+  <td valign="top">
+                  <b>See Page</b>
+                </td>
+</tr>
+<tr>
+  <td valign="top">
+                  <code>%q</code>
+                </td>
+  <td valign="top">Single-quoted string</td>
+  <td valign="top">202</td>
+</tr>
+<tr>
+  <td valign="top">
+                  <code>%Q</code>, <code>%</code>
+                </td>
+  <td valign="top">Double-quoted string</td>
+  <td valign="top">202</td>
+</tr>
+<tr>
+  <td valign="top">
+                  <code>%w</code>
+                </td>
+  <td valign="top">Array of tokens</td>
+  <td valign="top">204</td>
+</tr>
+<tr>
+  <td valign="top">
+                  <code>%r</code>
+                </td>
+  <td valign="top">Regular expression pattern</td>
+  <td valign="top">205</td>
+</tr>
+<tr>
+  <td valign="top">
+                  <code>%x</code>
+                </td>
+  <td valign="top">Shell command</td>
+  <td valign="top">218</td>
+</tr>
+<tr>
+                <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+<P></P>
+  </center>
+</td>
+      </tr>
+    </table>
+<P></P>
+Following the type character is a delimiter, which can be any
+character. If the delimiter is one of the characters ``<code>(</code>'',
+``<code>[</code>'', ``<code>{</code>'', or ``<code>&lt;</code>'', the literal consists of the
+characters up to the matching closing delimiter, taking account of
+nested delimiter pairs. For all other delimiters, the literal
+comprises the characters up to the next occurrence of the delimiter
+character.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+%q/this&nbsp;is&nbsp;a&nbsp;string/
+%q-string-
+%q(a&nbsp;(nested)&nbsp;string)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Delimited strings may continue over multiple lines.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+%q{def&nbsp;fred(a)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+&nbsp;&nbsp;&nbsp;end}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<h2><a name="S2">The Basic Types</a></h2>
+<P></P>
+The basic types in Ruby are numbers, strings, arrays, hashes, ranges,
+symbols, and regular expressions.
+<P></P>
+<h3><a name="UC">Integer and Floating Point Numbers</a></h3>
+<P></P>
+Ruby integers are objects of class <code>Fixnum</code>
+or <code>Bignum</code>.
+<code>Fixnum</code> objects
+hold integers that fit within the native machine word minus 1 bit.
+Whenever a <code>Fixnum</code> exceeds this range, it is automatically converted
+to a <code>Bignum</code> object, whose range is effectively limited only
+by available memory.  If an operation with a <code>Bignum</code> result
+has a final value that will fit in a <code>Fixnum</code>, the result will
+be returned as a <code>Fixnum</code>.
+<P></P>
+Integers are written using an optional leading sign, an optional base
+indicator (<code>0</code> for octal, <code>0x</code> for hex, or <code>0b</code>
+for binary), followed by a string of digits in the appropriate base.
+Underscore characters are ignored in the digit string.
+<P></P>
+You can get the integer value corresponding to an ASCII
+character by preceding that character with a question mark.  Control
+and meta combinations of characters can also be generated using
+?\C-<em>x</em>, ?\M-<em>x</em>, and ?\M-\C-<em>x</em>.
+The control version of <code>ch</code> is <code>ch&amp;0x9f</code>, and the meta
+version is <code>ch&nbsp;|&nbsp;0x80</code>. You can get the integer value of a backslash
+character using the sequence <code>?\\</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+123456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum
+123_456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum&nbsp;(underscore&nbsp;ignored)
+-543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Negative&nbsp;Fixnum
+123_456_789_123_345_789&nbsp;&nbsp;&nbsp;#&nbsp;Bignum
+0xaabb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Hexadecimal
+0377&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Octal
+-0b1010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary&nbsp;(negated)
+0b001_001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary
+?a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;character&nbsp;code
+?A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;upper&nbsp;case
+?\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;control&nbsp;a&nbsp;=&nbsp;A&nbsp;-&nbsp;0x40
+?\C-A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;case&nbsp;ignored&nbsp;for&nbsp;control&nbsp;chars
+?\M-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;sets&nbsp;bit&nbsp;7
+?\M-\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;and&nbsp;control&nbsp;a
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A numeric literal with a decimal point and/or an exponent is turned
+into a <code>Float</code> object, corresponding to the native
+architecture's <code>double</code> data type. You must
+follow the decimal point with a digit, as 
+<code>1.e3</code> tries to invoke the method <code>e3</code> in class <code>Fixnum</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>12.34</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>12.34</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>-.1234e2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>-12.34</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>1234e-2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>12.34</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+<h3><a name="UD">Strings</a></h3>
+<P></P>
+Ruby provides a number of mechanisms for creating literal strings.
+Each generates objects of type <code>String</code>.  The different
+mechanisms vary in terms of how a string is delimited and how much
+substitution is done on the literal's content.
+<P></P>
+Single-quoted string literals (<code>'</code>
+    <em>stuff</em>
+    <code>'</code> and
+%q/<em>stuff</em>/)
+undergo the least substitution.
+Both convert
+the sequence <br> into a single backslash, and the form with
+single quotes converts \' into a single quote.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>'hello'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>hello</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>'a&nbsp;backslash&nbsp;\'\\\''</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>a&nbsp;backslash&nbsp;'\'</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%q/simple&nbsp;string/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>simple&nbsp;string</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%q(nesting&nbsp;(really)&nbsp;works)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nesting&nbsp;(really)&nbsp;works</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%q&nbsp;no_blanks_here&nbsp;;</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>no_blanks_here</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Double-quoted strings
+("<em>stuff</em>",
+%Q/<em>stuff</em>/, and
+%/<em>stuff</em>/)
+undergo additional substitutions, shown in Table
+18.2 on page 203.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>Substitutions in double-quoted
+    strings</b>            
+  <center>
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+    <tr>
+                <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+              </tr>
+              <tr>
+  <td valign="top">\a</td>
+  <td valign="top">Bell/alert (0x07)</td>
+  <td valign="top">\<em>nnn</em>
+                </td>
+  <td valign="top">Octal <em>nnn</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\b</td>
+  <td valign="top">Backspace  (0x08)</td>
+  <td valign="top">\x<em>nn</em>
+                </td>
+  <td valign="top">Hex <em>nn</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\e</td>
+  <td valign="top">Escape     (0x1b)</td>
+  <td valign="top">\c<em>x</em>
+                </td>
+  <td valign="top">Control-<em>x</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\f</td>
+  <td valign="top">Formfeed   (0x0c)</td>
+  <td valign="top">\C-<em>x</em>
+                </td>
+  <td valign="top">Control-<em>x</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\n</td>
+  <td valign="top">Newline    (0x0a)</td>
+  <td valign="top">\M-<em>x</em>
+                </td>
+  <td valign="top">Meta-<em>x</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\r</td>
+  <td valign="top">Return     (0x0d)</td>
+  <td valign="top">\M-\C-<em>x</em>
+                </td>
+  <td valign="top">Meta-control-<em>x</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\s</td>
+  <td valign="top">Space      (0x20)</td>
+  <td valign="top">\<em>x</em>
+                </td>
+  <td valign="top">
+                  <em>x</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\t</td>
+  <td valign="top">Tab        (0x09)</td>
+  <td valign="top">#{expr}</td>
+  <td valign="top">Value of <em>expr</em>
+                </td>
+</tr>
+<tr>
+  <td valign="top">\v</td>
+  <td valign="top">Vertical tab (0x0b)</td>
+</tr>
+<tr>
+                <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+<P></P>
+</center>
+</td>
+      </tr>
+    </table>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;&nbsp;=&nbsp;123</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"\123mile"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Smile</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Say&nbsp;\"Hello\""</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Say&nbsp;"Hello"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%Q!"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said!</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%Q{Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Try&nbsp;124,&nbsp;not&nbsp;122</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%&lt;Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}&gt;</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Try&nbsp;124,&nbsp;not&nbsp;122</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Try&nbsp;124,&nbsp;not&nbsp;122</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Strings can continue across multiple input lines, in which case they
+will contain newline characters. It is also possible to use <em>here
+  documents</em> to express long string literals. Whenever Ruby parses the sequence
+&lt;&lt;<em>identifier</em> or &lt;&lt;<em>quoted string</em>, it
+replaces it with a string literal built from successive logical input
+lines.
+It stops building the string when it finds a line that starts
+with the identifier or the <em>quoted string</em>.  You can put a minus
+sign immediately after the &lt;&lt; characters, in which case the
+terminator can be indented from the left margin.  If a quoted
+string was used to specify the terminator, its quoting rules will be
+applied to the here document; otherwise, double-quoting rules apply.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;123
+print&nbsp;&lt;&lt;HERE
+Double&nbsp;quoted&nbsp;\
+here&nbsp;document.
+Sum&nbsp;=&nbsp;#{a&nbsp;+&nbsp;1}
+HERE
+<P></P>
+print&nbsp;&lt;&lt;-'THERE'
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1}
+&nbsp;&nbsp;&nbsp;&nbsp;THERE
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Double&nbsp;quoted&nbsp;here&nbsp;document.
+Sum&nbsp;=&nbsp;124
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Adjacent single- and double-quoted strings in the input are
+concatenated to form a single <code>String</code> object.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>'Con'&nbsp;"cat"&nbsp;'en'&nbsp;"ate"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Concatenate"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Strings are stored as sequences of 8-bit bytes,<em>[For use
+  in Japan, the <code>jcode</code> library supports a set of operations of
+  strings written with EUC, SJIS, or UTF-8
+  encoding.  
+  The underlying string, however, is still accessed as a
+  series of bytes.]</em> and each byte may contain any of the 256 8-bit
+values, including null and newline.
+The substitution mechanisms in
+Table 18.2 on page 203 allow nonprinting characters to be
+inserted conveniently and portably.
+<P></P>
+Every time a string literal is used in an assignment or as a
+parameter, a new <code>String</code> object is created. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+for&nbsp;i&nbsp;in&nbsp;1..3
+&nbsp;&nbsp;print&nbsp;'hello'.id,&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+537767360&nbsp;537767070&nbsp;537767040
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The documentation for class <code>String</code> starts on page 363.
+<h3><a name="UE">Ranges</a></h3>
+<P></P>
+Outside the context of a conditional expression, 
+<em>expr</em>
+    <code>..</code>
+    <em>expr</em> and <em>expr</em>
+    <code>...</code>
+    <em>expr</em>
+construct <code>Range</code> objects.
+The two-dot form is an inclusive range;
+the one with three dots is a range that excludes its last element.
+See the description of class <code>Range</code> on page 359 for
+details. Also see the description of conditional expressions
+on page 222 for other uses of ranges.
+<h3><a name="UF">Arrays</a></h3>
+<P></P>
+Literals of class <code>Array</code> are created by placing a comma-separated
+series of object references between square brackets. A trailing comma
+is ignored.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+arr&nbsp;=&nbsp;[&nbsp;fred,&nbsp;10,&nbsp;3.14,&nbsp;"This&nbsp;is&nbsp;a&nbsp;string",&nbsp;barney("pebbles"),&nbsp;]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Arrays of strings can be constructed using a shortcut notation,
+<code>%w</code>,
+which extracts space-separated tokens into successive
+elements of the array. A space can be escaped with a backslash.
+This is a form of general delimited input,
+described on pages 200--201.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>arr&nbsp;=&nbsp;%w(&nbsp;fred&nbsp;wilma&nbsp;barney&nbsp;betty&nbsp;great\&nbsp;gazoo&nbsp;)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>arr</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["fred",&nbsp;"wilma",&nbsp;"barney",&nbsp;"betty",&nbsp;"great&nbsp;gazoo"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UG">Hashes</a></h3>
+<P></P>
+A literal Ruby <code>Hash</code> is created by placing a list of key/value
+pairs between braces, with either a comma or the sequence <code>=&gt;</code>
+between the key and the value. A trailing comma is ignored.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+colors&nbsp;=&nbsp;{&nbsp;"red"&nbsp;&nbsp;&nbsp;=&gt;&nbsp;0xf00,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"green"&nbsp;=&gt;&nbsp;0x0f0,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"blue"&nbsp;&nbsp;=&gt;&nbsp;0x00f
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There is no requirement for the keys and/or values in a particular
+hash to have the same type.
+<h3><a name="UH">Requirements for a Hash Key</a></h3>
+<P></P>
+The only restriction for a hash key is that it must respond to the
+message <code>hash</code> with a hash value, and the hash value for a
+given key must not change.
+This means that certain classes (such as
+<code>Array</code> and <code>Hash</code>, as of this writing) can't conveniently be used
+as keys, because their hash values can change based on their contents.
+<P></P>
+If you keep an external reference to an object that is used as a key,
+and use that reference to alter the object and change its hash value,
+the hash lookup based on that key may not work.
+<P></P>
+Because strings are the most frequently used keys, and because string
+contents are often changed, Ruby treats string keys specially. If you
+use a <code>String</code> object as a hash key, the hash will duplicate the
+string internally and will use that copy as its key. Any changes
+subsequently made to the original string will not affect the hash.
+<P></P>
+If you write your own classes and use instances of them as hash keys, you
+need to make sure that either (a) the hashes of the key objects
+don't change once the objects have been created or (b) you remember
+to call the <a href="ref_c_hash.html#Hash.rehash">
+      <code>Hash#rehash</code>
+    </a> method to reindex the hash whenever a
+key hash <em>is</em> changed.
+<h3><a name="UI">Symbols</a></h3>
+<P></P>
+A Ruby symbol is the internal representation of a name. You construct
+the symbol for a name by preceding the name with a colon. A particular 
+name will always generate the same symbol, regardless of how that name 
+is used within the program.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+:Object
+:myVariable
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Other languages call this process ``interning,'' and call symbols
+``atoms.''
+<h3><a name="UJ">Regular Expressions</a></h3>
+<P></P>
+Regular expression literals are objects of type <code>Regexp</code>. They can
+be created by explicitly calling the <a href="ref_c_regexp.html#Regexp.new">
+      <code>Regexp.new</code>
+    </a> constructor, or
+by using the literal forms, /<em>pattern</em>/ and
+<code>%r{</code>
+    <em>pattern</em>
+    <code>}</code>. The <code>%r</code> construct is
+a form of general delimited input (described
+on pages 200--201).
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+/pattern/
+/pattern/<i>options</i>
+%r{pattern}
+%r{pattern}<i>options</i>
+Regexp.new( 'pattern' <i>[</i>, <i>options</i>
+            <i>]</i> )
+</pre>
+        </td>
+      </tr>
+    </table>
+<h3><a name="UK">Regular Expression Options</a></h3>
+<P></P>
+A regular expression may include one or more options that modify the
+way the pattern matches strings. If you're using literals to create
+the <code>Regexp</code> object, then the options comprise one or more characters placed
+immediately after the terminator. If you're using <code>Regexp.new</code>, the 
+options are constants used as the second parameter of the constructor.
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">
+          <code>i</code>
+        </td>
+  <td valign="top">
+          <em>Case Insensitive</em>. The pattern match will ignore    
+  the case of letters in the pattern and string. Matches are also
+  case-insensitive if the global variable <code>$=</code> is set.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>o</code>
+        </td>
+  <td valign="top">
+          <em>Substitute Once</em>. Any <code>#{...}</code> substitutions
+  in    
+  a particular regular expression literal will be performed just once,
+  the first time it is evaluated. Otherwise, the substitutions
+  will be performed every time the literal generates a <code>Regexp</code> object.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>m</code>
+        </td>
+  <td valign="top">
+          <em>Multiline Mode</em>. Normally, ``.'' matches any    
+  character except a newline. With the <code>/m</code> option, ``.'' matches
+  any character.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>x</code>
+        </td>
+  <td valign="top">
+          <em>Extended Mode</em>.
+  Complex regular expressions can be difficult to read. The `x'
+  option    
+  allows you to insert spaces, newlines, and comments in the pattern to
+  make it more readable.</td>
+</tr>
+</table>
+<P></P>
+<h3><a name="UL">Regular Expression Patterns</a></h3>
+<P></P>
+<dl>
+<dt>
+        <b>
+          <em>regular characters</em>
+        </b>
+      </dt>
+      <dd>    All characters except ., |, (, ), [, \, ^, {, +, $, *, and ? match
+    themselves. To match one of these characters, precede it with a
+    backslash.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>^</code>
+        </b>
+      </dt>
+      <dd>  Matches the beginning of a line.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>$</code>
+        </b>
+      </dt>
+      <dd>  Matches the end of a line.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\A</code>
+        </b>
+      </dt>
+      <dd>  Matches the beginning of the string.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\z</code>
+        </b>
+      </dt>
+      <dd>  Matches the end of the string.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\Z</code>
+        </b>
+      </dt>
+      <dd>  Matches the end of the string <em>unless</em> the string
+  ends with a ``\n'', in
+  which case it matches just before the ``\n''.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\b</code>, <code>\B</code>
+        </b>
+      </dt>
+      <dd>    Match word boundaries and nonword boundaries respectively.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>[</code>
+          <em>characters</em>
+          <code>]</code>
+        </b>
+      </dt>
+      <dd>  A character class  matches any single character between the
+  brackets.  The characters <code>|, (, ), [, ^, $, *,</code> and <code>?</code>,
+  which have special meanings elsewhere in patterns, lose their
+  special significance between brackets.  The sequences
+  <code>\</code>
+        <em>nnn</em>, <code>\x</code>
+        <em>nn</em>, <code>\c</code>
+        <em>x</em>, <code>\C-</code>
+        <em>x</em>, <code>\M-</code>
+        <em>x</em>, and <code>\M-\C-</code>
+        <em>x</em>
+  have the meanings shown in Table 18.2 on page 203.  The
+  sequences <code>\d</code>, <code>\D</code>, <code>\s</code>, <code>\S</code>, <code>\w</code>, and <code>\W</code> are abbreviations for groups of characters, as
+  shown in Table 5.1 on page 59.  The sequence c<sub>1</sub>-c<sub>2</sub>
+  represents all the characters between c<sub>1</sub> and c<sub>2</sub>, inclusive.
+  Literal <code>]</code> or <code>-</code> characters must appear immediately after
+  the opening bracket.  An uparrow (^) immediately following the
+  opening bracket negates the sense of the match---the pattern matches
+  any character that isn't in the character class.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\d</code>, <code>\s</code>, <code>\w</code>
+        </b>
+      </dt>
+      <dd>      Are abbreviations for character classes that match digits, whitespace,
+  and word characters, respectively. \D, \S, and \W match
+  characters that are not digits, whitespace, or word
+  characters. These abbreviations are summarized in Table
+  5.1 on page 59.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>.</code> (period)</b>
+      </dt>
+      <dd>  Appearing outside brackets, matches any character except a newline.
+  (With the <code>/m</code> option, it matches newline, too).
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <em>re</em>
+          <code>*</code>
+        </b>
+      </dt>
+      <dd>  Matches zero or more occurrences of <em>re</em>.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <em>re</em>
+          <code>+</code>
+        </b>
+      </dt>
+      <dd>  Matches one or more occurrences of <em>re</em>.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <em>re</em>
+          <code>{m,n}</code>
+        </b>
+      </dt>
+      <dd>  Matches at least ``m'' and at most ``n'' occurrences of <em>re</em>.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <em>re</em>
+          <code>?</code>
+        </b>
+      </dt>
+      <dd>  Matches zero or one occurrence of <em>re</em>.
+  The <code>*</code>, <code>+</code>, and <code>{m,n}</code> modifiers are greedy by
+  default. Append a question mark to make them minimal.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <em>re1</em>
+          <code>|</code>
+          <em>re2</em>
+        </b>
+      </dt>
+      <dd>  Matches either <em>re1</em> or <em>re2</em>.  <code>|</code> has a low
+  precedence.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(...)</code>
+        </b>
+      </dt>
+      <dd>  Parentheses are used to group regular expressions. For example, the
+  pattern <code>/abc+/</code> matches a string containing an ``a,'' a ``b,''
+  and one or more ``c''s. <code>/(abc)+/</code> matches one or more sequences
+  of ``abc''.  Parentheses are also used to collect the results of
+  pattern matching. For each opening parenthesis, Ruby stores the
+  result of the partial match between it and the corresponding closing
+  parenthesis as successive groups. Within the same pattern,
+  <code>\1</code> refers to the match of the first group, <code>\2</code> the
+  second group, and so on.  Outside the pattern, the special variables
+  <code>$1</code>, <code>$2</code>, and so on, serve the same purpose.
+</dd>
+    </dl>
+<h3><a name="UM">Substitutions</a></h3>
+<P></P>
+<dl>
+<dt>
+        <b>
+          <code>#{...}</code>
+        </b>
+      </dt>
+      <dd>  Performs an expression substitution, as with strings. By default, the
+  substitution is performed each time a regular expression literal is
+  evaluated. With the <code>/o</code> option, it is performed just the first
+  time.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>\0, \1, \2, ... \9, \&amp;, \`, \', \+</code>
+        </b>
+      </dt>
+      <dd>    Substitutes the value matched by the <em>n</em>th grouped
+  subexpression, or by the entire match, pre- or postmatch, or the
+  highest group.
+</dd>
+    </dl>
+<h3><a name="UN">Extensions</a></h3>
+<P></P>
+In common with Perl and Python, Ruby regular expressions offer some
+extensions over traditional Unix regular expressions. All the extensions are
+entered between the characters <code>(?</code>&nbsp;and&nbsp;<code>)</code>. The parentheses
+that bracket these extensions are groups, but they do not generate
+backreferences: they do not set the values of <code>\1</code> and <code>$1</code>
+etc.
+<P></P>
+<dl>
+<dt>
+        <b>
+          <code>(?# <em>comment</em>)</code>
+        </b>
+      </dt>
+      <dd>  Inserts a comment into the pattern. The content is ignored during
+  pattern matching.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?:<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Makes <em>re</em> into a group without generating backreferences. This 
+  is often useful when you need to group a set of constructs but don't 
+  want the group to set the value of <code>$1</code> or whatever. In the
+  example that follows, both patterns match a date with either colons
+  or spaces between the month, day, and year. The first form stores
+  the separator character in <code>$2</code> and <code>$4</code>, while the second
+  pattern doesn't store the separator in an external variable.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>date&nbsp;=&nbsp;"12/25/01"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>date&nbsp;=~&nbsp;%r{(\d+)(/|:)(\d+)(/|:)(\d+)}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>[$1,$2,$3,$4,$5]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["12",&nbsp;"/",&nbsp;"25",&nbsp;"/",&nbsp;"01"]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>date&nbsp;=~&nbsp;%r{(\d+)(?:/|:)(\d+)(?:/|:)(\d+)}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>[$1,$2,$3]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["12",&nbsp;"25",&nbsp;"01"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?=<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Matches <em>re</em> at this point, but does not consume it (also known 
+  charmingly as ``zero-width positive lookahead''). This lets
+  you look forward for the context of a match without affecting
+  <code>$&amp;</code>. In this example, the <code>scan</code> method matches words
+  followed by a comma, but the commas are not included in the result.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>str&nbsp;=&nbsp;"red,&nbsp;white,&nbsp;and&nbsp;blue"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>str.scan(/[a-z]+(?=,)/)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["red",&nbsp;"white"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?!<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Matches if <em>re</em> does not match at this point. Does not
+  consume the match (zero-width negative lookahead). For example,
+  <code>/hot(?!dog)(\w+)/</code> matches any word that contains the
+  letters ``hot'' that aren't followed by ``dog'', returning the end
+  of the word in <code>$1</code>.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?&gt;<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Nests an independent regular expression within the first regular
+  expression.  
+  This expression is anchored at the current match position. If it
+  consumes characters, these will no longer be available to the
+  higher-level regular expression. This construct therefore inhibits
+  backtracking, which can be a performance enhancement. For example,
+  the pattern <code>/a.*b.*a/</code> takes exponential time when matched
+  against a string containing an ``a'' followed by a number of ``b''s, 
+  but with no trailing ``a.'' However, this can be avoided by using a
+  nested regular expression <code>/a(?&gt;.*b).*a/</code>. In this form, the
+  nested expression consumes all the the input string up to the last
+  possible ``b'' character. When the check for a trailing ``a'' then
+  fails, there is no need to backtrack, and the pattern match fails promptly.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+require&nbsp;"benchmark"
+include&nbsp;Benchmark
+str&nbsp;=&nbsp;"a"&nbsp;+&nbsp;("b"&nbsp;*&nbsp;5000)
+bm(8)&nbsp;do&nbsp;|test|
+&nbsp;&nbsp;test.report("Normal:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a.*b.*a/&nbsp;}
+&nbsp;&nbsp;test.report("Nested:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a(?&gt;.*b).*a/&nbsp;}
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real
+Normal:&nbsp;&nbsp;&nbsp;0.420000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.420000&nbsp;(&nbsp;&nbsp;0.414843)
+Nested:&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;(&nbsp;&nbsp;0.001205)
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?imx)</code>
+        </b>
+      </dt>
+      <dd>
+    Turns on the corresponding ``i,'' ``m,'' or ``x'' option. If used
+  inside a group, the effect is limited to that group.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?-imx)</code>
+        </b>
+      </dt>
+      <dd>
+  Turns off the ``i,'' ``m,'' or ``x'' option.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?imx:<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Turns on the ``i,'' ``m,'' or ``x'' option for <em>re</em>.
+<P></P>
+</dd>
+      <dt>
+        <b>
+          <code>(?-imx:<em>re</em>)</code>
+        </b>
+      </dt>
+      <dd>
+  Turns off the ``i,'' ``m,'' or ``x'' option for <em>re</em>.
+<P></P>
+</dd>
+    </dl>
+<h2><a name="S3">Names</a></h2>
+<P></P>
+Ruby names are used to refer to constants, variables, methods,
+classes, and modules. The first character of a name helps Ruby to
+distinguish its intended use.  Certain names, listed in Table
+18.3 on page 210, are reserved words and should not be used as
+variable, method, class, or module names.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>Reserved words</b>  
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+    <tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top">__FILE__</td>
+  <td valign="top">and</td>
+  <td valign="top">def</td>
+  <td valign="top">end</td>
+  <td valign="top">in</td>
+  <td valign="top">or</td>
+  <td valign="top">self</td>
+  <td valign="top">unless</td>
+</tr>
+<tr>
+  <td valign="top">__LINE__</td>
+  <td valign="top">begin</td>
+  <td valign="top">defined?</td>
+  <td valign="top">ensure</td>
+  <td valign="top">module</td>
+  <td valign="top">redo</td>
+  <td valign="top">super</td>
+  <td valign="top">until</td>
+</tr>
+<tr>
+  <td valign="top">BEGIN</td>
+  <td valign="top">break</td>
+  <td valign="top">do</td>
+  <td valign="top">false</td>
+  <td valign="top">next</td>
+  <td valign="top">rescue</td>
+  <td valign="top">then</td>
+  <td valign="top">when</td>
+</tr>
+<tr>
+  <td valign="top">END</td>
+  <td valign="top">case</td>
+  <td valign="top">else</td>
+  <td valign="top">for</td>
+  <td valign="top">nil</td>
+  <td valign="top">retry</td>
+  <td valign="top">true</td>
+  <td valign="top">while</td>
+</tr>
+<tr>
+  <td valign="top">alias</td>
+  <td valign="top">class</td>
+  <td valign="top">elsif</td>
+  <td valign="top">if</td>
+  <td valign="top">not</td>
+  <td valign="top">return</td>
+  <td valign="top">undef</td>
+  <td valign="top">yield</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+In these descriptions, <em>lowercase letter</em> means the characters
+``a'' though ``z'', as well as ``_'', the underscore. <em>Uppercase
+  letter</em> means ``A'' though ``Z,'' and <em>digit</em> means ``0''
+through ``9.'' <em>Name characters</em> means any combination of upper-
+and lowercase letters and digits.
+<P></P>
+A local variable name consists of a lowercase letter followed by name
+characters.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+fred&nbsp;&nbsp;anObject&nbsp;&nbsp;_x&nbsp;&nbsp;three_two_one
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+An instance variable name starts with an ``at'' sign (``<code>@</code>'') followed by an
+upper- or lowercase letter, optionally followed by name 
+characters.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+@name&nbsp;&nbsp;@_&nbsp;&nbsp;@Size
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A class variable name starts with two ``at'' signs (``<code>@@</code>'')
+followed by an upper- or lowercase letter, optionally followed by name 
+characters.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+@@name&nbsp;&nbsp;@@_&nbsp;&nbsp;@@Size
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A constant name starts with an uppercase letter followed by name characters.
+Class names and module names are constants, and follow the constant
+naming conventions.  By convention, constant variables are normally
+spelled using uppercase letters and underscores throughout.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+module&nbsp;Math
+&nbsp;&nbsp;PI&nbsp;=&nbsp;3.1415926
+end
+class&nbsp;BigBlob
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Global variables, and some special system variables, start with a
+dollar sign (``<code>$</code>'') followed by name characters. In addition,
+there is a set of two-character variable names in which the second
+character is a punctuation character. These predefined variables are
+listed starting on page 213. Finally, a global variable name
+can be formed using ``<code>$-</code>'' followed by <em>any</em> single character.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+$params&nbsp;&nbsp;$PROGRAM&nbsp;&nbsp;$!&nbsp;&nbsp;$_&nbsp;&nbsp;$-a&nbsp;&nbsp;$-.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Method names are described in the section beginning on page 225.
+<h3><a name="UO">Variable/Method Ambiguity</a></h3>
+<P></P>
+When Ruby sees a name such as ``a'' in an expression, it needs to
+determine if it is a local variable reference or a call to a method
+with no parameters.
+To decide which is the case, Ruby uses a
+heuristic.  As Ruby reads a source file, it keeps track of symbols
+that have been assigned to. It assumes that these symbols are variables. When it
+subsequently comes across a symbol that might be either a variable or
+a method call, it checks to see if it has seen a prior assignment to
+that symbol. If so, it treats the symbol as a variable; otherwise it
+treats it as a method call.  As a somewhat pathological case of this,
+consider the following code fragment, submitted by Clemens Hintze.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;a
+&nbsp;&nbsp;print&nbsp;"Function&nbsp;'a'&nbsp;called\n"
+&nbsp;&nbsp;99
+end
+<P></P>
+for&nbsp;i&nbsp;in&nbsp;1..2
+&nbsp;&nbsp;if&nbsp;i&nbsp;==&nbsp;2
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n"
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n"
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a=1
+Function&nbsp;'a'&nbsp;called
+a=99
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+During the parse, Ruby sees the use of ``a'' in the first print
+statement and, as it hasn't yet seen any assignment to ``a,'' assumes
+that it is a method call. By the time it gets to the second print
+statement, though, it <em>has</em> seen an assignment, and so treats
+``a'' as a variable.
+<P></P>
+Note that the assignment does not have to be executed---Ruby just has
+to have seen it. This program does not raise an error.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;1&nbsp;if&nbsp;false;&nbsp;a
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S4">Variables and Constants</a></h2>
+<P></P>
+Ruby variables and constants hold references to objects.
+Variables
+themselves do not have an intrinsic type.  Instead, the type of a
+variable is defined solely by the messages to which the object
+referenced by the
+variable responds.<em>[When we say that a variable
+  is not typed, we mean that any given variable can at different times
+  hold references to objects of many different types.]</em>
+<P></P>
+A Ruby <em>constant</em> is also a reference to an object.
+Constants are 
+created when they are first assigned to (normally in a class or module 
+definition).  Ruby, unlike less flexible languages, lets you alter the value
+of a constant, although this will generate a warning message.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+MY_CONST&nbsp;=&nbsp;1
+MY_CONST&nbsp;=&nbsp;2&nbsp;&nbsp;&nbsp;#&nbsp;generates&nbsp;a&nbsp;warning
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+prog.rb:2:&nbsp;warning:&nbsp;already&nbsp;initialized&nbsp;constant&nbsp;MY_CONST
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Note that although constants should not be changed, you can alter the
+internal states of the objects they reference.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>MY_CONST&nbsp;=&nbsp;"Tim"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>MY_CONST[0]&nbsp;=&nbsp;"J"&nbsp;&nbsp;&nbsp;#&nbsp;alter&nbsp;string&nbsp;referenced&nbsp;by&nbsp;constant</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>MY_CONST</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Jim"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Assignment potentially <em>aliases</em> objects,
+giving the same object different names.
+<h3><a name="UP">Scope of Constants and Variables</a></h3>
+<P></P>
+Constants defined within a class or module may be accessed unadorned
+anywhere within the class or module.
+Outside the class or module, they
+may be accessed using the scope operator, ``<code>::</code>'' prefixed by an
+expression that returns the appropriate class or module object.
+Constants defined outside any class or module may be accessed
+unadorned or by using the scope operator ``<code>::</code>'' with no prefix. Constants may not
+be defined in methods.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>OUTER_CONST&nbsp;=&nbsp;99</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Const</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;getConst</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;CONST</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;CONST&nbsp;=&nbsp;OUTER_CONST&nbsp;+&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Const.new.getConst</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>100</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Const::CONST</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>100</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>::OUTER_CONST</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>99</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Global variables are available throughout a program. Every reference
+to a particular global name returns the same object.  Referencing an
+uninitialized global variable returns <code>nil</code>.
+<P></P>
+Class variables are available throughout a class or module body. Class
+variables must be initialized before use.  A class variable is shared
+among all instances of a class and is available within the class
+itself.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;@@count&nbsp;=&nbsp;0
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@@count&nbsp;+=&nbsp;1
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Song.getCount
+&nbsp;&nbsp;&nbsp;&nbsp;@@count
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Class variables belong to the innermost enclosing class or
+module. Class variables used at the top level are defined in
+<code>Object</code>, and behave like global variables. Class variables defined
+within singleton methods belong to the receiver if the receiver is a
+class or a module; otherwise, they belong to the class of the receiver.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Holder
+&nbsp;&nbsp;@@var&nbsp;=&nbsp;99
+&nbsp;&nbsp;def&nbsp;Holder.var=(val)
+&nbsp;&nbsp;&nbsp;&nbsp;@@var&nbsp;=&nbsp;val
+&nbsp;&nbsp;end
+end
+<P></P>
+a&nbsp;=&nbsp;Holder.new
+def&nbsp;a.var
+&nbsp;&nbsp;@@var
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ext_ruby.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="classes.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

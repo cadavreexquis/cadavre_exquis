@@ -1,0 +1,663 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_proc.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_regexp.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Range</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Range.new">new</a> 
+     <i>
+      <a href="#Range._eq_eq_eq">===</a>
+    </i> <i>
+      <a href="#Range.begin">begin</a>
+    </i> <i>
+      <a href="#Range.each">each</a>
+    </i> <i>
+      <a href="#Range.end">end</a>
+    </i> <i>
+      <a href="#Range.exclude_end_qm">exclude_end?</a>
+    </i> <i>
+      <a href="#Range.first">first</a>
+    </i> <i>
+      <a href="#Range.last">last</a>
+    </i> <i>
+      <a href="#Range.length">length</a>
+    </i> <i>
+      <a href="#Range.size">size</a>
+    </i> <p></p>
+    <hr>    A <code>Range</code> represents an interval---a set of values with a start
+  and an end. Ranges may be constructed using the
+  <em>s</em>
+    <code>..</code>
+    <em>e</em> and <em>s</em>
+    <code>...</code>
+    <em>e</em> literals, or
+  with <a href="ref_c_range.html#Range.new">
+      <code>Range.new</code>
+    </a>. Ranges constructed using <code>..</code> run from the
+  start to the end inclusively. Those created using <code>...</code> exclude the 
+  end value.  When used as an iterator, ranges return each value in
+  the sequence.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>(-1..-5).to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(-5..-1).to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[-5,&nbsp;-4,&nbsp;-3,&nbsp;-2,&nbsp;-1]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('a'..'e').to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('a'...'e').to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  Ranges can be constructed using objects of any type, as long as the
+  objects can be compared using their <code>&lt;=&gt;</code> operator and they
+  support the <code>succ</code> method to return the next object in
+  sequence.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Xs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;represent&nbsp;a&nbsp;string&nbsp;of&nbsp;'x's</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Comparable</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;attr&nbsp;:length</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;initialize(n)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@length&nbsp;=&nbsp;n</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;succ</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;Xs.new(@length&nbsp;+&nbsp;1)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;&lt;=&gt;(other)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;TypeError&nbsp;unless&nbsp;other.kind_of?&nbsp;Xs</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@length&nbsp;&lt;=&gt;&nbsp;other.length</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;inspect</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;'x'&nbsp;*&nbsp;@length</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>r&nbsp;=&nbsp;Xs.new(3)..Xs.new(6)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>xxx..xxxxxx</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>r.to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[xxx,&nbsp;xxxx,&nbsp;xxxxx,&nbsp;xxxxxx]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>r.member?(Xs.new(5))</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>Enumerable:
+    </td>
+        <td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Range.new( <i>start</i>,
+        <i>end</i>, <i>exclusive</i>
+          <code>=false</code> )
+        -&gt; <i>aRange</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Constructs a range using the given <i>start</i> and <i>end</i>. If the
+      third parameter is omitted or is <code>false</code>, the range will
+      include the end object; otherwise, it will be excluded.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range._eq_eq_eq">===</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i> === <i>anObject</i> -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>anObject</i> is an element of <i>rng</i>, 
+      <code>false</code> otherwise. Conveniently, <code>===</code> is the comparison
+      operator used by <code>case</code> statements.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+case&nbsp;79
+when&nbsp;1..50&nbsp;&nbsp;&nbsp;then&nbsp;&nbsp;&nbsp;print&nbsp;"low\n"
+when&nbsp;51..75&nbsp;&nbsp;then&nbsp;&nbsp;&nbsp;print&nbsp;"medium\n"
+when&nbsp;76..100&nbsp;then&nbsp;&nbsp;&nbsp;print&nbsp;"high\n"
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+high
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.begin">begin</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.begin -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the first object of <i>rng</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.each {| i | block }
+ -&gt; <i>rng</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates over the elements <i>rng</i>, passing each in turn to the
+      block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+(10..15).each&nbsp;do&nbsp;|n|
+&nbsp;&nbsp;&nbsp;print&nbsp;n,&nbsp;'&nbsp;'
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+10&nbsp;11&nbsp;12&nbsp;13&nbsp;14&nbsp;15
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.end">end</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.end -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the object that defines the end of <i>rng</i>. See also
+      <a href="ref_c_range.html#Range.length">
+          <code>Range#length</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..10).end</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1...10).end</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.exclude_end_qm">exclude_end?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.exclude_end?
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>rng</i> excludes its end value.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.first">first</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.first -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the first object in <i>rng</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.last">last</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.last -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_range.html#Range.end">
+          <code>Range#end</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.length">length</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.length -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the number of objects in <i>rng</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>(1..10).length</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1...10).length</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>9</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Range.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>rng</i>.size -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_range.html#Range.length">
+          <code>Range#length</code>
+        </a>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_proc.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_regexp.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

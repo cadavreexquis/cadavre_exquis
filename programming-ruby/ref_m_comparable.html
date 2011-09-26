@@ -1,0 +1,373 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_trueclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_enumerable.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Comparable</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Relies on:
+              </font>
+              </td>
+              <td>
+                <font color="white">&lt;=&gt;</font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Comparable.Comparisons">Comparisons</a>
+    </i> <i>
+      <a href="#Comparable.between_qm">between?</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+    The <code>Comparable</code> mixin is used by classes whose objects may be
+  ordered.  The class must define the <code>&lt;=&gt;</code>  
+  operator, which
+  compares the receiver against another object, returning -1, 0,
+  or +1 depending on whether the receiver is less than, equal to, or
+  greater than the other object.  <code>Comparable</code> uses <code>&lt;=&gt;</code> to implement the
+  conventional comparison operators (<code>&lt;</code>, <code>&lt;=</code>, <code>==</code>,
+  <code>&gt;=</code>, and <code>&gt;</code>) and the method <code>between?</code>.          
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;SizeMatters</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;include&nbsp;Comparable</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;attr&nbsp;:str</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;&lt;=&gt;(anOther)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;str.size&nbsp;&lt;=&gt;&nbsp;anOther.str.size</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;initialize(str)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@str&nbsp;=&nbsp;str</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;inspect</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@str</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s1&nbsp;=&nbsp;SizeMatters.new("Z")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s2&nbsp;=&nbsp;SizeMatters.new("YY")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s3&nbsp;=&nbsp;SizeMatters.new("XXX")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s4&nbsp;=&nbsp;SizeMatters.new("WWWW")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>s5&nbsp;=&nbsp;SizeMatters.new("VVVVV")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s1&nbsp;&lt;&nbsp;s2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s4.between?(s1,&nbsp;s3)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>s4.between?(s3,&nbsp;s5)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;s3,&nbsp;s2,&nbsp;s5,&nbsp;s4,&nbsp;s1&nbsp;].sort</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[Z,&nbsp;YY,&nbsp;XXX,&nbsp;WWWW,&nbsp;VVVVV]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Comparable.Comparisons">Comparisons</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>anObject</i> &lt;  <i>otherObject</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>anObject</i> &lt;= <i>otherObject</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>anObject</i> == <i>otherObject</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>anObject</i> &gt;= <i>otherObject</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>anObject</i> &gt;  <i>otherObject</i> -&gt; <code>true</code> or <code>false</code>
+          <br>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Compares two objects based on the receiver's <code>&lt;=&gt;</code> method.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Comparable.between_qm">between?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>anObject</i>.between?( <i>min</i>, <i>max</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>false</code> if <i>anObject</i>&nbsp;<code>&lt;=&gt;</code>&nbsp;<i>min</i> is less than
+      zero or if <i>anObject</i>&nbsp;<code>&lt;=&gt;</code>&nbsp;<i>max</i> is greater than zero,
+      <code>true</code> otherwise.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>3.between?(1,&nbsp;5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>6.between?(1,&nbsp;5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>'cat'.between?('ant',&nbsp;'dog')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>'gnu'.between?('ant',&nbsp;'dog')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_trueclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_enumerable.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

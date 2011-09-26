@@ -1,0 +1,175 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_enumerable.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_filetest.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Errno</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <p></p>
+    <hr>
+<P></P>
+  Ruby exception objects are subclasses of <code>Exception</code>. However,
+  operating systems typically report errors using plain
+  integers. Module <code>Errno</code> is created dynamically to map these
+  operating system errors to Ruby classes, with each error number generating
+  its own subclass of <code>SystemCallError</code>. As the subclass is created 
+  in module <code>Errno</code>, its name will start <code>Errno::</code>.  
+<P></P>
+  The names of the <code>Errno</code>
+    <code>::</code> classes depend on the environment in
+  which Ruby runs. On a typical Unix or Windows platform, there are
+  <code>Errno</code> classes such as <code>Errno::EACCES</code>,
+  <code>Errno::EAGAIN</code>, <code>Errno::EINTR</code>, and so on.
+<P></P>
+  The integer operating system error number corresponding to a
+  particular error is available as the class constant
+  <code>Errno::</code>
+    <em>error</em>
+    <code>::Errno</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>Errno::EACCES::Errno</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>13</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Errno::EAGAIN::Errno</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>11</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Errno::EINTR::Errno</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>4</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  The full list of operating system errors on your particular
+  platform are available as the constants of <code>Errno</code>. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>Errno.constants</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>E2BIG,&nbsp;EACCES,&nbsp;EADDRINUSE,&nbsp;EADDRNOTAVAIL,&nbsp;EADV,&nbsp;EAFNOSUPPORT,&nbsp;EAGAIN,&nbsp;...</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_enumerable.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_filetest.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

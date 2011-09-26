@@ -1,0 +1,1861 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_numeric.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_proc.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Object</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white"></font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Object._eq_eq">==</a>
+    </i> <i>
+      <a href="#Object._eq_eq_eq">===</a>
+    </i> <i>
+      <a href="#Object._eq_sd">=~</a>
+    </i> <i>
+      <a href="#Object.__id__">__id__</a>
+    </i> <i>
+      <a href="#Object.__send__">__send__</a>
+    </i> <i>
+      <a href="#Object.class">class</a>
+    </i> <i>
+      <a href="#Object.clone">clone</a>
+    </i> <i>
+      <a href="#Object.display">display</a>
+    </i> <i>
+      <a href="#Object.dup">dup</a>
+    </i> <i>
+      <a href="#Object.eql_qm">eql?</a>
+    </i> <i>
+      <a href="#Object.equal_qm">equal?</a>
+    </i> <i>
+      <a href="#Object.extend">extend</a>
+    </i> <i>
+      <a href="#Object.freeze">freeze</a>
+    </i> <i>
+      <a href="#Object.frozen_qm">frozen?</a>
+    </i> <i>
+      <a href="#Object.hash">hash</a>
+    </i> <i>
+      <a href="#Object.id">id</a>
+    </i> <i>
+      <a href="#Object.inspect">inspect</a>
+    </i> <i>
+      <a href="#Object.instance_eval">instance_eval</a>
+    </i> <i>
+      <a href="#Object.instance_of_qm">instance_of?</a>
+    </i> <i>
+      <a href="#Object.instance_variables">instance_variables</a>
+    </i> <i>
+      <a href="#Object.is_a_qm">is_a?</a>
+    </i> <i>
+      <a href="#Object.kind_of_qm">kind_of?</a>
+    </i> <i>
+      <a href="#Object.method">method</a>
+    </i> <i>
+      <a href="#Object.method_missing">method_missing</a>
+    </i> <i>
+      <a href="#Object.methods">methods</a>
+    </i> <i>
+      <a href="#Object.nil_qm">nil?</a>
+    </i> <i>
+      <a href="#Object.private_methods">private_methods</a>
+    </i> <i>
+      <a href="#Object.protected_methods">protected_methods</a>
+    </i> <i>
+      <a href="#Object.public_methods">public_methods</a>
+    </i> <i>
+      <a href="#Object.respond_to_qm">respond_to?</a>
+    </i> <i>
+      <a href="#Object.send">send</a>
+    </i> <i>
+      <a href="#Object.singleton_methods">singleton_methods</a>
+    </i> <i>
+      <a href="#Object.taint">taint</a>
+    </i> <i>
+      <a href="#Object.tainted_qm">tainted?</a>
+    </i> <i>
+      <a href="#Object.to_a">to_a</a>
+    </i> <i>
+      <a href="#Object.to_s">to_s</a>
+    </i> <i>
+      <a href="#Object.type">type</a>
+    </i> <i>
+      <a href="#Object.untaint">untaint</a>
+    </i> <p></p>
+    <hr>
+    <br>
+    <font size="-1">Subclasses: Array, Binding, Continuation,
+    Data, Dir, Exception, FalseClass, File::Stat, Hash, IO,
+    MatchingData, Method, Module, NilClass, Numeric, Proc, Range,
+    Regexp, String, Struct, Symbol, Thread, Time, TrueClass</font>
+    <p></p>
+<P></P>
+  <code>Object</code> is the parent class of all classes in Ruby. Its methods
+  are therefore available to all objects unless explicitly
+  overridden.
+<P></P>
+  <code>Object</code> mixes in the <code>Kernel</code> module, making the built-in
+  kernel functions globally accessible. Although the instance methods
+  of <code>Object</code> are defined by the <code>Kernel</code> module, we have chosen
+  to document them here for clarity.
+<P></P>
+  In the descriptions that follow, the
+  parameter <i>aSymbol</i> refers to a symbol, which is either a
+  quoted string or a <code>Symbol</code> (such as <code>:name</code>).
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object._eq_eq">==</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i> == <i>anObject</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equality---At the <code>Object</code> level, <code>==</code> returns <code>true</code> only if
+      <i>obj</i> and <i>anObject</i> are the same object. Typically, this
+      method is overridden in descendent classes to provide
+      class-specific meaning.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object._eq_eq_eq">===</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i> === <i>anObject</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Case Equality---A synonym for <a href="ref_c_object.html#Object._eq_eq">
+          <code>Object#==</code>
+        </a>, but typically overridden by
+      descendents to provide meaningful semantics in <code>case</code>
+      statements.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object._eq_sd">=~</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i> =~ <i>anObject</i>
+        -&gt; <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Pattern Match---Overridden by descendents (notably <code>Regexp</code>
+      and <code>String</code>) to provide meaningful
+      pattern-match semantics.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.__id__">__id__</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.__id__
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_object.html#Object.id">
+          <code>Object#id</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.__send__">__send__</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.__send__(
+        <i>aSymbol</i> <i>[</i>, <i>args</i>
+          <i>]<sup>+</sup>
+          </i> ) -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_object.html#Object.send">
+          <code>Object#send</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.class">class</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.class -&gt; <i>aClass</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the class of <i>obj</i> (synonym for <a href="ref_c_object.html#Object.type">
+          <code>Object#type</code>
+        </a>). 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.clone">clone</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.clone -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Produces a shallow copy of <i>obj</i>---the instance variables of <i>obj</i>
+      are copied, but not the objects they reference. 
+      Copies the frozen and tainted state of <i>obj</i>. See also the
+      discussion under <a href="ref_c_object.html#Object.dup">
+          <code>Object#dup</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;attr_accessor&nbsp;:str</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s1&nbsp;=&nbsp;Klass.new</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Klass:0x401b5478&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s1.str&nbsp;=&nbsp;"Hello"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s2&nbsp;=&nbsp;s1.clone</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Klass:0x401b5194&nbsp;@str="Hello"&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s2.str[1,4]&nbsp;=&nbsp;"i"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"i"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s1.inspect</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"#&lt;Klass:0x401b5478&nbsp;@str=\"Hi\"&gt;"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>s2.inspect</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"#&lt;Klass:0x401b5194&nbsp;@str=\"Hi\"&gt;"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.display">display</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.display( <i>port</i>=<code>$&gt;</code> )
+        -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Prints <i>obj</i> on the given port (default <code>$&gt;</code>). Equivalent 
+      to:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+def&nbsp;display(port=$&gt;)
+&nbsp;&nbsp;port.write&nbsp;self
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.dup">dup</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.dup -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Produces a shallow copy      
+      of <i>obj</i>---the instance variables of <i>obj</i>
+      are copied, but not the objects they reference. <code>dup</code>
+      copies the tainted state of <i>obj</i>. See also the
+      discussion under <a href="ref_c_object.html#Object.clone">
+          <code>Object#clone</code>
+        </a>.
+      In general,
+      <code>clone</code> and <code>dup</code> may have different semantics in
+      descendent classes. While <code>clone</code> is used to duplicate an 
+      object, including its internal state, <code>dup</code> typically
+      uses the class of the descendent object to create the new instance.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.eql_qm">eql?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.eql?( <i>anObject</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>obj</i> and <i>anObject</i> have the
+      same value. Used by <code>Hash</code> to test
+      members for equality. For objects of class <code>Object</code>,
+      <code>eql?</code> is synonymous with <code>==</code>. Subclasses
+      normally continue this tradition, but there are
+      exceptions. <code>Numeric</code> types, for example, perform type
+      conversion across <code>==</code>, but not across <code>eql?</code>, so:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>1&nbsp;==&nbsp;1.0</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>1.eql?&nbsp;1.0</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.equal_qm">equal?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.equal?( <i>anObject</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>obj</i> and <i>anObject</i> have the
+      same object ID. This method should
+      not be overridden by subclasses.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;[&nbsp;'cat',&nbsp;'dog'&nbsp;]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;[&nbsp;'cat',&nbsp;'dog'&nbsp;]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a&nbsp;==&nbsp;b</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.id&nbsp;==&nbsp;b.id</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.eql?(b)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.equal?(b)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.extend">extend</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>obj</i>.extend( <i>[</i>
+          <i>aModule</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>obj</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Adds to <i>obj</i> the instance methods from each module given as a parameter.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>module&nbsp;Mod</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;hello</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hello&nbsp;from&nbsp;Mod.\n"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code></code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;hello</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hello&nbsp;from&nbsp;Klass.\n"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code></code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Klass.new</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.hello</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello&nbsp;from&nbsp;Klass.\n"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.extend(Mod)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Klass:0x401b598c&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.hello</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello&nbsp;from&nbsp;Mod.\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.freeze">freeze</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.freeze -&gt; <i>obj</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Prevents further modifications to <i>obj</i>. A <code>TypeError</code>
+      will be raised if modification is attempted. There is no way to
+      unfreeze a frozen object.
+      See also <a href="ref_c_object.html#Object.frozen_qm">
+          <code>Object#frozen?</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]
+a.freeze
+a&nbsp;&lt;&lt;&nbsp;"z"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+prog.rb:3:in&nbsp;`&lt;&lt;':&nbsp;can't&nbsp;modify&nbsp;frozen&nbsp;array&nbsp;(TypeError)
+	from&nbsp;prog.rb:3
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.frozen_qm">frozen?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.frozen? 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the freeze status of <i>obj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.freeze</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["a",&nbsp;"b",&nbsp;"c"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.frozen?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.hash">hash</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.hash -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Generates a <code>Fixnum</code> hash value for this object. This function 
+      must have the property that <code>a.eql?(b)</code> implies <code>a.hash == 
+        b.hash</code>. The hash value is used by class <code>Hash</code>.
+      Any hash value that exceeds the
+      capacity of a <code>Fixnum</code> will be truncated before being used.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.id">id</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.id -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an integer identifier for <i>obj</i>. The same number will be 
+      returned on all calls to <code>id</code> for a given object, and no
+      two active objects will share an id. <a href="ref_c_object.html#Object.id">
+          <code>Object#id</code>
+        </a> is a
+      different concept from the <code>:name</code> notation, which returns the
+      symbol id of <code>name</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.inspect">inspect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.inspect -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a string containing a human-readable representation of
+      <i>obj</i>. If not overridden, uses the <code>to_s</code> method to generate
+      the string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>[&nbsp;1,&nbsp;2,&nbsp;3..4,&nbsp;'five'&nbsp;].inspect</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"[1,&nbsp;2,&nbsp;3..4,&nbsp;\"five\"]"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.new.inspect</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Sun&nbsp;Jun&nbsp;09&nbsp;00:18:15&nbsp;CDT&nbsp;2002"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.instance_eval">instance_eval</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>obj</i>.instance_eval(<i>aString</i>
+                                 <i>[</i>, <i>file</i>
+                                         <i>[</i>
+          <i>line</i>
+          <i>]</i>
+          <i>]</i> )
+                                -&gt; <i>anObject</i>
+          <br>
+          <i>obj</i>.instance_eval {|  | block }
+ -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Evaluates a string containing Ruby source code, or the given
+      block, within the
+      context of the receiver (<i>obj</i>). In order to set the context, the 
+      variable <code>self</code> is set to <i>obj</i> while the code is
+      executing, giving the code access to <i>obj</i>'s instance variables.
+      In the version of <code>instance_eval</code> that takes a
+      <code>String</code>, the optional second and third parameters supply a
+      filename and starting line number that are used when reporting
+      compilation errors.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;initialize</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;@secret&nbsp;=&nbsp;99</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Klass.new</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.instance_eval&nbsp;{&nbsp;@secret&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>99</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.instance_of_qm">instance_of?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.instance_of?( <i>aClass</i> ) 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>obj</i> is an instance of the 
+      given class. See also <a href="ref_c_object.html#Object.kind_of_qm">
+          <code>Object#kind_of?</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.instance_variables">instance_variables</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.instance_variables
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of instance variable names for the
+      receiver.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.is_a_qm">is_a?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.is_a?( <i>aClass</i> ) 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_object.html#Object.kind_of_qm">
+          <code>Object#kind_of?</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.kind_of_qm">kind_of?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.kind_of?( <i>aClass</i> ) 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns <code>true</code> if <i>aClass</i> is the class of <i>obj</i>, or 
+      if <i>aClass</i> is one of the superclasses of <i>obj</i> or modules included
+      in <i>obj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.instance_of?&nbsp;Numeric</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.instance_of?&nbsp;Integer</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.instance_of?&nbsp;Fixnum</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.instance_of?&nbsp;Comparable</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.kind_of?&nbsp;Numeric</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.kind_of?&nbsp;Integer</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.kind_of?&nbsp;Fixnum</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.kind_of?&nbsp;Comparable</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.method">method</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.method( <i>aSymbol</i> )
+        -&gt; <i>aMethod</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Looks up the named method as a receiver in <i>obj</i>, returning a
+      <code>Method</code> object (or raising <code>NameError</code>). The <code>Method</code> object acts
+      as a closure in <i>obj</i>'s object instance, so instance variables
+      and the value of <code>self</code> remain available.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Demo</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;initialize(n)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;@iv&nbsp;=&nbsp;n</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;hello()</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hello,&nbsp;@iv&nbsp;=&nbsp;#{@iv}"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code></code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Demo.new(99)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;k.method(:hello)</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.call</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello,&nbsp;@iv&nbsp;=&nbsp;99"</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code></code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>l&nbsp;=&nbsp;Demo.new('Fred')</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>m&nbsp;=&nbsp;l.method("hello")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>m.call</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello,&nbsp;@iv&nbsp;=&nbsp;Fred"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.method_missing">method_missing</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>obj</i>.method_missing( <i>aSymbol</i> <i>[</i>, <i>*args</i>
+          <i>]</i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Invoked by Ruby when <i>obj</i> is sent a message it cannot
+      handle. <i>aSymbol</i> is the symbol for the method called,
+      and <i>args</i> are any arguments that were passed to it. The
+      example below creates a class <code>Roman</code>, which responds to methods
+      with names consisting of roman numerals, returning the corresponding
+      integer values.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+class&nbsp;Roman
+&nbsp;&nbsp;def&nbsp;romanToInt(str)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;method_missing(methId)
+&nbsp;&nbsp;&nbsp;&nbsp;str&nbsp;=&nbsp;methId.id2name
+&nbsp;&nbsp;&nbsp;&nbsp;romanToInt(str)
+&nbsp;&nbsp;end
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>r&nbsp;=&nbsp;Roman.new</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>r.iv</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>r.xxiii</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>23</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>r.mm</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2000</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.methods">methods</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.methods -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a list of the names of methods publicly accessible in
+      <i>obj</i>. This will include all the methods accessible in <i>obj</i>'s
+      ancestors. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;kMethod()</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Klass.new</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.methods[0..9]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["kMethod",&nbsp;"dup",&nbsp;"eql?",&nbsp;"protected_methods",&nbsp;"==",&nbsp;"frozen?",&nbsp;"===",&nbsp;"respond_to?",&nbsp;"class",&nbsp;"kind_of?"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.methods.length</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>38</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.nil_qm">nil?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.nil? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      All objects except <code>nil</code> return <code>false</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.private_methods">private_methods</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.private_methods
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a list of private methods accessible within <i>obj</i>. This
+      will include the private methods in <i>obj</i>'s ancestors, along
+      with any mixed-in module functions.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.protected_methods">protected_methods</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.protected_methods
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the list of protected methods accessible to <i>obj</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.public_methods">public_methods</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>obj</i>.public_methods -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_object.html#Object.methods">
+          <code>Object#methods</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.respond_to_qm">respond_to?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>obj</i>.respond_to?( <i>aSymbol</i>,
+                            <i>includePriv</i>=<code>false</code> )
+            -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>obj</i> responds to the given
+      method. Private methods are included in the search only if the
+      optional second parameter evaluates to <code>true</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.send">send</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.send( <i>aSymbol</i>
+        <i>[</i>, <i>args</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes the method identified by <i>aSymbol</i>, passing it any
+      arguments specified. You can use <code>__send__</code> if the
+      name <code>send</code> clashes with an existing method in <i>obj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;hello(*args)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;"Hello&nbsp;"&nbsp;+&nbsp;args.join('&nbsp;')</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Klass.new</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.send&nbsp;:hello,&nbsp;"gentle",&nbsp;"readers"</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"Hello&nbsp;gentle&nbsp;readers"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.singleton_methods">singleton_methods</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.singleton_methods
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of the names of singleton methods for <i>obj</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>class&nbsp;Klass</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;def&nbsp;Klass.classMethod</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>k&nbsp;=&nbsp;Klass.new</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>def&nbsp;k.sm()</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>end</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Klass.singleton_methods</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["classMethod"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>k.singleton_methods</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["sm"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.taint">taint</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.taint -&gt; <i>obj</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Marks <i>obj</i> as tainted      
+      (see Chapter 20, which begins on page 253).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.tainted_qm">tainted?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.tainted? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the object is tainted.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.to_a">to_a</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.to_a -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array representation of <i>obj</i>. For
+      objects of class <code>Object</code> and others that don't explicitly
+      override the method, the return value is an array containing <code>self</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>self.to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[main]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>"hello".to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["hello"]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.new.to_a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[15,&nbsp;18,&nbsp;0,&nbsp;9,&nbsp;6,&nbsp;2002,&nbsp;0,&nbsp;160,&nbsp;true,&nbsp;"CDT"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.to_s">to_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.to_s -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a string representing <i>obj</i>. The default <code>to_s</code>
+      prints the object's class and an encoding of the object id. As a
+      special case, the top-level object that is the initial execution 
+      context of Ruby programs returns ``main.''
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.type">type</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.type -&gt; <i>aClass</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the class of <i>obj</i>. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Object.untaint">untaint</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>obj</i>.untaint -&gt; <i>obj</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Removes the taint from <i>obj</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_numeric.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_proc.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

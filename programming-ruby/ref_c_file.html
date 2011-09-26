@@ -1,0 +1,1937 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_falseclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_file__stat.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class File</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">IO</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#File.atime">atime</a> 
+     <a href="#File.basename">basename</a> 
+     <a href="#File.chmod">chmod</a> 
+     <a href="#File.chown">chown</a> 
+     <a href="#File.ctime">ctime</a> 
+     <a href="#File.delete">delete</a> 
+     <a href="#File.dirname">dirname</a> 
+     <a href="#File.expand_path">expand_path</a> 
+     <a href="#File.ftype">ftype</a> 
+     <a href="#File.join">join</a> 
+     <a href="#File.link">link</a> 
+     <a href="#File.lstat">lstat</a> 
+     <a href="#File.mtime">mtime</a> 
+     <a href="#File.new">new</a> 
+     <a href="#File.open">open</a> 
+     <a href="#File.readlink">readlink</a> 
+     <a href="#File.rename">rename</a> 
+     <a href="#File.size">size</a> 
+     <a href="#File.split">split</a> 
+     <a href="#File.stat">stat</a> 
+     <a href="#File.symlink">symlink</a> 
+     <a href="#File.truncate">truncate</a> 
+     <a href="#File.umask">umask</a> 
+     <a href="#File.unlink">unlink</a> 
+     <a href="#File.utime">utime</a> 
+     <i>
+      <a href="#File.atime">atime</a>
+    </i> <i>
+      <a href="#File.chmod">chmod</a>
+    </i> <i>
+      <a href="#File.chown">chown</a>
+    </i> <i>
+      <a href="#File.ctime">ctime</a>
+    </i> <i>
+      <a href="#File.flock">flock</a>
+    </i> <i>
+      <a href="#File.lstat">lstat</a>
+    </i> <i>
+      <a href="#File.mtime">mtime</a>
+    </i> <i>
+      <a href="#File.path">path</a>
+    </i> <i>
+      <a href="#File.truncate">truncate</a>
+    </i> <p></p>
+    <hr>    
+<P></P>
+  A <code>File</code> is an abstraction of any file object accessible by the
+  program and is closely associated with class <code>IO</code>, page
+  325. <code>File</code> includes the methods of module
+  <code>FileTest</code> as class methods, allowing you to write (for example)
+  <code>File.exist?("foo")</code>.
+<P></P>
+  In this section, <em>permission bits</em>  
+  are a platform-specific set of bits that indicate permissions of a
+  file.  On Unix-based systems, permissions are viewed as a set of
+  three octets, for the owner, the group, and the rest of the world.  For
+  each of these entities, permissions may be set to read, write, or
+  execute (or search, if a directory) the file:
+<P></P>
+  <center>
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+<td colspan="3" valign="top">Owner</td>
+<td colspan="3" valign="top">Group</td>
+<td colspan="3" valign="top">Other</td>
+</tr>
+<tr>
+  <td valign="top">r</td>
+  <td valign="top">w</td>
+  <td valign="top">x</td>
+  <td valign="top">r</td>
+  <td valign="top">w</td>
+  <td valign="top">x</td>
+  <td valign="top">r</td>
+  <td valign="top">w</td>
+  <td valign="top">x</td>
+</tr>
+<tr>
+  <td valign="top">4</td>
+  <td valign="top">2</td>
+  <td valign="top">1</td>
+  <td valign="top">4</td>
+  <td valign="top">2</td>
+  <td valign="top">1</td>
+  <td valign="top">4</td>
+  <td valign="top">2</td>
+  <td valign="top">1</td>
+</tr>
+</table>
+<P></P>
+  </center>
+<P></P>
+  The permission bits <code>0644</code> (in octal) would thus be interpreted as
+  read/write for owner, and read-only for group and other.  Higher-order bits
+  may also be used to indicate the type of file (plain, directory,
+  pipe, socket, and so on) and various other special features.
+<P></P>
+  On non-Posix operating systems, there may be only the ability to make a
+  file read-only or not.  In this case, the remaining permission bits
+  will be synthesized to resemble typical values.  For instance, on
+  Windows NT the default permission bits are <code>0644</code>, which means
+  read/write for owner, read-only for all others.  The only change
+  that can be made is to make the file read-only, which is reported as
+  <code>0444</code>.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>FileTest:
+    </td>
+        <td>
+   blockdev?, chardev?, directory?, executable?, executable_real?,
+   exist?, exists?, file?, grpowned?, owned?, pipe?, readable?,
+   readable_real?, setgid?, setuid?, size, size?, socket?, sticky?,
+   symlink?, writable?, writable_real?, zero?</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+    <b>Path separator constants (platform-specific)</b>    
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+      <tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top">
+                <code>ALT_SEPARATOR</code>
+              </td>
+  <td valign="top">Alternate path separator.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>PATH_SEPARATOR</code>
+              </td>
+  <td valign="top">Character that separates filenames in 
+        a search path (such as ``:'' or ``;'').</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>SEPARATOR</code>
+              </td>
+  <td valign="top">Character that separates directory
+        components in a filename (such as ``\'' or ``/'').</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>Separator</code>
+              </td>
+  <td valign="top">Alias for <code>SEPARATOR</code>.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+  </td>
+      </tr>
+    </table>
+    <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+    <b>Open-mode constants</b>    
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+      <tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top">
+                <code>APPEND</code>
+              </td>
+  <td valign="top">Open the file in append mode; all writes will occur at
+      end of file.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>CREAT</code>
+              </td>
+  <td valign="top">Create the file on open if it does not exist.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>EXCL</code>
+              </td>
+  <td valign="top">When used with CREAT, open will fail if the file exists.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>NOCTTY</code>
+              </td>
+  <td valign="top">When opening a terminal device (see
+      <a href="ref_c_io.html#IO.isatty">
+                  <code>IO#isatty</code>
+                </a> on page 331), do not allow it to 
+      become the controlling terminal.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>NONBLOCK</code>
+              </td>
+  <td valign="top">Open the file in nonblocking mode.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RDONLY</code>
+              </td>
+  <td valign="top">Open for reading only.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>RDWR</code>
+              </td>
+  <td valign="top">Open for reading and writing.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>TRUNC</code>
+              </td>
+  <td valign="top">Open the file and truncate it to zero length
+      if the file exists.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>WRONLY</code>
+              </td>
+  <td valign="top">Open for writing only.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+  </td>
+      </tr>
+    </table>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.atime">atime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.atime( <i>fileName</i> )
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the last access time for the named file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.atime("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:09:52&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.basename">basename</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.basename( <i>fileName</i> <i>[</i>, <i>aSuffix</i>
+          <i>]</i> )
+        -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the last component of the filename given in
+      <i>fileName</i>, which must be formed using forward slashes
+      (``<code>/</code>'') regardless of the separator used on the local
+      file system.  If <i>aSuffix</i> is given and present at the end
+      of <i>fileName</i>, it is removed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.basename("/home/gumby/work/ruby.rb")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ruby.rb"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.basename("/home/gumby/work/ruby.rb",&nbsp;".rb")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"ruby"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.chmod">chmod</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.chmod( <i>aModeInt</i> <i>[</i>, <i>fileName</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Changes permission bits on the
+      named file(s) to the bit pattern represented by <i>aModeInt</i>.
+      Actual effects are operating system dependent (see the beginning
+      of this section).  On Unix systems, see <code>chmod(2)</code> for
+      details.  Returns the number of files processed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.chmod(0644,&nbsp;"testfile",&nbsp;"out")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.chown">chown</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.chown( <i>anOwnerInt</i>,
+        <i>aGroupInt</i> <i>[</i>, <i>fileName</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Changes the owner and group of the named file(s) to the given
+      numeric owner and group id's.      
+      Only a process with superuser
+      privileges may change the owner of a file.  The current owner of
+      a file may change the file's group to any group to which the
+      owner belongs.  A <code>nil</code> or -1 owner or group id is
+      ignored.
+        Returns the number of files processed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+File.chown(nil,&nbsp;100,&nbsp;"testfile")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.ctime">ctime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.ctime( <i>fileName</i> )
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the change time for the named file (the time at which
+      directory information about the file was changed, not the file
+      itself).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.ctime("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:17:17&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.delete">delete</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.delete( <i>[</i>
+          <i>fileName</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Deletes the named file(s).
+        Returns the number of files processed.
+      See also <a href="ref_c_dir.html#Dir.rmdir">
+          <code>Dir.rmdir</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testrm",&nbsp;"w+").close</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.delete("testrm")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.dirname">dirname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.dirname( <i>fileName</i> )
+        -&gt; <i>fileName</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns all components of the filename given in
+      <i>fileName</i> except the last one.  The filename must be
+      formed using forward slashes (``<code>/</code>'') regardless of the
+      separator used on the local file system.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.dirname("/home/gumby/work/ruby.rb")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"/home/gumby/work"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.expand_path">expand_path</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.expand_path( <i>fileName</i>
+        <i>[</i>, <i>aDirString</i>
+          <i>]</i> )
+        -&gt; <i>fileName</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts a pathname to an absolute pathname.      
+      Relative paths
+      are referenced from the current working directory of the process 
+      unless <i>aDirString</i> is given, in which case it will be used 
+      as the starting point.  The given pathname may start with a
+      ``<code>~</code>'', which expands to the process owner's home directory
+      (the environment variable <code>HOME</code>      
+      must be set correctly).
+      ``<code>~</code>
+        <i>user</i>'' expands to the named user's home
+      directory.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.expand_path("~oracle/bin")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"/home/oracle/bin"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.expand_path("../../bin",&nbsp;"/tmp/x")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"/bin"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.ftype">ftype</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.ftype( <i>fileName</i> )
+        -&gt; <i>fileType</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Identifies the type of the named file;
+      the return string is one of 
+        ``<code>file</code>'',
+        ``<code>directory</code>'',
+        ``<code>characterSpecial</code>'',
+        ``<code>blockSpecial</code>'',
+        ``<code>fifo</code>'',
+        ``<code>link</code>'', or
+        ``<code>socket</code>''.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.ftype("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"file"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.ftype("/dev/tty")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"characterSpecial"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.ftype("/tmp/.X11-unix/X0")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"socket"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.join">join</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.join( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>fileName</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new string formed by joining the strings
+      using <a href="ref_c_file.html#File.SEPARATOR">
+          <code>File::SEPARATOR</code>
+        </a> (see Table 22.2 on page 304).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.join("usr",&nbsp;"mail",&nbsp;"gumby")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"usr/mail/gumby"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.link">link</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.link( <i>anOldName</i>, <i>aNewName</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a new name for an existing file using a hard link.
+      Will not overwrite <i>aNewName</i> if it already exists (raising
+      a subclass of <code>SystemCallError</code>).
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.link("testfile",&nbsp;".testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>IO.readlines(".testfile")[0]</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.lstat">lstat</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.lstat( <i>fileName</i> )
+        -&gt; <i>aStat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Same as <a href="ref_c_io.html#IO.stat">
+          <code>IO#stat</code>
+        </a>, but does not follow the last symbolic link.
+      Instead, reports on the link itself.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.symlink("testfile",&nbsp;"link2test")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.stat("testfile").size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.lstat("link2test").size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>8</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.stat("link2test").size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.mtime">mtime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.mtime( <i>fileName</i> )
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the modification time for the named file.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.mtime("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Nov&nbsp;25&nbsp;23:48:26&nbsp;CST&nbsp;2001</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                File.new( <i>fileName</i>, <i>aModeString</i>="r" )
+          -&gt; <i>file</i>
+          <br>File.new( <i>fileName</i> <i>[</i>, <i>aModeNum</i> <i>[</i>
+          <i>aPermNum</i>
+          <i>]</i>
+          <i>]</i> ) 
+          -&gt; <i>file</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Opens the file named by <i>fileName</i> according to
+      <i>aModeString</i> (default is ``r'') and returns a new <code>File</code>
+      object.  See Table 22.5 on page 326 for a description
+      of <i>aModeString</i>.  The file mode may optionally be specified
+      as a <code>Fixnum</code> by <em>or</em>-ing together the flags described in 
+      Table 22.3 on page 305.
+      Optional permission bits may be given in 
+      <i>aPermNum</i>.  These mode and permission bits are platform
+      dependent; on Unix systems, see <code>open(2)</code> for details.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+f&nbsp;=&nbsp;File.new("testfile",&nbsp;"r")
+f&nbsp;=&nbsp;File.new("newfile",&nbsp;&nbsp;"w+")
+f&nbsp;=&nbsp;File.new("newfile",&nbsp;File::CREAT|File::TRUNC|File::RDWR,&nbsp;0644)
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                File.open( <i>fileName</i>, <i>aModeString</i>="r" )
+          -&gt; <i>file</i>
+          <br>File.open( <i>fileName</i> <i>[</i>, <i>aModeNum</i> <i>[</i>
+          <i>aPermNum</i>
+          <i>]</i>
+          <i>]</i> ) 
+          -&gt; <i>file</i>
+          <br>File.open( <i>fileName</i>, <i>aModeString</i>="r" )
+          {| <i>file</i> | block }
+ -&gt; <code>nil</code>
+          <br>File.open( <i>fileName</i> <i>[</i>, <i>aModeNum</i> <i>[</i>
+          <i>aPermNum</i>
+          <i>]</i>
+          <i>]</i> ) 
+          {| <i>file</i> | block }
+ -&gt; <code>nil</code>
+          <br>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      With no associated block, <code>open</code> is a synonym for <a href="ref_c_file.html#File.new">
+          <code>File.new</code>
+        </a>.
+     If the optional code block is given, it will be passed <i>file</i>
+     as an argument, and the file will automatically be closed when
+     the block terminates. In this instance, <a href="ref_c_file.html#File.open">
+          <code>File.open</code>
+        </a> returns <code>nil</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.readlink">readlink</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.readlink( <i>fileName</i> )
+        -&gt; <i>fileName</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the given symbolic link as a string.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.symlink("testfile",&nbsp;"link2test")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.readlink("link2test")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"testfile"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.rename">rename</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.rename( <i>anOldName</i>, <i>aNewName</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Renames the given file to the new name.
+      Raises a <code>SystemCallError</code> if the file cannot be renamed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.rename("afile",&nbsp;"afile.bak")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.size( <i>fileName</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the size of the file in bytes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.size("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.split">split</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.split( <i>fileName</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Splits the given string into a directory and a file component and
+      returns them in a two-element array.  See also <a href="ref_c_file.html#File.dirname">
+          <code>File.dirname</code>
+        </a> and
+      <a href="ref_c_file.html#File.basename">
+          <code>File.basename</code>
+        </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.split("/home/gumby/.profile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["/home/gumby",&nbsp;".profile"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.stat">stat</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.stat( <i>fileName</i> )
+        -&gt; <i>aStat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a <code>File::Stat</code> object for the named file
+      (see <code>File::Stat</code>, page 308).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.stat("testfile").mtime</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Nov&nbsp;25&nbsp;23:48:26&nbsp;CST&nbsp;2001</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.symlink">symlink</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.symlink( <i>anOldName</i>, <i>aNewName</i> )
+        -&gt; 0 or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a symbolic link called <i>aNewName</i> for the existing
+      file <i>anOldName</i>.
+      Returns <code>nil</code> on all platforms that do not support
+      symbolic links.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.symlink("testfile",&nbsp;"link2test")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.truncate">truncate</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.truncate( <i>fileName</i>, <i>anInteger</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Truncates the file <i>fileName</i> to be at most <i>anInteger</i>
+      bytes long.  Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("out",&nbsp;"w")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.write("1234567890")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.close</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.truncate("out",&nbsp;5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.size("out")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.umask">umask</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.umask( <i>[</i>
+          <i>anInteger</i>
+          <i>]</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current umask value for this process.      
+      If the
+      optional argument is given, set the umask to that value and
+      return the previous value. Umask values are <em>subtracted</em>
+      from the default permissions; so a umask of <code>0222</code> would make 
+      a file read-only for everyone.
+      See also the discussion of permissions on page 301.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.umask(0006)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>18</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.umask</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>6</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.unlink">unlink</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.unlink( <i>[</i>
+          <i>fileName</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.delete">
+          <code>File.delete</code>
+        </a>.
+      See also <a href="ref_c_dir.html#Dir.rmdir">
+          <code>Dir.rmdir</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.utime">utime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        File.utime( <i>anAccessTime</i>,
+        <i>aModTime</i> <i>[</i>, <i>fileName</i>
+          <i>]<sup>+</sup>
+          </i> )
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Changes the access and modification times on a number of files.
+      The times must be instances of class <code>Time</code> or integers
+        representing the number of seconds since epoch.
+      Returns the number of files processed.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.utime(0,&nbsp;0,&nbsp;"testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.mtime("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Wed&nbsp;Dec&nbsp;31&nbsp;18:00:00&nbsp;CST&nbsp;1969</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.utime(0,&nbsp;Time.now,&nbsp;"testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.mtime("testfile")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:17:19&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+    <b>Lock-mode constants</b>    
+    <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+      <tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top">
+                <code>LOCK_EX</code>
+              </td>
+  <td valign="top">Exclusive lock. Only one process may hold an
+      exclusive lock for a given file at a time.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>LOCK_NB</code>
+              </td>
+  <td valign="top">Don't block when locking. May be combined
+      with other lock options using logical or.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>LOCK_SH</code>
+              </td>
+  <td valign="top">Shared lock. Multiple processes may each hold a
+      shared lock for a given file at the same time.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>LOCK_UN</code>
+              </td>
+  <td valign="top">Unlock.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+  </td>
+      </tr>
+    </table>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.atime">atime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.atime
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the last access time for <i>file</i>, or epoch if <i>file</i> has
+      not been accessed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").atime</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Wed&nbsp;Dec&nbsp;31&nbsp;18:00:00&nbsp;CST&nbsp;1969</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.chmod">chmod</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.chmod( <i>aModeInt</i> )
+        -&gt; <code>0</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Changes permission bits on <i>file</i> to the bit pattern
+        represented by <i>aModeInt</i>.  Actual effects are platform
+        dependent; on Unix systems, see <code>chmod(2)</code> for details. 
+      See the discussion of permissions on page 301.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("out",&nbsp;"w");</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.chmod(0644)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.chown">chown</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.chown( <i>anOwnerInt</i>, <i>aGroupInt</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Changes the owner and group of <i>file</i> to the given
+      numeric owner and group id's.      
+      Only a process with superuser
+      privileges may change the owner of a file.  The current owner of
+      a file may change the file's group to any group to which the
+      owner belongs.  A <code>nil</code> or -1 owner or group id is
+      ignored.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+File.new("testfile").chown(502,&nbsp;1000)
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.ctime">ctime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.ctime
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the change time for <i>file</i> (that is, the time
+      directory information about the file was changed, not the file
+      itself).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").ctime</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:17:19&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.flock">flock</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.flock ( <i>aLockingConstant</i> )
+       -&gt; 0 or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+     Locks or unlocks a file according to <i>aLockingConstant</i> (a
+     logical
+     <em>or</em> of the values in Table
+     22.4 on page 308). Returns <code>false</code> if
+     <code>File::LOCK_NB</code> is specified and the operation would
+     otherwise have blocked.
+     Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").flock(File::LOCK_UN)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.lstat">lstat</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.lstat
+        -&gt; <i>aStat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Same as <a href="ref_c_io.html#IO.stat">
+          <code>IO#stat</code>
+        </a>, but does not follow the last symbolic link.
+      Instead, reports on the link itself.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.symlink("testfile",&nbsp;"link2test")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.stat("testfile").size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("link2test")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.lstat.size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>8</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.stat.size</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>66</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.mtime">mtime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.mtime
+        -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the modification time for <i>file</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").mtime</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:17:19&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.path">path</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.path
+        -&gt; <i>fileName</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the pathname used to create <i>file</i> as a string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>File.new("testfile").path</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"testfile"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.truncate">truncate</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>file</i>.truncate( <i>anInteger</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Truncates <i>file</i> to at most <i>anInteger</i> bytes. The file
+      must be opened for writing.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>f&nbsp;=&nbsp;File.new("out",&nbsp;"w")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.syswrite("1234567890")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>10</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.truncate(5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>f.close()</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>File.size("out")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_falseclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_file__stat.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

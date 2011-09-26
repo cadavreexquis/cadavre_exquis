@@ -1,0 +1,290 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_kernel.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_math.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Marshal</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Marshal.dump">dump</a> 
+     <a href="#Marshal.load">load</a> 
+     <a href="#Marshal.restore">restore</a> 
+     <p></p>
+    <hr>
+<P></P>
+  The marshaling library converts collections of Ruby objects into a
+  byte stream, allowing them to be stored outside the currently active
+  script. This data may subsequently be read and the original objects
+  reconstituted. Marshaling is described starting on page 268.
+<P></P>
+  Some objects cannot be dumped: if the objects to be dumped include
+  bindings, procedure objects, instances of class <code>IO</code>, or
+  singleton objects, a <code>TypeError</code> will be raised.  
+<P></P>
+  If your class has special serialization needs (for example, if you want
+  to serialize in some specific format), or if it contains objects
+  that would otherwise not be serializable, you can implement your own
+  serialization strategy by defining two methods, <code>_dump</code> and
+  <code>_load</code>:    
+<P></P>
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>Method Type</b>
+        </td>
+  <td valign="top">
+          <b>Signature</b>
+        </td>
+  <td valign="top">
+          <b>Returns</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Instance</td>
+  <td valign="top">_dump(aDepth)</td>
+  <td valign="top">Returns a <code>String</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Class</td>
+  <td valign="top">_load(aString)</td>
+  <td valign="top">Returns a reconstituted <code>Object</code>
+        </td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+  The instance method <code>_dump</code> should
+  return a <code>String</code> object containing all the information necessary
+  to reconstitute objects of this class and all referenced objects up
+  to a maximum depth of <em>aDepth</em> (a value of -1 should disable
+  depth checking). The class method <code>_load</code>
+  should take a <code>String</code> and return an
+  object of this class.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Marshal.dump">dump</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  dump( <i>anObject</i> <i>[</i>, <i>anIO</i>
+          <i>]</i> , <i>limit</i>=--1 )
+        -&gt; <i>anIO</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Serializes <i>anObject</i> and all descendent objects. If
+      <i>anIO</i> is specified, the serialized data will be written to
+      it, otherwise the data will be returned as a <code>String</code>. If
+      <i>limit</i> is specified, the traversal of subobjects will be
+      limited to that depth. If <i>limit</i> is negative, no checking
+      of depth will be performed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+class&nbsp;Klass
+&nbsp;&nbsp;def&nbsp;initialize(str)
+&nbsp;&nbsp;&nbsp;&nbsp;@str&nbsp;=&nbsp;str
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;sayHello
+&nbsp;&nbsp;&nbsp;&nbsp;@str
+&nbsp;&nbsp;end
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>o&nbsp;=&nbsp;Klass.new("hello\n")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>data&nbsp;=&nbsp;Marshal.dump(o)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>obj&nbsp;=&nbsp;Marshal.load(data)</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>obj.sayHello</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"hello\n"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Marshal.load">load</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        load( <i>from</i> <i>[</i>, <i>aProc</i>
+          <i>]</i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the result of converting the serialized data in
+      <i>from</i> into a Ruby object (possibly with associated
+      subordinate objects). <i>from</i> may be either an instance of
+      <code>IO</code> or an object that responds to <code>to_str</code>. If
+      <i>proc</i> is specified, it will be passed each object as it 
+      is deserialized.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Marshal.restore">restore</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        restore( <i>from</i> <i>[</i>, <i>aProc</i>
+          <i>]</i> )
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      A synonym for <a href="ref_m_marshal.html#Marshal.load">
+          <code>Marshal::load</code>
+        </a>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_kernel.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_m_math.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

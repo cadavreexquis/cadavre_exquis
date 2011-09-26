@@ -1,0 +1,1087 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_objectspace.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right"></td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Process</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Process.egid">egid</a> 
+     <a href="#Process.egid_eq">egid=</a> 
+     <a href="#Process.euid">euid</a> 
+     <a href="#Process.euid_eq">euid=</a> 
+     <a href="#Process.exit_oh">exit!</a> 
+     <a href="#Process.fork">fork</a> 
+     <a href="#Process.getpgid">getpgid</a> 
+     <a href="#Process.getpgrp">getpgrp</a> 
+     <a href="#Process.getpriority">getpriority</a> 
+     <a href="#Process.gid">gid</a> 
+     <a href="#Process.gid_eq">gid=</a> 
+     <a href="#Process.kill">kill</a> 
+     <a href="#Process.pid">pid</a> 
+     <a href="#Process.ppid">ppid</a> 
+     <a href="#Process.setpgid">setpgid</a> 
+     <a href="#Process.setpgrp">setpgrp</a> 
+     <a href="#Process.setpriority">setpriority</a> 
+     <a href="#Process.setsid">setsid</a> 
+     <a href="#Process.uid">uid</a> 
+     <a href="#Process.uid_eq">uid=</a> 
+     <a href="#Process.wait">wait</a> 
+     <a href="#Process.wait2">wait2</a> 
+     <a href="#Process.waitpid">waitpid</a> 
+     <a href="#Process.waitpid2">waitpid2</a> 
+     <p></p>
+    <hr>
+<P></P>
+  The <code>Process</code> module is a collection of methods used to manipulate 
+  processes.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="Process.PRIO_PGRP">
+                <code>PRIO_PGRP</code>
+              </a>
+            </td>
+       <td>1</td>
+       <td>Process Group priority.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Process.PRIO_PROCESS">
+                <code>PRIO_PROCESS</code>
+              </a>
+            </td>
+       <td>0</td>
+       <td>Process priority.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Process.PRIO_USER">
+                <code>PRIO_USER</code>
+              </a>
+            </td>
+       <td>2</td>
+       <td>User priority.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Process.WNOHANG">
+                <code>WNOHANG</code>
+              </a>
+            </td>
+       <td>1</td>
+       <td>Do not block if no child has exited. Not
+    available on all platforms.</td>
+     </tr>
+<P></P>
+  <tr>
+       <td>
+              <a name="Process.WUNTRACED">
+                <code>WUNTRACED</code>
+              </a>
+            </td>
+       <td>2</td>
+       <td>Return stopped children as well. Not
+    available on all platforms.</td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.egid">egid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.egid 
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the effective group id for this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.egid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>500</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.egid_eq">egid=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.egid= <i>aFixnum</i>
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Sets the effective group id for this process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.euid">euid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.euid 
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the effective user id for this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.euid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>501</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.euid_eq">euid=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.euid= <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the effective user id for this process.  
+      Not available on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.exit_oh">exit!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.exit!( <i>aFixnum</i>=-1 )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Exits the process immediately.      
+      No exit handlers are run.
+      <i>aFixnum</i> is returned to the underlying system as the exit
+      status. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Process.exit!(0)
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.fork">fork</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.fork <i>[</i>{ block }
+<i>]</i>
+        -&gt; <i>aFixnum</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      See <a href="ref_m_kernel.html#Kernel.fork">
+          <code>Kernel::fork</code>
+        </a> on page 416.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.getpgid">getpgid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.getpgid( <i>anInteger</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the process group id for the given process id.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.getpgid(Process.ppid())</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>32438</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.getpgrp">getpgrp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.getpgrp
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the process group id for this process.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.getpgid(0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>32438</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.getpgrp</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>32438</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.getpriority">getpriority</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.getpriority( <i>aKind</i>,
+        <i>anInteger</i> ) -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Gets the      
+      scheduling priority for specified process, process group, or
+      user.  <i>aKind</i> indicates the kind of entity to find:
+      one of <a href="ref_m_process.html#Process.PRIO_PGRP">
+          <code>Process::PRIO_PGRP</code>
+        </a>,
+      <a href="ref_m_process.html#Process.PRIO_USER">
+          <code>Process::PRIO_USER</code>
+        </a>, or <a href="ref_m_process.html#Process.PRIO_PROCESS">
+          <code>Process::PRIO_PROCESS</code>
+        </a>.
+      <i>anInteger</i> is an id indicating the particular process,
+      process group, or user (an id of 0 means <em>current</em>).
+      Lower priorities are more favorable for
+      scheduling.  Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.getpriority(Process::PRIO_USER,&nbsp;0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.getpriority(Process::PRIO_PROCESS,&nbsp;0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.gid">gid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.gid 
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the group id for this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.gid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>500</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.gid_eq">gid=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.gid= <i>aFixnum</i>
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Sets the group id for this process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.kill">kill</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.kill( <i>aSignal</i>, 
+        <i>[</i>
+          <i>aPid</i>
+          <i>]<sup>+</sup>
+          </i> ) -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends the given signal to the specified process id(s),      
+      or to the
+      current process if <i>aPid</i> is zero.  <i>aSignal</i> may be an
+      integer signal number or a POSIX signal name (either with or
+      without a <code>SIG</code> prefix).  If <i>aSignal</i> is negative (or
+      starts with a ``<code>-</code>'' sign), kills process groups instead
+      of processes.  Not all signals are available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+trap("SIGHUP")&nbsp;{&nbsp;close_then_exit&nbsp;}
+Process.kill("SIGHUP",&nbsp;0)
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.pid">pid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.pid -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the process id of this process.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.pid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1488</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.ppid">ppid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.ppid -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the process id of the parent of this process.
+      Always returns 0 on NT.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+print&nbsp;"I&nbsp;am&nbsp;",&nbsp;Process.pid,&nbsp;"\n"
+Process.fork&nbsp;{&nbsp;print&nbsp;"Dad&nbsp;is&nbsp;",&nbsp;Process.ppid,&nbsp;"\n"&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+I&nbsp;am&nbsp;1490
+Dad&nbsp;is&nbsp;1490
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.setpgid">setpgid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.setpgid( <i>aPid</i>, <i>anInteger</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Sets the process group id of <i>aPid</i> (0 indicates this
+      process) to <i>anInteger</i>.
+      Not available on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.setpgrp">setpgrp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.setpgrp
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>setpgid(0,0)</code>.
+      Not available on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.setpriority">setpriority</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.setpriority( <i>kind</i>,
+        <i>anInteger</i>, <i>anIntPriority</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      See <a href="ref_m_process.html#Process.getpriority">
+          <code>Process#getpriority</code>
+        </a>.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.setpriority(Process::PRIO_USER,&nbsp;0,&nbsp;19)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.setpriority(Process::PRIO_PROCESS,&nbsp;0,&nbsp;19)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.getpriority(Process::PRIO_USER,&nbsp;0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>19</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.getpriority(Process::PRIO_PROCESS,&nbsp;0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>19</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.setsid">setsid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.setsid
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Establishes this process as a new session and process group      
+      leader, with no controlling tty.
+      Returns the session id.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.setsid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1495</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.uid">uid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.uid
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the user id of this process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.uid</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>501</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.uid_eq">uid=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.uid= <i>anInteger</i>
+        -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the (integer) user id for this process.
+      Not available on all platforms.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.wait">wait</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.wait
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for any child process to exit and returns the process id
+      of that child.      
+      Raises a <code>SystemError</code> if there are no child processes.
+      Not available on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.fork&nbsp;{&nbsp;exit&nbsp;1;&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1500</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.wait</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1500</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.wait2">wait2</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.wait2
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for any child process to exit and returns an array
+      containing the process id and the exit status
+      of that child.
+      Raises a <code>SystemError</code> if there are no child processes.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Process.fork&nbsp;{&nbsp;exit&nbsp;1&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1503</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Process.wait2</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[1503,&nbsp;256]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.waitpid">waitpid</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.waitpid( <i>aPid</i>,
+        <i>anInteger</i>=0 )
+        -&gt; <i>aPid</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for the given child process to exit. <i>anInteger</i> may be 
+      a logical or of the flag value
+      <a href="ref_m_process.html#Process.WNOHANG">
+          <code>Process::WNOHANG</code>
+        </a> (do not block if no child available)
+      or <a href="ref_m_process.html#Process.WUNTRACED">
+          <code>Process::WUNTRACED</code>
+        </a> (return stopped children that haven't 
+      been reported).
+      Not all flags are available on all platforms, but a flag value
+      of zero will work on all platforms.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>include&nbsp;Process</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>pid&nbsp;=&nbsp;fork&nbsp;{&nbsp;sleep&nbsp;3&nbsp;}</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1506</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.now</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:20:09&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>waitpid(pid,&nbsp;Process::WNOHANG)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.now</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:20:09&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>waitpid(pid,&nbsp;0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1506</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Time.now</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>Sun&nbsp;Jun&nbsp;09&nbsp;00:20:12&nbsp;CDT&nbsp;2002</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Process.waitpid2">waitpid2</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Process.waitpid2( <i>aPid</i>,
+        <i>anInteger</i>=0 )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for the given child process to exit, returning that
+      child's process id and exit status. <i>anInteger</i> may be 
+      a logical or of the flag value
+      <a href="ref_m_process.html#Process.WNOHANG">
+          <code>Process::WNOHANG</code>
+        </a> (do not block if no child available)
+      or <a href="ref_m_process.html#Process.WUNTRACED">
+          <code>Process::WUNTRACED</code>
+        </a> (return stopped children that haven't 
+      been reported).
+      Not all flags are available on all platforms, but a flag value
+      of zero will work on all platforms.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_m_objectspace.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right"></td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

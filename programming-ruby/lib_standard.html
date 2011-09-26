@@ -1,0 +1,4933 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="builtins.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="lib_patterns.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Standard Library</h1>
+    <hr>
+    <br>
+<P></P>
+Ruby comes ``out of the box'' with a large and useful library of
+modules and classes. This chapter contains a sampling of the more
+useful of these.
+<P></P>
+Interestingly, and unlike some of the code in later chapters, all of
+these libraries are written in Ruby. You'll find the source in the
+<code>lib</code> subdirectory of the standard Ruby distribution.
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Complex</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Numeric</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Complex.new">new</a> 
+     <i>
+      <a href="#Complex.Arithmeticoperations">Arithmetic operations</a>
+    </i> <i>
+      <a href="#Complex._lt_eq_lt">&lt;=&gt;</a>
+    </i> <i>
+      <a href="#Complex._eq_eq">==</a>
+    </i> <i>
+      <a href="#Complex.abs">abs</a>
+    </i> <i>
+      <a href="#Complex.abs2">abs2</a>
+    </i> <i>
+      <a href="#Complex.arg">arg</a>
+    </i> <i>
+      <a href="#Complex.conjugate">conjugate</a>
+    </i> <i>
+      <a href="#Complex.image">image</a>
+    </i> <i>
+      <a href="#Complex.polar">polar</a>
+    </i> <i>
+      <a href="#Complex.real">real</a>
+    </i> <i>
+      <a href="#Complex.to_f">to_f</a>
+    </i> <i>
+      <a href="#Complex.to_i">to_i</a>
+    </i> <i>
+      <a href="#Complex.to_r">to_r</a>
+    </i> <i>
+      <a href="#Complex.to_s">to_s</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;"complex"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v1&nbsp;=&nbsp;Complex(2,3)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(2,&nbsp;3)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v2&nbsp;=&nbsp;2.im</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(0,&nbsp;2)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v1&nbsp;+&nbsp;v2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(2,&nbsp;5)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v1&nbsp;*&nbsp;v2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(-6,&nbsp;4)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v2**2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(-4,&nbsp;0)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Math.sin(v1)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Complex(9.154499147,&nbsp;-4.16890696)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v1&nbsp;&lt;&nbsp;v2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>v2**2&nbsp;==&nbsp;-4</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="Complex.Complex::I">
+                <code>Complex::I</code>
+              </a>
+            </td>
+       <td></td>
+       <td>0 +1<sub>i</sub>
+            </td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Complex.new( <i>a</i>, <i>b</i> )
+        -&gt; <i>aComplex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a + b<sub>i</sub>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  In addition to the <code>Complex.new</code> constructor, the <code>Complex</code>
+  library defines the method <a href="ref_c_numeric.html#Numeric.im">
+      <code>Numeric.im</code>
+    </a>, such that
+  <i>aNumeric</i>
+    <code>.im</code> returns 0 + <i>aNumeric</i>
+    <sub>i</sub>. Complex
+  numbers are also constructed using the global method
+  <code>Complex</code>, which takes one or two arguments. The value it
+  returns depends on the type of its arguments:
+<P></P>
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>a</b>
+        </td>
+  <td valign="top">
+          <b>b</b>
+        </td>
+  <td valign="top">
+          <b>Result</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Number</td>
+  <td valign="top">Number</td>
+  <td valign="top"> a + b<sub>i</sub> </td>
+</tr>
+<tr>
+  <td valign="top">Complex</td>
+  <td valign="top">0</td>
+  <td valign="top">
+          <i>a</i>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Complex</td>
+  <td valign="top">Complex</td>
+  <td valign="top">
+          <code>Complex( <i>a</i>.real - <i>b</i>.image,
+                                     <i>a</i>.image + <i>b</i>.real )</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">Number</td>
+  <td valign="top">Complex</td>
+  <td valign="top">
+          <code>Complex( <i>a</i> - <i>b</i>.image,
+                                     <i>b</i>.real )</code>
+        </td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.Arithmeticoperations">Arithmetic operations</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Performs various arithmetic operations on <i>ref</i>.
+<P></P>
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">+</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Addition</td>
+</tr>
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">-</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Subtraction</td>
+</tr>
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">*</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Multiplication</td>
+</tr>
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">/</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Division</td>
+</tr>
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">%</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Remainder</td>
+</tr>
+<tr>
+  <td valign="top">
+              <i>ref</i>
+            </td>
+  <td valign="top">**</td>
+  <td valign="top">
+              <i>aNumeric</i>
+        -&gt; <i>aComplex</i>
+            </td>
+  <td valign="top">Exponentiation (real and
+        complex power)</td>
+</tr>
+</table>
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex._lt_eq_lt">&lt;=&gt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> &lt;=&gt; <i>other</i> -&gt; -1, 0, +1
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <i>ref</i>.abs <code>&lt;=&gt;</code> <i>other</i>.abs.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex._eq_eq">==</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> == <i>anObject</i> -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>anObject</i> is a complex number, returns <code>true</code> if
+      its real and imaginary parts match <i>ref</i>. If <i>anObject</i> is a
+      simple number, returns <code>true</code> if
+      <i>ref</i>.<code>real</code> equals <i>anObject</i> and
+      <i>ref</i>.<code>image</code> is zero. Otherwise, attempts to
+      coerce <i>anObject</i> to a complex number and compares the result.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.abs">abs</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.abs -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Absolute value.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.abs2">abs2</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.abs2 -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Square of absolute value.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.arg">arg</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.arg -&gt; <i>aFloat</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Argument (angle from (1,0)).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.conjugate">conjugate</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.conjugate
+        -&gt; <i>aComplex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Complex conjugate.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.image">image</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.image -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      The imaginary part of <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.polar">polar</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.polar -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the two-element array: [<i>c</i>.abs, <i>c</i>.arg].
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.real">real</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.real -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      The real part of <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.to_f">to_f</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.to_f -&gt; <i>aComplex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>Complex(real.to_f, image.to_f)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.to_i">to_i</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.to_i -&gt; <i>aComplex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>Complex(real.to_i, image.to_i)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.to_r">to_r</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.to_r -&gt; <i>aComplex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>Complex(real.to_r, image.to_r)</code>, converting both
+      parts of the complex to a rational number.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Complex.to_s">to_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.to_s -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      String representation of <i>ref</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+In addition, the <code>Math</code> functions <code>sqrt</code>, <code>exp</code>, <code>cos</code>,
+<code>sin</code>, <code>tan</code>, <code>log</code>, <code>log10</code>, and <code>atan2</code> are
+extended to support a <code>Complex</code> argument.
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Date</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Date.exist2_qm">exist2?</a> 
+     <a href="#Date.exist_qm">exist?</a> 
+     <a href="#Date.existw_qm">existw?</a> 
+     <a href="#Date.gregorian_leap_qm">gregorian_leap?</a> 
+     <a href="#Date.julian_leap_qm">julian_leap?</a> 
+     <a href="#Date.leap_qm">leap?</a> 
+     <a href="#Date.new">new</a> 
+     <a href="#Date.new1">new1</a> 
+     <a href="#Date.new2">new2</a> 
+     <a href="#Date.new3">new3</a> 
+     <a href="#Date.neww">neww</a> 
+     <a href="#Date.today">today</a> 
+     <i>
+      <a href="#Date.Accessors">Accessors</a>
+    </i> <i>
+      <a href="#Date._pl">+</a>
+    </i> <i>
+      <a href="#Date._mi_mi">--</a>
+    </i> <i>
+      <a href="#Date._lt_lt">&lt;&lt;</a>
+    </i> <i>
+      <a href="#Date._lt_eq_lt">&lt;=&gt;</a>
+    </i> <i>
+      <a href="#Date._eq_eq_eq">===</a>
+    </i> <i>
+      <a href="#Date._lt_lt">&gt;&gt;</a>
+    </i> <i>
+      <a href="#Date.downto">downto</a>
+    </i> <i>
+      <a href="#Date.england">england</a>
+    </i> <i>
+      <a href="#Date.gregorian">gregorian</a>
+    </i> <i>
+      <a href="#Date.italy">italy</a>
+    </i> <i>
+      <a href="#Date.jd">jd</a>
+    </i> <i>
+      <a href="#Date.julian">julian</a>
+    </i> <i>
+      <a href="#Date.leap_qm">leap?</a>
+    </i> <i>
+      <a href="#Date.mjd">mjd</a>
+    </i> <i>
+      <a href="#Date.newsg">newsg</a>
+    </i> <i>
+      <a href="#Date.next">next</a>
+    </i> <i>
+      <a href="#Date.ns_qm">ns?</a>
+    </i> <i>
+      <a href="#Date.os_qm">os?</a>
+    </i> <i>
+      <a href="#Date.sg">sg</a>
+    </i> <i>
+      <a href="#Date.step">step</a>
+    </i> <i>
+      <a href="#Date.succ">succ</a>
+    </i> <i>
+      <a href="#Date.to_s">to_s</a>
+    </i> <i>
+      <a href="#Date.upto">upto</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;'date'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>d&nbsp;=&nbsp;Date.new(2000,&nbsp;3,&nbsp;31)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>#&lt;Date:&nbsp;2451635,2299161&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[d.year,&nbsp;d.yday,&nbsp;d.wday]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[2000,&nbsp;91,&nbsp;5]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[d.month,&nbsp;d.mday]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[3,&nbsp;31]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[d.cwyear,&nbsp;d.cweek,&nbsp;d.cwday]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[2000,&nbsp;13,&nbsp;5]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[d.jd,&nbsp;d.mjd]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[2451635,&nbsp;51634.5]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(d&nbsp;&lt;&lt;&nbsp;1).to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"2000-02-29"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>d.succ.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"2000-04-01"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(d&nbsp;+&nbsp;100).to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"2000-07-09"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>d.leap?</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>Date.new(2000,&nbsp;3,&nbsp;-10).to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"2000-03-22"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>d1&nbsp;=&nbsp;Date.neww(2000,&nbsp;13,&nbsp;7)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>#&lt;Date:&nbsp;2451637,2299161&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>d1.to_s</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"2000-04-02"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[d1.cwday,&nbsp;d1.wday]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[7,&nbsp;0]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  The <code>date</code> library implements class <code>Date</code>, which provides a
+  comprehensive set of facilities for storing, manipulating, and
+  converting dates. To document its options, we need to take a brief
+  historical detour to establish some vocabulary.
+<P></P>
+  Internally a date is stored as a Julian day number, the number of
+  days since midday, January 1st, 4713&nbsp;BCE.<em>[In
+    the code, you may find references to the year -4712. As astronomical
+    dates include a year zero, 4713&nbsp;BCE is the same year as
+    -4712.]</em> The rules for converting a Julian day number to a
+  calendar date are complicated because the Romans estimated the
+  length of a year incorrectly. In the Julian calendar (often called
+  Old Style, or O.S.), every year divisible by 4 is a leap year.
+  The <code>Date</code> class has options to convert dates using this as an
+  assumption.
+<P></P>
+  By the sixteenth century, the inaccuracies in this measurement had
+  become apparent. An edict from Pope Gregory&nbsp;XIII in 1582 created the
+  New Style (N.S.) or Gregorian calendar, where years divisible by 100 were no
+  longer leap years unless they were also divisible by 400. This system was
+  adopted by most Catholic countries immediately, but religious
+  differences held up a wider adoption. England (and several other
+  countries) switched in 1752, with some countries following later.
+  The <code>Date</code> class allows you to determine whether to implement the
+  cutover in 1582 (the <code>Date::ITALY</code> option), 1752
+  (<code>Date::ENGLAND</code>), or another date of your choosing.    
+<P></P>
+  The <code>Date</code> class also provides conversions to Modified Julian Day
+  (MJD) numbers.
+  MJD values count from midnight, November 17, 1858. Because these
+  values count from midnight, not midday, there is a half-day added to the
+  conversion factor.
+<P></P>
+  The descriptions that follow use the abbreviations listed
+  in Table 24.1 on page 441.
+<P></P>
+  <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+    <b>Abbreviations used describing dates</b>
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Field</b>
+              </td>
+  <td valign="top">
+                <b>Meaning</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">cwday</td>
+  <td valign="top">An ISO&nbsp;8601 calendar weekday. 1 is Monday, 7 is Sunday.</td>
+</tr>
+<tr>
+  <td valign="top">cweek</td>
+  <td valign="top">An ISO&nbsp;8601 calendar week. Week 1 is the week containing the
+  first Thursday (or equivalently the week that contains
+  January&nbsp;4th).</td>
+</tr>
+<tr>
+  <td valign="top">cwyear</td>
+  <td valign="top">An ISO&nbsp;8601 calendar-week-based year. May be different from
+  <i>year</i>, as it rolls forward only on a Monday.</td>
+</tr>
+<tr>
+  <td valign="top">jd</td>
+  <td valign="top">The Julian day number---the number of days since January
+  1st, 4713&nbsp;BCE.</td>
+</tr>
+<tr>
+  <td valign="top">mday</td>
+  <td valign="top">The day of the month (1..31).</td>
+</tr>
+<tr>
+  <td valign="top">mjd</td>
+  <td valign="top">A modified Julian day number.</td>
+</tr>
+<tr>
+  <td valign="top">mon</td>
+  <td valign="top">The month of the year (1..12).</td>
+</tr>
+<tr>
+  <td valign="top">sg</td>
+  <td valign="top">The start of the Gregorian correction: <code>Date::ITALY</code> (the
+  default) for 1582, <code>Date::ENGLAND</code> for 1752, or
+  <code>JULIAN</code>, meaning no correction. You may also provide an
+  arbitrary Julian day number for this parameter, in which case the
+  correction will start from this date.</td>
+</tr>
+<tr>
+  <td valign="top">wday</td>
+  <td valign="top">The day of the week (0 is Sunday).</td>
+</tr>
+<tr>
+  <td valign="top">week</td>
+  <td valign="top">The week number into a year (1..53).</td>
+</tr>
+<tr>
+  <td valign="top">yday</td>
+  <td valign="top">The day into the year (1..366).</td>
+</tr>
+<tr>
+  <td valign="top">year</td>
+  <td valign="top">A year (1966, 2001, and the like).</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+Class <code>Date</code> exports the constant arrays <code>Date::MONTHNAMES</code>
+and <code>Date::DAYNAMES</code>, which can be indexed by <i>mon</i> and
+<i>wday</i> values to return the corresponding English names.
+<P></P>
+The <code>Date</code> class also provides low-level date-conversion methods:
+<P></P>
+<center>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">*&nbsp;<code>civil_to_jd</code>
+          </td>
+  <td valign="top">*&nbsp;<code>jd_to_civil</code>
+          </td>
+</tr>
+<tr>
+  <td valign="top">*&nbsp;<code>commercial_to_jd</code>
+          </td>
+  <td valign="top">*&nbsp;<code>jd_to_commercial</code>
+          </td>
+</tr>
+<tr>
+  <td valign="top">*&nbsp;<code>ordinal_to_jd</code>
+          </td>
+  <td valign="top">*&nbsp;<code>jd_to_ordinal</code>
+          </td>
+</tr>
+<tr>
+  <td valign="top">*&nbsp;<code>jd_to_mjd</code>
+          </td>
+  <td valign="top">*&nbsp;<code>mjd_to_jd</code>
+          </td>
+</tr>
+</table>
+<P></P>
+</center>
+<P></P>
+These methods perform limited error checking of their parameters, and are not
+documented here.  The somewhat confusingly named <code>exist..?</code>
+routines perform conversions from different formats into a Julian day
+number with error checking. These routines also automatically
+normalize their parameters.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>Comparable:
+    </td>
+        <td>
+   &lt;, &lt;=, ==, &gt;=, &gt;, between?</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.exist2_qm">exist2?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.exist2?(
+        <i>year</i>, <i>yday</i>, <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>jd</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts a <i>year</i> and <i>yday</i> into a Julian day number,
+      returning <code>nil</code> on error.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.exist_qm">exist?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.exist?( <i>year</i>, <i>mon</i>,
+        <i>mday</i>,  <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>jd</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Converts a <i>year</i>, <i>mon</i>, and <i>mday</i> into a Julian day
+      number, or <code>nil</code> if the parameters are invalid.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.existw_qm">existw?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.existw?(
+        <i>cyear</i>, <i>cweek</i>, <i>cwday</i>, <i>sg</i>=<code>Date::ITALY</code>)
+        -&gt; <i>jd</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+         Converts a <i>cyear</i>,
+       <i>cweek</i>, and <i>cwday</i> into a Julian day number. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.gregorian_leap_qm">gregorian_leap?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.gregorian_leap?( <i>year</i> 
+        ) -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>year</i> does not end with ``00'', returns <code>true</code> if 
+      <i>year</i> is divisible by 4, otherwise returns <code>true</code> 
+      if <i>year</i> is divisible by 400.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.julian_leap_qm">julian_leap?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.julian_leap?( <i>year</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>year</i> is divisible by 4.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.leap_qm">leap?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.leap?( <i>year</i> ) -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Date.gregorian_leap?</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.new( <i>year</i>=-4712, <i>mon</i>=1, <i>mday</i>=1,
+        <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a <code>Date</code> for the given <i>year</i>, <i>mon</i>, and
+      <i>mday</i>. If <i>mon</i> is negative, it counts back from the end of the 
+      year. If <i>mday</i> is negative, it counts back from the
+      end of the month.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.new1">new1</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.new1( <i>jd</i>, <i>sg</i>=<code>Date::ITALY</code>)
+        -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a <code>Date</code> corresponding to the given Julian day
+      number.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.new2">new2</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.new2( <i>year</i>=-4712, <i>yday</i>=1,
+        <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a <code>Date</code> for the given <i>year</i> and
+      <i>yday</i>. If <i>yday</i> is negative, it counts back from the
+      end of the year.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.new3">new3</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.new3( <i>year</i>=-4712, <i>mon</i>=1, <i>mday</i>=1,
+        <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Date.new</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.neww">neww</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.neww( <i>cyear</i>=1582, <i>cweek</i>=41,
+        <i>cwday</i>=5, <i>sg</i>=<code>Date::ITALY</code>) -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns
+      a <code>Date</code> for the given <i>cyear</i>, <i>cweek</i>, and
+      <i>cwday</i>. If <i>cweek</i> is negative, it counts back from the end
+      of the year. If <i>cwday</i> is negative, it counts back
+      from the end of the week.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.today">today</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Date.today( <i>sg</i>=<code>Date::ITALY</code>)
+        -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a <code>Date</code> for today.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.Accessors">Accessors</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>ref</i>.year -&gt; <i>year</i>
+          <br>
+          <i>ref</i>.yday -&gt; <i>yday</i>
+          <br>
+          <i>ref</i>.mjd -&gt; <i>mjd</i>
+          <br>
+          <i>ref</i>.mon -&gt; <i>mon</i>
+          <br>
+          <i>ref</i>.month -&gt; <i>mon</i>
+          <br>
+          <i>ref</i>.mday -&gt; <i>mday</i>
+          <br>
+          <i>ref</i>.day -&gt; <i>mday</i>
+          <br>
+          <i>ref</i>.cwyear -&gt; <i>cwyear</i>
+          <br>
+          <i>ref</i>.cweek -&gt; <i>cweek</i>
+          <br>
+          <i>ref</i>.cwday -&gt; <i>cwday</i>
+          <br>
+          <i>ref</i>.wday -&gt; <i>wday</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the given component of <i>ref</i> as a number.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._pl">+</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> + <i>anInteger</i>
+        -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>Date</code> <i>anInteger</i> days from <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._mi_mi">--</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>ref</i> <code>-</code> <i>anInteger</i> -&gt; <i>aNewDate</i>
+          <br>
+          <i>ref</i> <code>-</code> <i>anOtherDate</i> -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      The first form returns a new <code>Date</code> <i>anInteger</i> days
+      before <i>ref</i>.
+      The second form 
+      returns the number of days between <i>ref</i> and <i>anOtherDate</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._lt_lt">&lt;&lt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> &lt;&lt; <i>anInteger</i> -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>Date</code> formed by subtracting <i>anInteger</i> months to <i>ref</i>,
+      adjusting the <i>mday</i> value back to the last day of the month if it
+      otherwise exceeds it.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._lt_eq_lt">&lt;=&gt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> &lt;=&gt; <i>anOther</i> -&gt; -1, 0, +1
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      <i>anOther</i> must be a <code>Numeric</code>, in which case it is
+      treated as
+      a Julian day number, or a <code>Date</code>.
+      Returns -1, 0, +1 if <i>ref</i> is
+      less than, equal to, or greater than <i>anOther</i>. See module
+      <code>Comparable</code> on page 402.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._eq_eq_eq">===</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> === <i>anOther</i> -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      <i>anOther</i> must be a <code>Numeric</code>, in which case it is
+      treated as
+      a Julian day number, or a <code>Date</code>.
+      Returns <code>true</code> if the
+      Julian day number of <i>anOther</i> is the same as <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date._lt_lt">&gt;&gt;</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i> &gt;&gt; <i>anInteger</i> -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>Date</code> formed by adding <i>anInteger</i> months to <i>ref</i>,
+      adjusting the <i>mday</i> value back to the last day of the month if it
+      otherwise exceeds it.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.downto">downto</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.downto( <i>aDateMin</i> )
+        {| date | block }
+<P></P>
+        -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Invokes block with dates from <i>ref</i> down to <i>aDateMin</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.england">england</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.england -&gt; <i>aDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <i>ref</i>
+        <code>.newsg(Date::ENGLAND)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.gregorian">gregorian</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.gregorian
+        -&gt; <i>aDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <i>ref</i>
+        <code>.newsg(Date::GREGORIAN)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.italy">italy</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.italy -&gt; <i>aDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <i>ref</i>
+        <code>.newsg(Date::ITALY)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.jd">jd</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.jd -&gt; <i>jd</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the Julian day number for <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.julian">julian</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.julian -&gt; <i>aDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <i>ref</i>
+        <code>.newsg(Date::JULIAN)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.leap_qm">leap?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.leap? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>ref</i> falls within a leap year.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.mjd">mjd</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.mjd -&gt; <i>mjd</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the Julian day number of <i>ref</i> converted to a modified Julian
+      day number.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.newsg">newsg</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.newsg( <i>sg</i>=<code>Date::ITALY</code> )
+        -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>Date</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.next">next</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.next -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Synonym for <i>ref</i>.succ.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.ns_qm">ns?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.ns? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>ref</i> falls in the period of New Style dates.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.os_qm">os?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.os? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>ref</i> falls in the period of Old Style dates.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.sg">sg</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.sg -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the Julian day number of the start of New Style dates for
+      <i>ref</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.step">step</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.step( <i>aDateLimit</i>, <i>step</i> )
+        {| date | block }
+<P></P>
+        -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes block with dates starting at <i>ref</i>,
+      incrementing by <i>step</i> days, ending at the first date greater than
+      <i>aDateLimit</i> (less than for a negative step).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.succ">succ</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.succ -&gt; <i>aNewDate</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the date of <i>ref</i> plus one day.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.to_s">to_s</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.to_s -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>self</code> as ``year-mon-mday.''
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Date.upto">upto</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.upto( <i>aDateMax</i> )
+        {| date | block }
+<P></P>
+        -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes block with dates from <i>ref</i> to <i>aDateMax</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">
+          Library: English</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"English"
+<P></P>
+$OUTPUT_FIELD_SEPARATOR&nbsp;=&nbsp;'&nbsp;--&nbsp;'
+"waterbuffalo"&nbsp;=~&nbsp;/buff/
+print&nbsp;$LOADED_FEATURES,&nbsp;$POSTMATCH,&nbsp;$PID,&nbsp;"\n"
+print&nbsp;$",&nbsp;$',&nbsp;$$,&nbsp;"\n"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+English.rb&nbsp;--&nbsp;alo&nbsp;--&nbsp;32130&nbsp;--
+English.rb&nbsp;--&nbsp;alo&nbsp;--&nbsp;32130&nbsp;--
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  Include the English library file in a Ruby script, and you can
+  reference the global variables such as <code>$_</code> using less
+  cryptic names, listed in the following table.  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+    <tr>
+        <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+      <tr>
+  <td valign="top">
+          <code>$*</code>
+        </td>
+  <td valign="top">$ARGV</td>
+  <td valign="top">
+          <code>$"</code>
+        </td>
+  <td valign="top">$LOADED_FEATURES</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$?</code>
+        </td>
+  <td valign="top">$CHILD_STATUS</td>
+  <td valign="top">
+          <code>$&amp;</code>
+        </td>
+  <td valign="top">$MATCH</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$&lt;</code>
+        </td>
+  <td valign="top">$DEFAULT_INPUT</td>
+  <td valign="top">
+          <code>$.</code>
+        </td>
+  <td valign="top">$NR</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$&gt;</code>
+        </td>
+  <td valign="top">$DEFAULT_OUTPUT</td>
+  <td valign="top">
+          <code>$,</code>
+        </td>
+  <td valign="top">$OFS</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$!</code>
+        </td>
+  <td valign="top">$ERROR_INFO</td>
+  <td valign="top">
+          <code>$\</code>
+        </td>
+  <td valign="top">$ORS</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$@</code>
+        </td>
+  <td valign="top">$ERROR_POSITION</td>
+  <td valign="top">
+          <code>$\</code>
+        </td>
+  <td valign="top">$OUTPUT_RECORD_SEPARATOR</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$;</code>
+        </td>
+  <td valign="top">$FIELD_SEPARATOR</td>
+  <td valign="top">
+          <code>$,</code>
+        </td>
+  <td valign="top">$OUTPUT_FIELD_SEPARATOR</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$;</code>
+        </td>
+  <td valign="top">$FS</td>
+  <td valign="top">
+          <code>$$</code>
+        </td>
+  <td valign="top">$PID</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$=</code>
+        </td>
+  <td valign="top">$IGNORECASE</td>
+  <td valign="top">
+          <code>$'</code>
+        </td>
+  <td valign="top">$POSTMATCH</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$.</code>
+        </td>
+  <td valign="top">$INPUT_LINE_NUMBER</td>
+  <td valign="top">
+          <code>$`</code>
+        </td>
+  <td valign="top">$PREMATCH</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$/</code>
+        </td>
+  <td valign="top">$INPUT_RECORD_SEPARATOR</td>
+  <td valign="top">
+          <code>$$</code>
+        </td>
+  <td valign="top">$PROCESS_ID</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$~</code>
+        </td>
+  <td valign="top">$LAST_MATCH_INFO</td>
+  <td valign="top">
+          <code>$0</code>
+        </td>
+  <td valign="top">$PROGRAM_NAME</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$+</code>
+        </td>
+  <td valign="top">$LAST_PAREN_MATCH</td>
+  <td valign="top">
+          <code>$/</code>
+        </td>
+  <td valign="top">$RS</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>$_</code>
+        </td>
+  <td valign="top">$LAST_READ_LINE</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module Find</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Find.find">find</a> 
+     <a href="#Find.prune">prune</a> 
+     <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"find"
+Find.find("/etc/passwd",&nbsp;"/var/spool/lp1",&nbsp;".")&nbsp;do&nbsp;|f|
+&nbsp;&nbsp;Find.prune&nbsp;if&nbsp;f&nbsp;==&nbsp;"."
+&nbsp;&nbsp;puts&nbsp;f
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+/etc/passwd
+/var/spool/lp1
+/var/spool/lp1/status
+/var/spool/lp1/lock
+/var/spool/lp1/.seq
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>Find</code> module supports the top-down traversal of a set of
+  file paths.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Find.find">find</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.find( <i>[</i>
+          <i>aName</i>
+          <i>]<sup>*</sup>
+          </i> ) {| aFileName | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls the associated block with the name of every file and
+      directory listed as arguments, then recursively on their
+      subdirectories, and so on.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Find.prune">prune</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.prune
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Skips the current file or directory, restarting the
+      loop with the next entry. If the current file is a directory,
+      that directory will not be recursively entered.
+      Meaningful only within the block associated with
+      <code>Find::find</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class File</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">IO</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#File.cmp">cmp</a> 
+     <a href="#File.compare">compare</a> 
+     <a href="#File.copy">copy</a> 
+     <a href="#File.cp">cp</a> 
+     <a href="#File.install">install</a> 
+     <a href="#File.makedirs">makedirs</a> 
+     <a href="#File.mkpath">mkpath</a> 
+     <a href="#File.move">move</a> 
+     <a href="#File.mv">mv</a> 
+     <a href="#File.rm_f">rm_f</a> 
+     <a href="#File.safe_unlink">safe_unlink</a> 
+     <a href="#File.syscopy">syscopy</a> 
+     <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;'ftools'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>File.copy&nbsp;'testfile',&nbsp;'testfile1'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>File.compare&nbsp;'testfile',&nbsp;'testfile1'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  The <code>FTools</code> library adds several methods to the built-in
+  <code>File</code> class. These methods are particularly useful to programs
+  that move and copy files, such as installers.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.cmp">cmp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.cmp( <i>name1</i>, <i>name2</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.compare">
+          <code>File.compare</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.compare">compare</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.compare( <i>name1</i>, <i>name2</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> only if the contents of files <i>name1</i>
+      and <i>name2</i> are identical.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.copy">copy</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.copy( <i>fromName</i>, <i>toName</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to calling <a href="ref_c_file.html#File.syscopy">
+          <code>File.syscopy</code>
+        </a>, but logs the attempt to 
+      <code>$stderr</code> if <i>verbose</i> is not <code>false</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.cp">cp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.cp( <i>fromName</i>, <i>toName</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.copy">
+          <code>File.copy</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.install">install</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.install( <i>fromName</i>, <i>toName</i>,
+        <i>aMode</i>=<code>nil</code>, <i>verbose</i>=<code>false</code> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Copies file <i>fromName</i> to file <i>toName</i> using
+      <a href="ref_c_file.html#File.syscopy">
+          <code>File.syscopy</code>
+        </a>, unless <i>toName</i> already exists and has the
+      same content as <i>fromName</i>. Sets the mode of the resulting file 
+      to <i>aMode</i> unless <i>aMode</i> is <code>nil</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.makedirs">makedirs</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.makedirs(
+        <i>[</i>
+          <i>dirName</i>
+          <i>]<sup>*</sup>
+          </i> <i>[</i>, <i>aBoolean</i>
+          <i>]</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates the given directories, logging each attempt to
+      <code>$stderr</code> if the last parameter is
+      <code>true</code>. Creates any missing parent directories as
+      required.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.mkpath">mkpath</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.mkpath(
+        <i>[</i>
+          <i>dirName</i>
+          <i>]<sup>*</sup>
+          </i> <i>[</i>, <i>aBoolean</i>
+          <i>]</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.makedirs">
+          <code>File.makedirs</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.move">move</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.move( <i>fromName</i>, <i>toName</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Effectively renames <i>fromName</i> to <i>toName</i>, logging to
+      <code>$stderr</code> if <i>verbose</i> is not <code>false</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.mv">mv</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.mv( <i>fromName</i>, <i>toName</i>,
+        <i>verbose</i>=<code>false</code> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.move">
+          <code>File.move</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.rm_f">rm_f</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.rm_f(
+        <i>[</i>
+          <i>fileName</i>
+          <i>]<sup>*</sup>
+          </i> <i>[</i>, <i>aBoolean</i>
+          <i>]</i> )
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_file.html#File.safe_unlink">
+          <code>File.safe_unlink</code>
+        </a> (the name refers
+      to the Unix <code>rm&nbsp;-f</code> command).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.safe_unlink">safe_unlink</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.safe_unlink(
+        <i>[</i>
+          <i>fileName</i>
+          <i>]<sup>*</sup>
+          </i> <i>[</i>, <i>aBoolean</i>
+          <i>]</i> )
+        -&gt; <i>anInteger</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Unlinks (deletes) the given files, logging to <code>$stderr</code> if
+      the last parameter is <code>true</code>. The method attempts to make all files
+      writable before unlinking them, so no errors will occur deleting 
+      read-only files. Returns the number of files deleted, or <code>nil</code>
+      on error.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="File.syscopy">syscopy</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.syscopy( <i>fromName</i>, <i>toName</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Efficiently copies the file named <i>fromName</i> to
+      <i>toName</i>. If <i>toName</i> names a directory, the destination 
+      will be a file in that directory with the same basename as
+      <i>fromName</i>. After the copy, the file mode of <i>toName</i>
+      will be the same as that of <i>fromName</i>. Returns <code>true</code> 
+      on success.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class GetoptLong</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#GetoptLong.new">new</a> 
+     <i>
+      <a href="#GetoptLong.each">each</a>
+    </i> <i>
+      <a href="#GetoptLong.error_qm">error?</a>
+    </i> <i>
+      <a href="#GetoptLong.error_message">error_message</a>
+    </i> <i>
+      <a href="#GetoptLong.get">get</a>
+    </i> <i>
+      <a href="#GetoptLong.get_option">get_option</a>
+    </i> <i>
+      <a href="#GetoptLong.ordering">ordering</a>
+    </i> <i>
+      <a href="#GetoptLong.ordering_eq">ordering=</a>
+    </i> <i>
+      <a href="#GetoptLong.quiet">quiet</a>
+    </i> <i>
+      <a href="#GetoptLong.quiet_eq">quiet=</a>
+    </i> <i>
+      <a href="#GetoptLong.quiet_qm">quiet?</a>
+    </i> <i>
+      <a href="#GetoptLong.set_options">set_options</a>
+    </i> <i>
+      <a href="#GetoptLong.terminate">terminate</a>
+    </i> <i>
+      <a href="#GetoptLong.terminated_qm">terminated?</a>
+    </i> <p></p>
+    <hr>      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+#&nbsp;Call&nbsp;using&nbsp;"ruby&nbsp;example.rb&nbsp;--size&nbsp;10k&nbsp;-v&nbsp;-q&nbsp;a.txt&nbsp;b.doc"
+<P></P>
+require&nbsp;'getoptlong'
+<P></P>
+#&nbsp;specify&nbsp;the&nbsp;options&nbsp;we&nbsp;accept&nbsp;and&nbsp;initialize
+#&nbsp;the&nbsp;option&nbsp;parser
+<P></P>
+opts&nbsp;=&nbsp;GetoptLong.new(
+&nbsp;&nbsp;[&nbsp;"--size",&nbsp;&nbsp;&nbsp;&nbsp;"-s",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::REQUIRED_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--verbose",&nbsp;"-v",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::NO_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--query",&nbsp;&nbsp;&nbsp;"-q",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::NO_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--check",&nbsp;&nbsp;&nbsp;"--valid",&nbsp;"-c",&nbsp;GetoptLong::NO_ARGUMENT&nbsp;]
+)
+<P></P>
+#&nbsp;process&nbsp;the&nbsp;parsed&nbsp;options
+<P></P>
+opts.each&nbsp;do&nbsp;|opt,&nbsp;arg|
+&nbsp;&nbsp;puts&nbsp;"Option:&nbsp;#{opt},&nbsp;arg&nbsp;#{arg.inspect}"
+end
+<P></P>
+puts&nbsp;"Remaining&nbsp;args:&nbsp;#{ARGV.join(',&nbsp;')}"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Option:&nbsp;--size,&nbsp;arg&nbsp;"10k"
+Option:&nbsp;--verbose,&nbsp;arg&nbsp;""
+Option:&nbsp;--query,&nbsp;arg&nbsp;""
+Remaining&nbsp;args:&nbsp;a.txt,&nbsp;b.doc
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  Class <code>GetoptLong</code> supports GNU-style command-line option parsing.
+  Options may be a minus sign (`-') followed by a single character, or
+  two minus signs (`--') followed by a name (a long option). Long
+  options may be abbreviated to their shortest unambiguous lengths.
+<P></P>
+  A single internal option may have multiple external representations.
+  For example, the option to control verbose output could be any of
+  <code>-v</code>, <code>--verbose</code>, or <code>--details</code>.  Some options may
+  also take an associated value.
+<P></P>
+  Each internal option is passed to <code>GetoptLong</code> as an array,
+  containing strings representing the option's external forms and a
+  flag. The flag (<code>NO_ARGUMENT</code>, <code>REQUIRED_ARGUMENT</code>, or
+  <code>OPTIONAL_ARGUMENT</code>) specifies how <code>GetoptLong</code> is to
+  associate an argument with the option.
+<P></P>
+  If the environment variable
+  <code>POSIXLY_CORRECT</code> is set, all options
+  must precede nonoptions on the command line. Otherwise, the default
+  behavior of <code>GetoptLong</code> is to reorganize the command line to put
+  the options at the front.  This behavior may be changed by setting
+  <code>GetoptLong#ordering=</code> to one of the constants
+  <code>PERMUTE</code>, <code>REQUIRE_ORDER</code>, or <code>RETURN_IN_ORDER</code>.
+  <code>POSIXLY_CORRECT</code> may not be overridden.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <em>
+            <b>Per-option constants</b>
+          </em>
+        </td>
+</tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.NO_ARGUMENT">
+            <code>NO_ARGUMENT</code>
+          </a>
+        </td>
+       <td></td>
+       <td>Flags an option that takes no argument.</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.OPTIONAL_ARGUMENT">
+            <code>OPTIONAL_ARGUMENT</code>
+          </a>
+        </td>
+       <td></td>
+       <td>A nonoption following this option
+      will be used as this option's argument.</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.REQUIRED_ARGUMENT">
+            <code>REQUIRED_ARGUMENT</code>
+          </a>
+        </td>
+       <td></td>
+       <td>This option must be followed by an
+      argument.</td>
+     </tr>
+<P></P>
+    <tr>
+        <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+      <tr>
+  <td valign="top">
+          <em>
+            <b>Overall constants</b>
+          </em>
+        </td>
+</tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.PERMUTE">
+            <code>PERMUTE</code>
+          </a>
+        </td>
+       <td></td>
+       <td>Options and their arguments will be shuffled
+      to the front of the command line.</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.REQUIRE_ORDER">
+            <code>REQUIRE_ORDER</code>
+          </a>
+        </td>
+       <td></td>
+       <td>Options and their arguments must
+      appear at the start of the command line. The first nonoption
+      terminates option processing.</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+          <a name="GetoptLong.RETURN_IN_ORDER">
+            <code>RETURN_IN_ORDER</code>
+          </a>
+        </td>
+       <td></td>
+       <td>Return options in the order in
+      which they occur on the command line.</td>
+     </tr>
+<P></P>
+    <tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                GetoptLong.new( <i>[</i>
+          <i>options</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new option parser. Any <i>options</i> are passed to
+      <i>ref</i>.<code>set_options</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.each {| anOption, anArgument | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Loops calling <code>GetoptLong#get</code>, passing the returned option
+      and argument to the associated block. The loop ends when <code>get</code> 
+      returns <code>nil</code> for <i>anOption</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.error_qm">error?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.error?
+        -&gt; <i>anException</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an <code>Exception</code> object documenting any error that has
+      occurred, or <code>nil</code> if there has not been an error.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.error_message">error_message</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.error_message
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the text of the last error message.    
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.get">get</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.get -&gt; [ <i>anOption</i>,
+          <i>anArgument</i> ]
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the next option, along with any associated argument. If
+      there is no argument, <code>nil</code> is returned for
+      <i>anArgument</i>. If there are no remaining unprocessed options,
+      or if there is an error in option processing and <code>quiet</code>
+      has been set, <code>nil</code> is returned for
+      <i>anOption</i>. Otherwise,
+      if there is an error, a message is written to <code>$stderr</code> and 
+      an exception (a subclass of <code>StandardError</code>) is raised.
+<P></P>
+      The option string returned is the first option that was given in 
+      the corresponding array passed to <code>set_options</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.get_option">get_option</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.get_option -&gt; [ <i>anOption</i>,
+          <i>anArgument</i> ]
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>GetoptLong#get</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.ordering">ordering</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.ordering -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current ordering.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.ordering_eq">ordering=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.ordering = <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the ordering to one of <code>PERMUTE</code>, <code>REQUIRE_ORDER</code>,
+      or <code>RETURN_IN_ORDER</code>. Quietly ignored if the environment
+      variable <code>POSIXLY_CORRECT</code> is set. Ordering may not be
+      changed once option processing has been started.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.quiet">quiet</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.quiet -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current value of the <code>quiet</code> attribute.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.quiet_eq">quiet=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.quiet = <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the current value of the <code>quiet</code> attribute. If
+      <code>false</code>, any errors encountered are reported to
+      <code>$stderr</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.quiet_qm">quiet?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.quiet? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>GetoptLong#quiet</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.set_options">set_options</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.set_options(
+        <i>[</i>
+          <i>anOptArray</i>
+          <i>]<sup>*</sup>
+          </i> ) -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Each parameter is an array specifying a single internal option.
+      The array contains one or more strings specifying the external
+      form(s) of the option, and one of the flags <code>NO_ARGUMENT</code>,
+      <code>OPTIONAL_ARGUMENT</code>, or <code>REQUIRED_ARGUMENT</code>. See the
+      sample code on page 448 for examples of use.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.terminate">terminate</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.terminate -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Terminates option processing. Any remaining arguments are
+      written back to <code>ARGV</code>.  This may be called from within a
+      <code>GetoptLong#each</code> or on its own.    For example, calling the
+      following program using ``<code>ruby example.rb --size 10k -v
+        -term -q a.txt b.doc</code>'' will leave the <code>-q</code> and filenames
+      in <code>ARGV</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+require&nbsp;'getoptlong'
+<P></P>
+opts&nbsp;=&nbsp;GetoptLong.new(
+&nbsp;&nbsp;[&nbsp;"--size",&nbsp;&nbsp;&nbsp;&nbsp;"-s",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::REQUIRED_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--verbose",&nbsp;"-v",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::NO_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--term",&nbsp;&nbsp;&nbsp;&nbsp;"-t",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::NO_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--query",&nbsp;&nbsp;&nbsp;"-q",&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GetoptLong::NO_ARGUMENT&nbsp;],
+&nbsp;&nbsp;[&nbsp;"--check",&nbsp;&nbsp;&nbsp;"--valid",&nbsp;"-c",&nbsp;GetoptLong::NO_ARGUMENT&nbsp;]
+&nbsp;&nbsp;)
+<P></P>
+opts.each&nbsp;do&nbsp;|opt,&nbsp;arg|
+&nbsp;&nbsp;puts&nbsp;"Option:&nbsp;#{opt},&nbsp;arg&nbsp;#{arg.inspect}"
+&nbsp;&nbsp;opts.terminate&nbsp;if&nbsp;(opt&nbsp;==&nbsp;'--term')
+end
+<P></P>
+puts&nbsp;"Remaining&nbsp;args:&nbsp;#{ARGV.join(',&nbsp;')}"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Option:&nbsp;--size,&nbsp;arg&nbsp;"10k"
+Option:&nbsp;--verbose,&nbsp;arg&nbsp;""
+Option:&nbsp;--term,&nbsp;arg&nbsp;""
+Remaining&nbsp;args:&nbsp;-q,&nbsp;a.txt,&nbsp;b.doc
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="GetoptLong.terminated_qm">terminated?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.terminated?
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if option processing has been terminated.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module mkmf</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#mkmf.create_makefile">create_makefile</a>
+    </i> <i>
+      <a href="#mkmf.dir_config">dir_config</a>
+    </i> <i>
+      <a href="#mkmf.find_library">find_library</a>
+    </i> <i>
+      <a href="#mkmf.have_func">have_func</a>
+    </i> <i>
+      <a href="#mkmf.have_header">have_header</a>
+    </i> <i>
+      <a href="#mkmf.have_library">have_library</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  The <code>mkmf</code> library is used by Ruby extension modules to help
+  create <code>Makefiles</code>.  When writing an extension, you create a
+  program named ``<code>extconf.rb</code>'', which may be as simple as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'mkmf'
+create_makefile("Test")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  When run, this script will produce a <code>Makefile</code> suited to the
+  target platform.  <code>mkmf</code> contains several methods you can use
+  to find libraries and include files and to set compiler flags.
+<P></P>
+  For more information on creating extension modules, see Chapter
+  17, which begins on page 169.
+<P></P>
+<table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="mkmf.PLATFORM">
+                <code>PLATFORM</code>
+              </a>
+            </td>
+       <td>varies</td>
+       <td>A constant string that describes the
+      platform on which Ruby is running, such as ``mswin32'' or
+      ``i686-linux.''</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+              <a name="mkmf.$CFLAGS">
+                <code>$CFLAGS</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Global variable for compiler flags.</td>
+     </tr>
+<P></P>
+    <tr>
+       <td>
+              <a name="mkmf.$LDFLAGS">
+                <code>$LDFLAGS</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Global variable for linker flags.</td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.create_makefile">create_makefile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        create_makefile( <i>target</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a <code>Makefile</code> for an extension named <em>target</em>.
+      If this method is not called, no <code>Makefile</code> is created.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.dir_config">dir_config</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        dir_config( <i>name</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Looks for directory configuration options for <em>name</em> given
+      as arguments to this program or to the original build of Ruby.
+      These arguments may be one of:
+<P></P>
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">
+              <code>--with-</code>
+              <em>name</em>
+              <code>-dir</code>=<em>directory</em>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>--with-</code>
+              <em>name</em>
+              <code>-include</code>=<em>directory</em>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>--with-</code>
+              <em>name</em>
+              <code>-lib</code>=<em>directory</em>
+            </td>
+</tr>
+</table>
+<P></P>
+      The given directories will be added to the appropriate search
+      paths (include or link) in the <code>Makefile</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.find_library">find_library</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        find_library( <i>name</i>,
+        <i>function</i>, <i>[</i>
+          <i>path</i>
+          <i>]<sup>+</sup>
+          </i> ) 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Same as <code>have_library</code>, but will also search in the given
+      directory paths.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.have_func">have_func</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        have_func( <i>function</i> ) 
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If the named
+      function exists in the standard compile environment,
+      adds the directive -DHAVE_<em>FUNCTION</em>
+      to the compile command in the <code>Makefile</code> and returns <code>true</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.have_header">have_header</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        have_header( <i>header</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If the given header file can be found in the
+      standard search path, adds the directive -DHAVE_<em>HEADER</em> 
+      to the compile command in the <code>Makefile</code>  and returns <code>true</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="mkmf.have_library">have_library</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        have_library( <i>library</i>, 
+        <i>function</i> ) -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If the given function exists in the named library, which must exist in
+      the standard search path or in a directory added with
+      <code>dir_config</code>, adds the library to the link command
+      in the <code>Makefile</code>  and returns <code>true</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">module ParseDate</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#ParseDate.parsedate">parsedate</a> 
+     <p></p>
+    <hr>
+<P></P>
+  The <code>ParseDate</code> module defines a single method,
+  <code>ParseDate::parsedate</code>, which converts a date and/or time string
+  into its constituents. It uses heuristics that handle a wide
+  variety of date and time formats, including a subset of ISO&nbsp;8601,
+  Unix <code>ctime</code>, and most common written variants. The following table shows
+  some examples.&nbsp;
+<P></P>
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+<td colspan="2" valign="top">
+          <b>StringGuess?</b>
+        </td>
+  <td valign="top">
+          <b>yy</b>
+        </td>
+  <td valign="top">
+          <b>mm</b>
+        </td>
+  <td valign="top">
+          <b>dd</b>
+        </td>
+  <td valign="top">
+          <b>hh</b>
+        </td>
+  <td valign="top">
+          <b>min</b>
+        </td>
+  <td valign="top">
+          <b>sec</b>
+        </td>
+  <td valign="top">
+          <b>zone</b>
+        </td>
+  <td valign="top">
+          <b>wd</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">1999-09-05 23:55:21+0900</td>
+  <td valign="top">F</td>
+  <td valign="top">1999</td>
+  <td valign="top">9</td>
+  <td valign="top">5</td>
+  <td valign="top">23</td>
+  <td valign="top">55</td>
+  <td valign="top">21</td>
+  <td valign="top">+0900</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">1983-12-25</td>
+  <td valign="top">F</td>
+  <td valign="top">1983</td>
+  <td valign="top">12</td>
+  <td valign="top">25</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">1965-11-10 T13:45</td>
+  <td valign="top">F</td>
+  <td valign="top">1965</td>
+  <td valign="top">11</td>
+  <td valign="top">10</td>
+  <td valign="top">13</td>
+  <td valign="top">45</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">10/9/75 1:30pm</td>
+  <td valign="top">F</td>
+  <td valign="top">75</td>
+  <td valign="top">10</td>
+  <td valign="top">9</td>
+  <td valign="top">13</td>
+  <td valign="top">30</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">10/9/75 1:30pm</td>
+  <td valign="top">T</td>
+  <td valign="top">1975</td>
+  <td valign="top">10</td>
+  <td valign="top">9</td>
+  <td valign="top">13</td>
+  <td valign="top">30</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">Mon Feb 28 17:15:49 CST 2000</td>
+  <td valign="top">F</td>
+  <td valign="top">2000</td>
+  <td valign="top">2</td>
+  <td valign="top">28</td>
+  <td valign="top">17</td>
+  <td valign="top">15</td>
+  <td valign="top">49</td>
+  <td valign="top">CST</td>
+  <td valign="top">1</td>
+</tr>
+<tr>
+  <td valign="top">Tue, 02-Mar-99 11:20:32 GMT</td>
+  <td valign="top">F</td>
+  <td valign="top">99</td>
+  <td valign="top">3</td>
+  <td valign="top">2</td>
+  <td valign="top">11</td>
+  <td valign="top">20</td>
+  <td valign="top">32</td>
+  <td valign="top">GMT</td>
+  <td valign="top">2</td>
+</tr>
+<tr>
+  <td valign="top">Tue, 02-Mar-99 11:20:32 GMT</td>
+  <td valign="top">T</td>
+  <td valign="top">1999</td>
+  <td valign="top">3</td>
+  <td valign="top">2</td>
+  <td valign="top">11</td>
+  <td valign="top">20</td>
+  <td valign="top">32</td>
+  <td valign="top">GMT</td>
+  <td valign="top">2</td>
+</tr>
+<tr>
+  <td valign="top">12-January-1990, 04:00 WET</td>
+  <td valign="top">F</td>
+  <td valign="top">1990</td>
+  <td valign="top">1</td>
+  <td valign="top">12</td>
+  <td valign="top">4</td>
+  <td valign="top">0</td>
+  <td valign="top">--</td>
+  <td valign="top">WET</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">4/3/99</td>
+  <td valign="top">F</td>
+  <td valign="top">99</td>
+  <td valign="top">4</td>
+  <td valign="top">3</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">4/3/99</td>
+  <td valign="top">T</td>
+  <td valign="top">1999</td>
+  <td valign="top">4</td>
+  <td valign="top">3</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">10th February, 1976</td>
+  <td valign="top">F</td>
+  <td valign="top">1976</td>
+  <td valign="top">2</td>
+  <td valign="top">10</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">March 1st, 84</td>
+  <td valign="top">T</td>
+  <td valign="top">1984</td>
+  <td valign="top">3</td>
+  <td valign="top">1</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+</tr>
+<tr>
+  <td valign="top">Friday</td>
+  <td valign="top">F</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">--</td>
+  <td valign="top">5</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="ParseDate.parsedate">parsedate</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.parsedate( <i>aString</i>, <i>guessYear</i>=<code>false</code> )<br>-&gt; [ <i>year</i>, <i>mon</i>, <i>mday</i>,
+          <i>hour</i>, <i>min</i>, <i>sec</i>, <i>zone</i>, <i>wday</i>
+          ]
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Parses a string containing a date and/or a time, returning an
+      array of <code>Fixnum</code> objects containing the various components.
+      <code>nil</code> is returned for fields that cannot be parsed from
+      <i>aString</i>. If the result contains a year that is less than
+      100 and <i>guessYear</i> is true, <code>parsedate</code> will return
+      a year value equal to <i>year</i> plus 2000 if <i>year</i> is less
+      than 69, <i>year</i> plus 1900 otherwise.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">
+          Library: profile</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+<P></P>
+  The <code>profile</code> library prints to <code>$stderr</code> a summary
+  of the number of calls to, and the time spent in, each method in a
+  Ruby program. The output is sorted by the total time spent in each
+  method. Profiling can be enabled from the command line using the
+  <code>-r</code>
+    <code>profile</code> option, or from within a source program by 
+  requiring the <code>profile</code> module.    
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'profile'
+def&nbsp;ackerman(m,&nbsp;n)
+&nbsp;&nbsp;if&nbsp;m&nbsp;==&nbsp;0&nbsp;then&nbsp;&nbsp;n+1
+&nbsp;&nbsp;elsif&nbsp;n&nbsp;==&nbsp;0&nbsp;and&nbsp;m&nbsp;&gt;&nbsp;0&nbsp;then&nbsp;ackerman(m-1,&nbsp;1)
+&nbsp;&nbsp;else&nbsp;ackerman(m-1,&nbsp;ackerman(m,&nbsp;n-1))
+&nbsp;&nbsp;end
+end
+ackerman(3,3)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+      <tr>
+        <td>
+          <pre>
+ time   seconds   seconds    calls  ms/call  ms/call  name
+ 74.17     2.47      2.47     2432     1.02    41.95  Object#ackerman
+ 17.42     3.05      0.58     3676     0.16     0.16  Fixnum#==
+  5.71     3.24      0.19     2431     0.08     0.08  Fixnum#-
+  2.70     3.33      0.09     1188     0.08     0.08  Fixnum#+
+  0.00     3.33      0.00        1     0.00     0.00  Module#method_added
+  0.00     3.33      0.00       57     0.00     0.00  Fixnum#&gt;
+  0.00     3.33      0.00        1     0.00  3330.00  #toplevel
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class PStore</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#PStore.new">new</a> 
+     <i>
+      <a href="#PStore._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#PStore._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#PStore.abort">abort</a>
+    </i> <i>
+      <a href="#PStore.commit">commit</a>
+    </i> <i>
+      <a href="#PStore.path">path</a>
+    </i> <i>
+      <a href="#PStore.root_qm">root?</a>
+    </i> <i>
+      <a href="#PStore.roots">roots</a>
+    </i> <i>
+      <a href="#PStore.transaction">transaction</a>
+    </i> <p></p>
+    <hr>    
+<P></P>
+    The <code>PStore</code> class provides transactional, file-based
+    persistent storage of Ruby objects.  The following example stores two
+    hierarchies in a PStore. The first, identified by the key
+    ``<code>names</code>'', is an array of Strings. The second, identified by
+    ``<code>tree</code>'', is a simple binary tree.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"pstore"
+<P></P>
+class&nbsp;T
+&nbsp;&nbsp;def&nbsp;initialize(val,&nbsp;left=nil,&nbsp;right=nil)
+&nbsp;&nbsp;&nbsp;&nbsp;@val,&nbsp;@left,&nbsp;@right&nbsp;=&nbsp;val,&nbsp;left,&nbsp;right
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;to_a
+&nbsp;&nbsp;&nbsp;&nbsp;[&nbsp;@val,&nbsp;@left.to_a,&nbsp;@right.to_a&nbsp;]
+&nbsp;&nbsp;end
+end
+<P></P>
+store&nbsp;=&nbsp;PStore.new("/tmp/store")
+store.transaction&nbsp;do
+&nbsp;&nbsp;&nbsp;store['names']&nbsp;=&nbsp;[&nbsp;'Douglas',&nbsp;'Barenberg',&nbsp;'Meyer'&nbsp;]
+&nbsp;&nbsp;&nbsp;store['tree']&nbsp;&nbsp;=&nbsp;T.new('top',
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T.new('A',&nbsp;T.new('B')),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T.new('C',&nbsp;T.new('D',&nbsp;nil,&nbsp;T.new('E'))))
+end
+<P></P>
+#&nbsp;now&nbsp;read&nbsp;it&nbsp;back&nbsp;in
+<P></P>
+store.transaction&nbsp;do
+&nbsp;&nbsp;&nbsp;puts&nbsp;"Roots:&nbsp;#{store.roots.join(',&nbsp;')}"
+&nbsp;&nbsp;&nbsp;puts&nbsp;store['names'].join(',&nbsp;')
+&nbsp;&nbsp;&nbsp;puts&nbsp;store['tree'].to_a.inspect
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Roots:&nbsp;names,&nbsp;tree
+Douglas,&nbsp;Barenberg,&nbsp;Meyer
+["top",&nbsp;["A",&nbsp;["B",&nbsp;[],&nbsp;[]],&nbsp;[]],&nbsp;["C",&nbsp;["D",&nbsp;[],&nbsp;["E",&nbsp;[],&nbsp;[]]],&nbsp;[]]]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  Each <code>PStore</code> can store several
+  object hierarchies. Each hierarchy has a root, identified by a key
+  (often a string). At the start of a <code>PStore</code> transaction, these
+  hierarchies are read from a disk file and made available to the Ruby
+  program. At the end of the transaction, the hierarchies are written
+  back to the file. Any changes made to objects in these hierarchies
+  are therefore saved on disk, to be read at the start of the next
+  transaction that uses that file.
+<P></P>
+  In normal use, a <code>PStore</code> object is created and then is used one or
+  more times to control a transaction. Within the body of the
+  transaction, any object hierarchies that had previously been saved
+  are made available, and any changes to object hierarchies, and any
+  new hierarchies, are written back to the file at the end.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        PStore.new( <i>aFilename</i> )
+        -&gt; <i>aPStore</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>PStore</code> object associated with the given
+      file. If the file exists, its contents must have been previously 
+      written by <code>PStore</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>[ <i>anObject</i> ] -&gt; <i>anOtherObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Root Access---Returns the root of an object hierarchy identified
+      by <i>anObject</i>. An exception is raised if <i>anObject</i> does 
+      not identify a root.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>[ <i>anObject</i> ] =
+        <i>anOtherObject</i>
+        -&gt; <i>anOtherObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Root Creation---Sets <i>anOtherObject</i> as the base of the object 
+      hierarchy to be identified using <i>anObject</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.abort">abort</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.abort
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Terminates this transaction, losing any changes made to the
+      object hierarchies.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.commit">commit</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.commit
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Terminates the current transaction, saving the object hierarchies 
+      into the store's file.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.path">path</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.path -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the name of the file associated with this store.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.root_qm">root?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.root?( <i>anObject</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>anObject</i> is the key of a root in
+      this store.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.roots">roots</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.roots -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing the keys of the root objects
+      available in this store.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="PStore.transaction">transaction</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.transaction {| <i>ref</i> | block }
+<P></P>
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If the file associated with <i>ref</i> exists, reads in the object
+      hierarchies from it. It then executes the associated block, passing
+      in <i>ref</i>. The block may use this parameter to access the roots
+      of the hierarchies and hence access the persistent objects. If
+      the block calls <code>PStore#abort</code>, or if it raises an exception, 
+      no data is saved back to the associated file. Otherwise, if it
+      invokes <code>PStore#commit</code>, or if it terminates normally, the
+      object hierarchies are written back to the file. The value
+      returned is the value returned by the block.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Tempfile</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">[IO]</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Tempfile.new">new</a> 
+     <i>
+      <a href="#Tempfile.close">close</a>
+    </i> <i>
+      <a href="#Tempfile.open">open</a>
+    </i> <i>
+      <a href="#Tempfile.path">path</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;"tempfile"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>tf&nbsp;=&nbsp;Tempfile.new("afile")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.path</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"/tmp/afile32146.0"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.puts("Cosi&nbsp;Fan&nbsp;Tutte")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.close</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.open</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>#&lt;File:0x40196fc8&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.gets</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Cosi&nbsp;Fan&nbsp;Tutte\n"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tf.close(true)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>#&lt;File:0x40196fc8&gt;</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  Class <code>Tempfile</code> creates managed temporary files. Although they
+  behave the same as any other <code>IO</code> objects, temporary files are
+  automatically deleted when the Ruby program terminates. Once a
+  <code>Tempfile</code> object has been created, the underlying file may be
+  opened and closed a number of times in succession.
+<P></P>
+  <code>Tempfile</code> does not directly inherit from <code>IO</code>. Instead, it
+  delegates calls to a <code>File</code> object. From the programmer's
+  perspective, apart from the unusual <code>new</code>, <code>open,</code> and
+  <code>close</code> semantics, a <code>Tempfile</code> object behaves as if it
+  were an <code>IO</code> object.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Tempfile.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Tempfile.new( <i>basename</i>,
+        <i>tmpdir</i>=&lt;see below&gt; )
+        -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Constructs a temporary file in the given directory. The file
+      name is built by concatenating <i>basename</i>, the current
+      process id and (as an extension) a unique sequence number. If
+      the <i>tmpdir</i> parameter is not supplied, it defaults to the
+      value of one of the environment variables <code>TMPDIR</code>, <code>TMP</code>, 
+      or <code>TEMP</code>, or to the directory <code>/tmp</code>.      
+<P></P>
+      The file is then opened using mode ``w+'', which allows reading
+      and writing and deletes any existing content (see Table
+      22.5 on page 326).
+<P></P>
+      </td>
+    </table>
+<P></P>
+      <tr>
+      <td valign="center" bgcolor="#ff9999">
+        <font size="4">
+          <b>
+            <a name="Tempfile.open">open</a>
+          </b>
+        </font>
+      </td>
+      <td bgcolor="#ffaaaa">
+        Tempfile.open( <i>basename</i>,
+      <i>tmpdir</i> )
+      -&gt; <i>ref</i>
+      </td>
+    </tr>
+    <td></td>
+    <td>
+<P></P>
+    Synonym for <code>Tempfile.new</code>.
+<P></P>
+      </td>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Tempfile.close">close</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.close( <i>final</i>=<code>false</code> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes <i>ref</i>. If <i>final</i> is <code>true</code>, deletes the underlying
+      real file. If <i>final</i> is <code>false</code>, <i>ref</i> may be
+      subsequently reopened. In all cases, the underlying file is
+      deleted when the program terminates.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Tempfile.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.open
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Reopens <i>ref</i> using mode ``r+'', which allows reading and
+      writing but does not delete existing content.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Tempfile.path">path</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.path -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the full path of the underlying file.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Mutex</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Mutex.lock">lock</a>
+    </i> <i>
+      <a href="#Mutex.locked_qm">locked?</a>
+    </i> <i>
+      <a href="#Mutex.synchronize">synchronize</a>
+    </i> <i>
+      <a href="#Mutex.try_lock">try_lock</a>
+    </i> <i>
+      <a href="#Mutex.unlock">unlock</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'thread'
+sema4&nbsp;=&nbsp;Mutex.new
+<P></P>
+a&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;sema4.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;access&nbsp;shared&nbsp;resource
+&nbsp;&nbsp;}
+}
+<P></P>
+b&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;sema4.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;access&nbsp;shared&nbsp;resource
+&nbsp;&nbsp;}
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <code>Mutex</code> implements a simple semaphore that can be used to
+  coordinate access to shared data from multiple concurrent threads.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Mutex.lock">lock</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.lock
+            -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Attempts to grab the lock and waits if it isn't available.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Mutex.locked_qm">locked?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.locked?
+            -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns <code>true</code> if this lock is currently held by some
+          thread.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Mutex.synchronize">synchronize</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.synchronize { block }
+-&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Obtains a lock (using <code>Mutex#lock</code>), runs the block, 
+          and releases the lock when the block completes.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Mutex.try_lock">try_lock</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.try_lock -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Attempts to obtain the lock and returns
+        immediately. Returns <code>true</code> if the lock was granted.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Mutex.unlock">unlock</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.unlock
+            -&gt; <i>ref</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Releases the lock. Returns <code>nil</code> if <i>ref</i> wasn't locked.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class ConditionVariable</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#ConditionVariable.broadcast">broadcast</a>
+    </i> <i>
+      <a href="#ConditionVariable.signal">signal</a>
+    </i> <i>
+      <a href="#ConditionVariable.wait">wait</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'thread'
+mutex&nbsp;=&nbsp;Mutex.new
+resource&nbsp;=&nbsp;ConditionVariable.new
+<P></P>
+a&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;mutex.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Thread&nbsp;'a'&nbsp;now&nbsp;needs&nbsp;the&nbsp;resource
+&nbsp;&nbsp;&nbsp;&nbsp;resource.wait(mutex)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;'a'&nbsp;can&nbsp;now&nbsp;have&nbsp;the&nbsp;resource
+&nbsp;&nbsp;}
+}
+<P></P>
+b&nbsp;=&nbsp;Thread.new&nbsp;{
+&nbsp;&nbsp;mutex.synchronize&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Thread&nbsp;'b'&nbsp;has&nbsp;finished&nbsp;using&nbsp;the&nbsp;resource
+&nbsp;&nbsp;&nbsp;&nbsp;resource.signal
+&nbsp;&nbsp;}
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <code>ConditionVariable</code> objects augment class <code>Mutex</code>. Using
+  condition variables, it is possible to suspend while in the middle
+  of a critical section until a resource becomes available (see the discussion
+  on page 117).
+<P></P>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="ConditionVariable.broadcast">broadcast</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.broadcast
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Wakes up all threads waiting for this lock.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="ConditionVariable.signal">signal</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.signal
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Wakes up the first thread in line waiting for this lock.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="ConditionVariable.wait">wait</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.wait( <i>aMutex</i> )
+            -&gt; <i>aMutex</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Releases the lock held in <i>aMutex</i> and waits; reacquires
+          the lock on wakeup.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">
+          Library: timeout</font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"timeout"
+<P></P>
+for&nbsp;snooze&nbsp;in&nbsp;1..2
+&nbsp;&nbsp;puts&nbsp;"About&nbsp;to&nbsp;sleep&nbsp;for&nbsp;#{snooze}"
+&nbsp;&nbsp;timeout(1.5)&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;sleep(snooze)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;puts&nbsp;"That&nbsp;was&nbsp;refreshing"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+About&nbsp;to&nbsp;sleep&nbsp;for&nbsp;1
+That&nbsp;was&nbsp;refreshing
+About&nbsp;to&nbsp;sleep&nbsp;for&nbsp;2
+/tc/usr/lib/ruby/1.6/timeout.rb:37:&nbsp;execution&nbsp;expired&nbsp;(TimeoutError)
+	from&nbsp;prog.rb:5:in&nbsp;`timeout'
+	from&nbsp;prog.rb:5
+	from&nbsp;prog.rb:3:in&nbsp;`each'
+	from&nbsp;prog.rb:3
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>timeout</code> method takes a single parameter, representing
+  a timeout period in seconds, and a block. The block is executed, and
+  a timer is run concurrently. If the block terminates before the
+  timeout, <code>timeout</code> returns <code>true</code>. Otherwise, a
+  <code>TimeoutError</code> exception is raised.
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class WeakRef</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Delegator</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#WeakRef.new">new</a> 
+     <i>
+      <a href="#WeakRef.weakref_alive_qm">weakref_alive?</a>
+    </i> <p></p>
+    <hr>    
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"weakref"
+<P></P>
+ref&nbsp;=&nbsp;"fol&nbsp;de&nbsp;rol"
+puts&nbsp;"Initial&nbsp;object&nbsp;is&nbsp;#{ref}"
+ref&nbsp;=&nbsp;WeakRef.new(ref)
+puts&nbsp;"Weak&nbsp;reference&nbsp;is&nbsp;#{ref}"
+ObjectSpace.garbage_collect
+puts&nbsp;"But&nbsp;then&nbsp;it&nbsp;is&nbsp;#{ref}"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Initial&nbsp;object&nbsp;is&nbsp;fol&nbsp;de&nbsp;rol
+Weak&nbsp;reference&nbsp;is&nbsp;fol&nbsp;de&nbsp;rol
+prog.rb:8:&nbsp;Illegal&nbsp;Reference&nbsp;-&nbsp;probably&nbsp;recycled&nbsp;(WeakRef::RefError)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  In Ruby, objects are not eligible for garbage collection if there
+  are still references to them. Normally, this is a Good Thing---it
+  would be disconcerting to have an object simply evaporate while you
+  were using it. However, sometimes you may need more flexibility. For
+  example, you might want to implement an in-memory cache of commonly
+  used file contents. As you read more files, the cache grows. At some
+  point, you may run low on memory. The garbage collector will be
+  invoked, but the objects in the cache are all referenced by the
+  cache data structures, and so will not be deleted.
+<P></P>
+  A weak reference behaves
+  exactly as any normal object reference with one important
+  exception---the referenced object may be garbage collected, even
+  while references to it exist. In the cache example, if the cached
+  files were accessed using weak references, once memory runs low they
+  will be garbage collected, freeing memory for the rest of the
+  application.
+<P></P>
+  Weak references introduce a slight complexity. As the object
+  referenced can be deleted by garbage collection at any time, code
+  that accesses these objects must take care to ensure that the
+  references are valid. Two techniques can be used. First, the code
+  can reference the objects normally. Any attempt to reference an
+  object that has been garbage collected will raise a
+  <code>WeakRef::RefError</code> exception.
+<P></P>
+  An alternative approach is to use the <code>WeakRef#weakref_alive?</code>
+  method to check that a reference is valid before using it. Garbage
+  collection must be disabled during the test and subsequent reference
+  to the object. In a single-threaded program, you could use something
+  like:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+ref&nbsp;=&nbsp;WeakRef.new(someObject)
+#
+#&nbsp;..&nbsp;some&nbsp;time&nbsp;later
+#
+<P></P>
+gcWasDisabled&nbsp;=&nbsp;GC.disable
+if&nbsp;ref.weakref_alive?
+&nbsp;&nbsp;#&nbsp;do&nbsp;stuff&nbsp;with&nbsp;'ref'
+end
+GC.enable&nbsp;unless&nbsp;gcWasDisabled
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WeakRef.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        WeakRef.new( <i>anObject</i> )
+        -&gt; <i>ref</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates and returns a weak reference to <i>anObject</i>. All
+      future references to <i>anObject</i> should be made using <i>ref</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="WeakRef.weakref_alive_qm">weakref_alive?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>ref</i>.weakref_alive?
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>false</code> if the object referenced by <i>ref</i> has
+      been garbage collected.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="builtins.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="lib_patterns.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

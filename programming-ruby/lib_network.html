@@ -1,0 +1,6342 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_patterns.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="lib_windows.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Network and Web Libraries</h1>
+    <hr>
+    <br>
+<P></P>
+Ruby provides two levels of access to network services. At a low
+level, you can access the basic socket support in the underlying
+operating system, which allows you to implement clients and servers for
+both connection-oriented and connectionless protocols. These are
+documented in the next section.
+<P></P>
+Ruby also has libraries that provide higher-level access to
+specific application-level network protocols, such as FTP,
+HTTP, and so on. These are documented starting
+on page 482.
+<P></P>
+Finally, the <code>CGI</code> libraries, documented beginning on page 497,
+provide server-side developers with a
+convenient interface for developing Web applications.
+<h2><a name="S1">Socket-Level Access</a></h2>
+<P></P>
+Sockets are the endpoints of a bidirectional communications
+channel. Sockets may communicate within a process, between processes
+on the same machine, or between processes on different
+continents. Sockets may be implemented over a number of different
+channel types: Unix domain sockets, TCP, UDP, and so on. The socket
+library provides specific classes for handling the common transports
+as well as a generic interface for handling the rest. All
+functionality in the socket library is accessible through a single
+extension library. Access it using
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'socket'
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Sockets have their own vocabulary:
+<P></P>
+<dl>
+<dt>domain</dt>
+      <dd>  
+  The family of protocols that will be used as the transport
+  mechanism. These values are constants such as <code>PF_INET</code>, <code>PF_UNIX</code>,
+  <code>PF_X25</code>, and so on.
+</dd>
+      <dt>type</dt>
+      <dd>  
+  The type of communications between the two endpoints, typically
+  <code>SOCK_STREAM</code> for connection-oriented protocols and
+  <code>SOCK_DGRAM</code> for connectionless protocols.
+</dd>
+      <dt>protocol</dt>
+      <dd>  
+  Typically zero, this may be used to identify a variant of a protocol 
+  within a domain and type.
+</dd>
+      <dt>hostName</dt>
+      <dd>  
+  The identifier of a network interface:
+  <ul>
+  <li> a string, which can be a host name, a dotted-quad address, or
+    an IPV6 address in colon (and possibly dot) notation,
+  </li>
+          <li> the string ``&lt;broadcast&gt;'', which specifies an
+    <code>INADDR_BROADCAST</code> address,
+  </li>
+          <li> a zero-length string, which specifies <code>INADDR_ANY</code>, or
+  </li>
+          <li> an <code>Integer</code>, interpreted as a binary address in host byte
+    order.
+  </li>
+        </ul>
+</dd>
+      <dt>port</dt>
+      <dd>  
+  (sometimes called <b>service</b>)
+  Each server listens for clients calling on one or more ports.
+  A port may be a <code>Fixnum</code> port number, a string containing a port number, or the
+  name of a service.
+</dd>
+    </dl>
+<P></P>
+Sockets are children of class <code>IO</code>. Once a socket has been
+successfully opened, the conventional I/O methods may be used. However, 
+greater efficiency is sometimes obtained by using socket-specific
+methods. As with other I/O classes, socket I/O blocks by default.
+The hierarchy of the socket classes is shown in Figure
+26.1 on page 471.
+<P></P>
+For more information on the use of sockets, see your operating system
+documentation. You'll also find a comprehensive treatment in
+W. Richard Stevens,
+<em>Unix Network Programming, Volumes 1 and
+  2</em>&nbsp;.
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class BasicSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">IO</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#BasicSocket.do_not_reverse_lookup">do_not_reverse_lookup</a> 
+     <a href="#BasicSocket.do_not_reverse_lookup_eq">do_not_reverse_lookup=</a> 
+     <a href="#BasicSocket.lookup_order">lookup_order</a> 
+     <a href="#BasicSocket.lookup_order_eq">lookup_order=</a> 
+     <i>
+      <a href="#BasicSocket.close_read">close_read</a>
+    </i> <i>
+      <a href="#BasicSocket.close_write">close_write</a>
+    </i> <i>
+      <a href="#BasicSocket.getpeername">getpeername</a>
+    </i> <i>
+      <a href="#BasicSocket.getsockname">getsockname</a>
+    </i> <i>
+      <a href="#BasicSocket.getsockopt">getsockopt</a>
+    </i> <i>
+      <a href="#BasicSocket.recv">recv</a>
+    </i> <i>
+      <a href="#BasicSocket.send">send</a>
+    </i> <i>
+      <a href="#BasicSocket.setsockopt">setsockopt</a>
+    </i> <i>
+      <a href="#BasicSocket.shutdown">shutdown</a>
+    </i> <p></p>
+    <hr>  
+  <code>BasicSocket</code> is an abstract base class for all other socket
+  classes.
+<P></P>
+  This class and its subclasses often manipulate addresses using
+  something called a <code>struct sockaddr</code>,   which is effectively
+  an opaque binary string.<em>[In reality, it maps onto the
+    underlying C-language <code>struct sockaddr</code> set of structures,
+    documented in the man pages and in the books by Stevens.]</em>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.do_not_reverse_lookup">do_not_reverse_lookup</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                BasicSocket.do_not_reverse_lookup -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the value of the global reverse lookup flag. If set to 
+      <code>true</code>, queries on remote addresses will return the
+      numeric address but not the host name.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.do_not_reverse_lookup_eq">do_not_reverse_lookup=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                BasicSocket.do_not_reverse_lookup = <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the global reverse lookup flag.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.lookup_order">lookup_order</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        BasicSocket.lookup_order
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the global address lookup order, one of:
+<P></P>
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <b>Order</b>
+            </td>
+  <td valign="top">
+              <b>Families Searched</b>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>LOOKUP_UNSP</code>
+            </td>
+  <td valign="top">
+              <code>AF_UNSPEC</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>LOOKUP_INET</code>
+            </td>
+  <td valign="top">
+              <code>AF_INET</code>, <code>AF_INET6</code>, <code>AF_UNSPEC</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>LOOKUP_INET6</code>
+            </td>
+  <td valign="top">
+              <code>AF_INET6</code>, <code>AF_INET</code>, <code>AF_UNSPEC</code>
+            </td>
+</tr>
+<tr>
+            <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.lookup_order_eq">lookup_order=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        BasicSocket.lookup_order = <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the global address lookup order.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.close_read">close_read</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.close_read -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes the readable connection on this socket.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.close_write">close_write</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.close_write -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes the writable connection on this socket.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.getpeername">getpeername</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.getpeername
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the <code>struct sockaddr</code> structure associated with the
+      other end of this socket connection.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.getsockname">getsockname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.getsockname
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the <code>struct sockaddr</code> structure associated with <i>aSession</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.getsockopt">getsockopt</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.getsockopt( <i>level</i>,
+        <i>optname</i> ) -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the value of the specified option.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.recv">recv</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.recv( <i>len</i>, <i>[</i>, <i>flags</i>
+          <i>]</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Receives up to <i>len</i> bytes from <i>aSession</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.send">send</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.send( <i>aString</i>, <i>flags</i>,
+        <i>[</i>, <i>to</i>
+          <i>]</i> ) -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends <i>aString</i> over <i>aSession</i>. If specified, <i>to</i> is a
+      <code>struct sockaddr</code> specifying the recipient
+      address. <i>flags</i> are the sum or one or more of the
+      <code>MSG_</code> options (listed on page 478). Returns the
+      number of characters sent.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.setsockopt">setsockopt</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.setsockopt(
+        <i>level</i>, <i>optname</i>, <i>optval</i> ) -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets a socket option. <i>level</i> is one of the socket-level
+      options (listed on page 478). <i>optname</i> and
+      <i>optval</i> are protocol specific---see your system
+      documentation for details.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="BasicSocket.shutdown">shutdown</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.shutdown( <i>how</i>=2 )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Shuts down the receive (<i>how</i> == 0), or send (<i>how</i> == 1),
+      or both (<i>how</i> == 2), parts of this socket.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class IPSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">BasicSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#IPSocket.getaddress">getaddress</a> 
+     <i>
+      <a href="#IPSocket.addr">addr</a>
+    </i> <i>
+      <a href="#IPSocket.peeraddr">peeraddr</a>
+    </i> <p></p>
+    <hr>  
+  Class <code>IPSocket</code> is a base class for sockets using IP as 
+  their transport. <code>TCPSocket</code> and <code>UDPSocket</code> are based on this
+  class.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IPSocket.getaddress">getaddress</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        IPSocket.getaddress( <i>hostName</i> )
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the dotted-quad IP address of <i>hostName</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;IPSocket.getaddress('www.ruby-lang.org')</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"210.251.121.214"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IPSocket.addr">addr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.addr -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the domain, port, name, and IP address of <i>aSession</i> as a
+      four-element array. The name will be returned as an address if
+      the <code>do_not_reverse_lookup</code> flag is <code>true</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>u&nbsp;=&nbsp;UDPSocket.new</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>u.bind('localhost',&nbsp;8765)</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>u.addr</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["AF_INET",&nbsp;8765,&nbsp;"localhost",&nbsp;"127.0.0.1"]</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>BasicSocket.do_not_reverse_lookup&nbsp;=&nbsp;true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>u.addr</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["AF_INET",&nbsp;8765,&nbsp;"127.0.0.1",&nbsp;"127.0.0.1"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="IPSocket.peeraddr">peeraddr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.peeraddr -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the domain, port, name, and IP address of the peer.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class TCPSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">IPSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#TCPSocket.gethostbyname">gethostbyname</a> 
+     <a href="#TCPSocket.new">new</a> 
+     <a href="#TCPSocket.open">open</a> 
+     <i>
+      <a href="#TCPSocket.recvfrom">recvfrom</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>t&nbsp;=&nbsp;TCPSocket.new('localhost',&nbsp;'ftp')</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>t.gets</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"220&nbsp;zip.local.thomases.com&nbsp;FTP&nbsp;server&nbsp;(Version&nbsp;6.5/OpenBSD,&nbsp;linux&nbsp;port&nbsp;0.3.2)&nbsp;ready.\r\n"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>t.close</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPSocket.gethostbyname">gethostbyname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        TCPSocket.gethostbyname(
+        <i>hostName</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Looks up <i>hostName</i> and returns its canonical name, an array
+      containing any aliases, the address
+      type (<code>AF_INET</code>), and the dotted-quad IP address.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;TCPSocket.gethostbyname('ns.pragprog.com')</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["pragprog.com",&nbsp;[],&nbsp;2,&nbsp;"216.87.136.211"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPSocket.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        TCPSocket.new( <i>hostName</i>, <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Opens a TCP connection to <i>hostName</i> on the <i>port</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPSocket.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        TCPSocket.open( <i>hostName</i>, <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>TCPSocket.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPSocket.recvfrom">recvfrom</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.recvfrom(
+        <i>len</i> <i>[</i>, <i>flags</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Receives up to <i>len</i> bytes on the connection. <i>flags</i> is
+      zero or more of the <code>MSG_</code> options (listed
+      on page 478).
+      Returns a two-element
+      array. The first element is the received data, the second is an
+      array containing information about the peer.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+t&nbsp;=&nbsp;TCPSocket.new('localhost',&nbsp;'ftp')
+data&nbsp;=&nbsp;t.recvfrom(30)
+data
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class SOCKSSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">TCPSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#SOCKSSocket.new">new</a> 
+     <a href="#SOCKSSocket.open">open</a> 
+     <i>
+      <a href="#SOCKSSocket.close">close</a>
+    </i> <p></p>
+    <hr>    
+<P></P>
+  Class <code>SOCKSSocket</code> supports connections based on the SOCKS protocol.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="SOCKSSocket.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        SOCKSSocket.new( <i>hostName</i>, <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Opens a SOCKS connection to <i>port</i> on <i>hostName</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="SOCKSSocket.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        SOCKSSocket.open( <i>hostName</i>, <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>SOCKSSocket.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="SOCKSSocket.close">close</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.close -&gt; <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes this SOCKS connection.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class TCPServer</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">TCPSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#TCPServer.new">new</a> 
+     <a href="#TCPServer.open">open</a> 
+     <i>
+      <a href="#TCPServer.accept">accept</a>
+    </i> <p></p>
+    <hr>    
+  A <code>TCPServer</code> accepts incoming TCP connections. Here is a Web
+  server that listens on a given port and returns the time.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'socket'
+port&nbsp;=&nbsp;(ARGV[0]&nbsp;||&nbsp;80).to_i
+server&nbsp;=&nbsp;TCPServer.new('localhost',&nbsp;port)
+while&nbsp;(session&nbsp;=&nbsp;server.accept)
+&nbsp;&nbsp;puts&nbsp;"Request:&nbsp;#{session.gets}"
+&nbsp;&nbsp;session.print&nbsp;"HTTP/1.1&nbsp;200/OK\r\nContent-type:&nbsp;text/html\r\n\r\n"
+&nbsp;&nbsp;session.print&nbsp;"&lt;html&gt;&lt;body&gt;&lt;h1&gt;#{Time.now}&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;\r\n"
+&nbsp;&nbsp;session.close
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPServer.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        TCPServer.new( <i>[</i>
+          <i>hostName</i>,<i>]</i> <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+         Creates a new socket on the given
+      interface (identified by <i>hostName</i> and port). If
+      <i>hostName</i> is omitted, the server will listen on all
+      interfaces on the current host (equivalent to an address of
+      0.0.0.0).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPServer.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        TCPServer.open( <i>[</i>
+          <i>hostName</i>,<i>]</i> <i>port</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>TCPServer.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="TCPServer.accept">accept</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.accept -&gt; <i>aTCPSocket</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for a connection on <i>aSession</i>, and returns a new <code>TCPSocket</code> 
+      connected to the caller. See the example 
+      on page 474.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class UDPSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">IPSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#UDPSocket.new">new</a> 
+     <a href="#UDPSocket.open">open</a> 
+     <i>
+      <a href="#UDPSocket.bind">bind</a>
+    </i> <i>
+      <a href="#UDPSocket.connect">connect</a>
+    </i> <i>
+      <a href="#UDPSocket.recvfrom">recvfrom</a>
+    </i> <i>
+      <a href="#UDPSocket.send">send</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+  UDP sockets send and receive datagrams. In order to receive data, a
+  socket must be bound to a particular port. You have two choices when 
+  sending data: you can connect to a remote UDP socket and thereafter 
+  send datagrams to that port, or you can specify a host and port for
+  use with every packet you send. This example is a UDP server that
+  prints the message it receives. It is called by both connectionless and
+  connection-based clients.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'socket'
+<P></P>
+$port&nbsp;=&nbsp;4321
+<P></P>
+sThread&nbsp;=&nbsp;Thread.start&nbsp;do&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;run&nbsp;server&nbsp;in&nbsp;a&nbsp;thread
+&nbsp;&nbsp;server&nbsp;=&nbsp;UDPSocket.open
+&nbsp;&nbsp;server.bind(nil,&nbsp;$port)
+&nbsp;&nbsp;2.times&nbsp;{&nbsp;p&nbsp;server.recvfrom(64)&nbsp;}
+end
+<P></P>
+#&nbsp;Ad-hoc&nbsp;client
+UDPSocket.open.send("ad&nbsp;hoc",&nbsp;0,&nbsp;'localhost',&nbsp;$port)
+<P></P>
+#&nbsp;Connection&nbsp;based&nbsp;client
+sock&nbsp;=&nbsp;UDPSocket.open
+sock.connect('localhost',&nbsp;$port)
+sock.send("connection-based",&nbsp;0)
+sThread.join
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+["ad&nbsp;hoc",&nbsp;["AF_INET",&nbsp;33224,&nbsp;"localhost",&nbsp;"127.0.0.1"]]
+["connection-based",&nbsp;["AF_INET",&nbsp;33225,&nbsp;"localhost",&nbsp;"127.0.0.1"]]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UDPSocket.new( <i>family</i> = <code>AF_INET</code> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates an endpoint for UDP communications, optionally specifying 
+      the address family.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UDPSocket.open( <i>family</i> = <code>AF_INET</code>
+        )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>UDPSocket.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.bind">bind</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.bind( <i>hostName</i>, <i>port</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Associates the local end of the UDP connection with a given
+      <i>hostName</i> and <i>port</i>. Must be used by servers to
+      establish an accessible endpoint.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.connect">connect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.connect( <i>hostName</i>, <i>port</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a connection to the given <i>hostName</i> and <i>port</i>.
+      Subsequent
+      <code>UDPSocket#send</code> requests that don't override the recipient 
+      will use this connection. Multiple <code>connect</code> requests may be
+      issued on <i>aSession</i>: the most recent will be used by <code>send</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.recvfrom">recvfrom</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.recvfrom(
+        <i>len</i> <i>[</i>, <i>flags</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Receives up to <i>len</i> bytes from <i>aSession</i>. <i>flags</i> is zero
+      or more of the <code>MSG_</code> options (listed
+      on page 478).
+      The result is a two-element
+      array containing the received data and information on the
+      sender. See the example on page 475.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UDPSocket.send">send</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.send( <i>aString</i>, <i>flags</i> )
+          -&gt; <i>aFixnum</i>
+          <br>
+          <i>aSession</i>.send( <i>aString</i>, <i>flags</i>, <i>hostName</i>, <i>port</i> )
+          -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      The two-parameter form sends <i>aString</i> on an existing
+      connection. The four-parameter form sends <i>aString</i> to
+      <i>port</i> on <i>hostName</i>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class UNIXSocket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">BasicSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#UNIXSocket.new">new</a> 
+     <a href="#UNIXSocket.open">open</a> 
+     <i>
+      <a href="#UNIXSocket.addr">addr</a>
+    </i> <i>
+      <a href="#UNIXSocket.path">path</a>
+    </i> <i>
+      <a href="#UNIXSocket.peeraddr">peeraddr</a>
+    </i> <i>
+      <a href="#UNIXSocket.recvfrom">recvfrom</a>
+    </i> <p></p>
+    <hr>    
+  Class <code>UNIXSocket</code> supports interprocess communications using the Unix 
+  domain protocol. Although the underlying protocol supports both
+  datagram and stream connections, the Ruby library provides only a
+  stream-based connection.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'socket'
+<P></P>
+$path&nbsp;=&nbsp;"/tmp/sample"
+<P></P>
+sThread&nbsp;=&nbsp;Thread.start&nbsp;do&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;run&nbsp;server&nbsp;in&nbsp;a&nbsp;thread
+&nbsp;&nbsp;sock&nbsp;=&nbsp;UNIXServer.open($path)
+&nbsp;&nbsp;s1&nbsp;=&nbsp;sock.accept
+&nbsp;&nbsp;p&nbsp;s1.recvfrom(124)
+end
+<P></P>
+client&nbsp;=&nbsp;UNIXSocket.open($path)
+client.send("hello",&nbsp;0)
+client.close
+<P></P>
+sThread.join
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+["hello",&nbsp;["AF_UNIX",&nbsp;""]]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UNIXSocket.new( <i>path</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Opens a new domain socket on <i>path</i>, which must be a pathname.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UNIXSocket.open( <i>path</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>UNIXSocket.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.addr">addr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.addr -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the address family and path of this socket.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.path">path</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.path -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the path of this domain socket.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.peeraddr">peeraddr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.peeraddr -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the address family and path of the server end of the connection.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXSocket.recvfrom">recvfrom</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.recvfrom(
+        <i>len</i> <i>[</i>, <i>flags</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Receives up to <i>len</i> bytes from <i>aSession</i>. <i>flags</i> is
+      zero or more of the <code>MSG_</code> options (listed
+      on page 478).
+      The first element of the 
+      returned array is the received data, and the second contains
+      (minimal) information on the sender.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class UNIXServer</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">UNIXSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#UNIXServer.new">new</a> 
+     <a href="#UNIXServer.open">open</a> 
+     <i>
+      <a href="#UNIXServer.accept">accept</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+  Class <code>UNIXServer</code> provides a simple Unix domain socket
+  server. See <code>UNIXSocket</code> for example code.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXServer.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UNIXServer.new( <i>path</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a server on the given <i>path</i>. The corresponding file 
+      must not exist at the time of the call.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXServer.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        UNIXServer.open( <i>path</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>UNIXServer.new</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="UNIXServer.accept">accept</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.accept
+        -&gt; <i>aUnixSocket</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for a connection on the server socket and returns a new
+      socket object for that connection. See the example for
+      <code>UNIXSocket</code> on page 476.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Socket</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">BasicSocket</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Socket.for_fd">for_fd</a> 
+     <a href="#Socket.getaddrinfo">getaddrinfo</a> 
+     <a href="#Socket.gethostbyaddr">gethostbyaddr</a> 
+     <a href="#Socket.gethostbyname">gethostbyname</a> 
+     <a href="#Socket.gethostname">gethostname</a> 
+     <a href="#Socket.getnameinfo">getnameinfo</a> 
+     <a href="#Socket.getservbyname">getservbyname</a> 
+     <a href="#Socket.new">new</a> 
+     <a href="#Socket.open">open</a> 
+     <a href="#Socket.pair">pair</a> 
+     <a href="#Socket.socketpair">socketpair</a> 
+     <i>
+      <a href="#Socket.accept">accept</a>
+    </i> <i>
+      <a href="#Socket.bind">bind</a>
+    </i> <i>
+      <a href="#Socket.connect">connect</a>
+    </i> <i>
+      <a href="#Socket.listen">listen</a>
+    </i> <i>
+      <a href="#Socket.recvfrom">recvfrom</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+  Class <code>Socket</code> provides access to the underlying operating system
+  socket implementation.  It can be used to provide more
+  operating system-specific
+  functionality than the protocol-specific socket classes, but at the
+  expense of greater complexity. In particular, the class handles
+  addresses using <code>struct sockaddr</code> structures packed into Ruby
+  strings, which can be a joy to manipulate.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+  Class <code>Socket</code> defines constants for use throughout the socket
+  library. Individual constants are available only on architectures
+  that support the related facility.
+<P></P>
+  <dl>
+      <dt>Types:</dt>
+      <dd>
+        <br>
+        <code>SOCK_DGRAM</code>,
+      <code>SOCK_PACKET</code>,
+      <code>SOCK_RAW</code>,
+      <code>SOCK_RDM</code>,
+      <code>SOCK_SEQPACKET</code>,
+      <code>SOCK_STREAM</code>.
+<P></P>
+    </dd>
+      <dt>Protocol families:</dt>
+      <dd>
+        <br>
+        <code>PF_APPLETALK</code>,
+      <code>PF_AX25</code>,
+      <code>PF_INET6</code>,
+      <code>PF_INET</code>,
+      <code>PF_IPX</code>,
+      <code>PF_UNIX</code>,
+      <code>PF_UNSPEC</code>.
+<P></P>
+    </dd>
+      <dt>Address families:</dt>
+      <dd>
+        <br>
+        <code>AF_APPLETALK</code>,
+      <code>AF_AX25</code>,
+      <code>AF_INET6</code>,
+      <code>AF_INET</code>,
+      <code>AF_IPX</code>,
+      <code>AF_UNIX</code>,
+      <code>AF_UNSPEC</code>.
+<P></P>
+    </dd>
+      <dt>Lookup-order options:</dt>
+      <dd>
+        <br>
+        <code>LOOKUP_INET6</code>,
+      <code>LOOKUP_INET</code>,
+      <code>LOOKUP_UNSPEC</code>.
+<P></P>
+    </dd>
+      <dt>Send/receive options:</dt>
+      <dd>
+        <br>
+        <code>MSG_DONTROUTE</code>,
+      <code>MSG_OOB</code>,
+      <code>MSG_PEEK</code>.
+<P></P>
+    </dd>
+      <dt>Socket-level options:</dt>
+      <dd>
+        <br>
+        <code>SOL_ATALK</code>,
+      <code>SOL_AX25</code>,
+      <code>SOL_IPX</code>,
+      <code>SOL_IP</code>,
+      <code>SOL_SOCKET</code>,
+      <code>SOL_TCP</code>,
+      <code>SOL_UDP</code>.
+<P></P>
+    </dd>
+      <dt>Socket options:</dt>
+      <dd>
+        <br>
+        <code>SO_BROADCAST</code>,
+      <code>SO_DEBUG</code>,
+      <code>SO_DONTROUTE</code>,
+      <code>SO_ERROR</code>,
+      <code>SO_KEEPALIVE</code>,
+      <code>SO_LINGER</code>,
+      <code>SO_NO_CHECK</code>,
+      <code>SO_OOBINLINE</code>,
+      <code>SO_PRIORITY</code>,
+      <code>SO_RCVBUF</code>,
+      <code>SO_REUSEADDR</code>,
+      <code>SO_SNDBUF</code>,
+      <code>SO_TYPE</code>.
+<P></P>
+    </dd>
+      <dt>QOS options:</dt>
+      <dd>
+        <br>
+        <code>SOPRI_BACKGROUND</code>,
+      <code>SOPRI_INTERACTIVE</code>,
+      <code>SOPRI_NORMAL</code>.
+<P></P>
+    </dd>
+      <dt>Multicast options:</dt>
+      <dd>
+        <br>
+        <code>IP_ADD_MEMBERSHIP</code>,
+      <code>IP_DEFAULT_MULTICAST_LOOP</code>,
+      <code>IP_DEFAULT_MULTICAST_TTL</code>,
+      <code>IP_MAX_MEMBERSHIPS</code>,
+      <code>IP_MULTICAST_IF</code>,
+      <code>IP_MULTICAST_LOOP</code>,
+      <code>IP_MULTICAST_TTL</code>.
+<P></P>
+      </dd>
+      <dt>TCP options:</dt>
+      <dd>
+        <br>
+        <code>TCP_MAXSEG</code>,
+      <code>TCP_NODELAY</code>.
+<P></P>
+      </dd>
+      <dt>
+        <code>getaddrinfo</code> error codes:</dt>
+      <dd>
+        <br>
+        <code>EAI_ADDRFAMILY</code>,
+      <code>EAI_AGAIN</code>,
+      <code>EAI_BADFLAGS</code>,
+      <code>EAI_BADHINTS</code>,
+      <code>EAI_FAIL</code>,
+      <code>EAI_FAMILY</code>,
+      <code>EAI_MAX</code>,
+      <code>EAI_MEMORY</code>,
+      <code>EAI_NODATA</code>,
+      <code>EAI_NONAME</code>,
+      <code>EAI_PROTOCOL</code>,
+      <code>EAI_SERVICE</code>,
+      <code>EAI_SOCKTYPE</code>,
+      <code>EAI_SYSTEM</code>.
+<P></P>
+      </dd>
+      <dt>
+        <code>ai_flags</code> values:</dt>
+      <dd>
+        <br>
+        <code>AI_ALL</code>,
+      <code>AI_CANONNAME</code>,
+      <code>AI_MASK</code>,
+      <code>AI_NUMERICHOST</code>,
+      <code>AI_PASSIVE</code>,
+      <code>AI_V4MAPPED_CFG</code>.
+    </dd>
+    </dl>
+  <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.for_fd">for_fd</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.for_fd( <i>anFD</i> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Wraps an already open file descriptor into a socket object.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.getaddrinfo">getaddrinfo</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.getaddrinfo(
+          <i>hostName</i>, <i>port</i>,<br>
+          <i>[</i>
+          <i>family</i>
+            <i>[</i>
+          <i>socktype</i> <i>[</i>
+          <i>protocol</i> <i>[</i>
+          <i>flags</i>
+          <i>]</i>
+          <i>]</i>
+          <i>]</i>
+          <i>]</i> )
+          -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns an array of arrays describing the given host and
+        port (optionally qualified as shown). Each subarray
+        contains the address family, port number, host name, host IP
+        address, protocol family, socket type, and protocol.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+for&nbsp;line&nbsp;in&nbsp;Socket.getaddrinfo('www.microsoft.com',&nbsp;'http')
+&nbsp;&nbsp;puts&nbsp;line.join(",&nbsp;")
+end
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+AF_INET,&nbsp;80,&nbsp;microsoft.net,&nbsp;207.46.130.149,&nbsp;2,&nbsp;1,&nbsp;6
+AF_INET,&nbsp;80,&nbsp;microsoft.net,&nbsp;207.46.131.137,&nbsp;2,&nbsp;1,&nbsp;6
+AF_INET,&nbsp;80,&nbsp;microsoft.com,&nbsp;207.46.230.218,&nbsp;2,&nbsp;1,&nbsp;6
+AF_INET,&nbsp;80,&nbsp;microsoft.com,&nbsp;207.46.230.219,&nbsp;2,&nbsp;1,&nbsp;6
+AF_INET,&nbsp;80,&nbsp;microsoft.net,&nbsp;207.46.130.14,&nbsp;2,&nbsp;1,&nbsp;6
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.gethostbyaddr">gethostbyaddr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.gethostbyaddr(
+        <i>addr</i>, <i>type</i>=<code>AF_INET</code> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns the host name, address family, and <code>sockaddr</code> component
+      for the given address.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Socket.gethostbyname("216.87.136.211")</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>res&nbsp;=&nbsp;Socket.gethostbyaddr(a[3],&nbsp;a[2])</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>res.join(',&nbsp;')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"pragprog.com,&nbsp;,&nbsp;2,&nbsp;\330W\210\323"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.gethostbyname">gethostbyname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.gethostbyname( <i>hostName</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a four-element array containing the canonical host name,
+      a subarray of host aliases, the address family, and the address
+      portion of the <code>sockaddr</code> structure.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Socket.gethostbyname("216.87.136.211")</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.join(',&nbsp;')</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"pragprog.com,&nbsp;,&nbsp;2,&nbsp;\330W\210\323"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.gethostname">gethostname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.gethostname
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the name of the current host.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.getnameinfo">getnameinfo</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.getnameinfo(
+        <i>addr</i> <i>[</i>, <i>flags</i>
+          <i>]</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Looks up the given address, which may be either a string
+      containing a sockaddr or a three- or four-element array. If
+      <i>sockaddr</i> is an array, it should contain the string address 
+      family, the port (or nil), and the host name or IP address. If a 
+      fourth element is present and not <code>nil</code>, it will be used as the host name.
+      Returns a canonical hostname (or address) and port number as an array.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Socket.getnameinfo(["AF_INET",&nbsp;'23',&nbsp;'www.ruby-lang.org'])</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["helium.ruby-lang.org",&nbsp;"telnet"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.getservbyname">getservbyname</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.getservbyname(
+        <i>service</i>, <i>proto</i>=<code>'tcp'</code> )
+        -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the port corresponding to the given service and
+      protocol.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Socket.getservbyname("telnet")</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>23</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.new( <i>domain</i>, <i>type</i>,
+        <i>protocol</i> ) -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a socket using the given parameters.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.open( <i>domain</i>, <i>type</i>,
+        <i>protocol</i> ) -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Socket.new</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.pair">pair</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.pair(  <i>domain</i>, <i>type</i>,
+        <i>protocol</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a pair of connected, anonymous sockets of the given
+      domain,  type, and protocol.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.socketpair">socketpair</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Socket.socketpair(  <i>domain</i>, <i>type</i>,
+        <i>protocol</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>Socket.pair</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.accept">accept</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.accept -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Accepts an incoming connection returning an array containing a
+      new <code>Socket</code> object and a string holding the <code>struct
+        sockaddr</code> information about the caller.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.bind">bind</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.bind( <i>sockaddr</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Binds to the given <code>struct sockaddr</code>, contained in a string.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.connect">connect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.connect( <i>sockaddr</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Connects to the given <code>struct sockaddr</code>, contained in a string.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.listen">listen</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.listen( <i>aFixnum</i> )
+        -&gt; 0
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Listens for connections, using the specified <i>aFixnum</i> as
+      the backlog.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Socket.recvfrom">recvfrom</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.recvfrom(
+        <i>len</i> <i>[</i>, <i>flags</i>
+          <i>]</i> ) -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Receives up to <i>len</i> bytes from <i>aSession</i>. <i>flags</i> is
+      zero or more of the <code>MSG_</code> options. The first element of the 
+      result is the data received. The second element contains
+      protocol-specific information on the sender.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<h2><a name="S2">Higher-Level Access</a></h2>
+<P></P>
+Ruby provides a set of classes to facilitate writing clients for:
+<ul>
+<li> File Transfer Protocol (FTP)
+</li>
+      <li> HyperText Transfer Protocol (HTTP)
+</li>
+      <li> Post Office Protocol (POP)
+</li>
+      <li> Simple Mail Transfer Protocol (SMTP)
+</li>
+      <li> Telnet
+</li>
+    </ul>
+<P></P>
+HTTP, POP, and SMTP are layered on top of a helper class,
+<code>lib/net/protocol</code>.  Although we don't document the <code>Protocol</code>
+class here, you should probably study it if you are considering
+writing your own network client.
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::FTP</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Net::FTP.new">new</a> 
+     <a href="#Net::FTP.open">open</a> 
+     <i>
+      <a href="#Net::FTP.Servercommands">Server commands</a>
+    </i> <i>
+      <a href="#Net::FTP.close">close</a>
+    </i> <i>
+      <a href="#Net::FTP.closed_qm">closed?</a>
+    </i> <i>
+      <a href="#Net::FTP.connect">connect</a>
+    </i> <i>
+      <a href="#Net::FTP.debug_mode">debug_mode</a>
+    </i> <i>
+      <a href="#Net::FTP.debug_mode_eq">debug_mode=</a>
+    </i> <i>
+      <a href="#Net::FTP.dir">dir</a>
+    </i> <i>
+      <a href="#Net::FTP.getbinaryfile">getbinaryfile</a>
+    </i> <i>
+      <a href="#Net::FTP.gettextfile">gettextfile</a>
+    </i> <i>
+      <a href="#Net::FTP.lastresp">lastresp</a>
+    </i> <i>
+      <a href="#Net::FTP.list">list</a>
+    </i> <i>
+      <a href="#Net::FTP.login">login</a>
+    </i> <i>
+      <a href="#Net::FTP.ls">ls</a>
+    </i> <i>
+      <a href="#Net::FTP.mtime">mtime</a>
+    </i> <i>
+      <a href="#Net::FTP.passive">passive</a>
+    </i> <i>
+      <a href="#Net::FTP.passive_eq">passive=</a>
+    </i> <i>
+      <a href="#Net::FTP.putbinaryfile">putbinaryfile</a>
+    </i> <i>
+      <a href="#Net::FTP.puttextfile">puttextfile</a>
+    </i> <i>
+      <a href="#Net::FTP.resume">resume</a>
+    </i> <i>
+      <a href="#Net::FTP.resume_eq">resume=</a>
+    </i> <i>
+      <a href="#Net::FTP.retrbinary">retrbinary</a>
+    </i> <i>
+      <a href="#Net::FTP.retrlines">retrlines</a>
+    </i> <i>
+      <a href="#Net::FTP.return_code">return_code</a>
+    </i> <i>
+      <a href="#Net::FTP.storbinary">storbinary</a>
+    </i> <i>
+      <a href="#Net::FTP.storlines">storlines</a>
+    </i> <i>
+      <a href="#Net::FTP.welcome">welcome</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/ftp'
+<P></P>
+ftp&nbsp;=&nbsp;Net::FTP.new('ftp.netlab.co.jp')
+ftp.login
+files&nbsp;=&nbsp;ftp.chdir('pub/lang/ruby/contrib')
+files&nbsp;=&nbsp;ftp.list('n*')
+ftp.getbinaryfile('nif.rb-0.91.gz',&nbsp;'nif.gz',&nbsp;1024)
+ftp.close
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>net/ftp</code> library implements a File Transfer Protocol (FTP)
+  client.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="3" bgcolor="990066">
+          <font color="white" size="6">
+         constants
+       </font>
+        </td>
+      </tr>
+    </table>
+    <table border="2" cellpadding="5">
+<tr>
+  <td valign="top">
+          <tr>
+       <td>
+              <a name="Net::FTP.FTP_PORT">
+                <code>FTP_PORT</code>
+              </a>
+            </td>
+       <td></td>
+       <td>Default port for FTP connections (21).</td>
+     </tr>
+</td>
+</tr>
+</table>
+    <p></p>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FTP.new( <i>host</i>=<code>nil</code>,
+        <i>user</i>=<code>nil</code>,
+        <i>passwd</i>=<code>nil</code>,
+        <i>acct</i>=<code>nil</code>) -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates and returns a new <code>FTP</code> object. If the host parameter is 
+      not <code>nil</code>, a connection is made to that
+      host. Additionally, if the <i>user</i> parameter is not <code>nil</code>, the 
+      given user name, password, and (optionally) account are
+      used to log in. See the description of <code>FTP#login</code>
+      on page 484.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.open">open</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        FTP.open( <i>host</i>,
+        <i>user</i>=<code>nil</code>,
+        <i>passwd</i>=<code>nil</code>,
+        <i>acct</i>=<code>nil</code>) -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      A synonym for <code>FTP.new</code>, but with a mandatory <i>host</i>
+      parameter.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.Servercommands">Server commands</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>aSession</i>.acct( <i>account</i> )<br>
+          <i>aSession</i>.chdir( <i>dir</i> )<br>
+          <i>aSession</i>.delete( <i>remoteFile</i> )<br>
+          <i>aSession</i>.mdtm( <i>remoteFile</i> ) -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.mkdir( <i>dir</i> )<br>
+          <i>aSession</i>.nlst( <i>dir</i>=<code>nil</code> ) -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.rename( <i>fromname</i>, <i>toname</i> )<br>
+          <i>aSession</i>.rmdir( <i>dir</i> )<br>
+          <i>aSession</i>.pwd -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.size( <i>remoteFile</i> ) -&gt; <i>anInteger</i>
+          <br>
+          <i>aSession</i>.status -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.system -&gt; <i>aString</i>        
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Issues the corresponding server command and returns the result.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.close">close</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.close
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes the current connection.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.closed_qm">closed?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.closed? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the current connection is closed.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.connect">connect</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.connect( <i>host</i>,
+        <i>port</i>=FTP_PORT )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Establishes an FTP connection to <i>host</i>, optionally overriding
+      the default port. If the environment variable
+      <code>SOCKS_SERVER</code>
+      is set, sets up the connection through
+      a SOCKS proxy. Raises an exception (typically
+      <code>Errno::ECONNREFUSED</code>) if the connection
+      cannot be established.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.debug_mode">debug_mode</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.debug_mode -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current debug mode.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.debug_mode_eq">debug_mode=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.debug_mode = <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If the debug mode is <code>true</code>, all traffic to and from the
+      server is written to <code>$stdout</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.dir">dir</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.dir( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.dir( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) {| line | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>FTP#list</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.getbinaryfile">getbinaryfile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>aSession</i>.getbinaryfile(
+        <i>remotefile</i>, <i>localfile</i>, <i>blocksize</i>,
+        <i>callback</i>=<code>nil</code>)<br>
+          <i>aSession</i>.getbinaryfile(
+        <i>remotefile</i>, <i>localfile</i>, <i>blocksize</i> )
+        {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Retrieves <i>remotefile</i> in binary mode, storing the result in
+    <i>localfile</i>. If <i>callback</i> or an associated block is
+    supplied, calls it, passing in the retrieved data in
+    <i>blocksize</i> chunks.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.gettextfile">gettextfile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>aSession</i>.gettextfile(
+        <i>remotefile</i>, <i>localfile</i>,
+        <i>callback</i>=<code>nil</code>)<br>
+          <i>aSession</i>.gettextfile(
+        <i>remotefile</i>, <i>localfile</i> )
+        {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Retrieves <i>remotefile</i> in ASCII (text) mode, storing the result in
+    <i>localfile</i>. If <i>callback</i> or an associated block is
+    supplied, calls it, passing in the retrieved data one line at a time.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.lastresp">lastresp</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.lastresp -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the host's last response.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.list">list</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.list( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.list( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) {| line | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Fetches a directory listing of files matching the given
+      pattern(s). If a block is associated with the call, invokes it
+      with each line of the result. Otherwise, returns the result as an
+      array of strings.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.login">login</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.login( <i>user</i>="anonymous",
+        <i>passwd</i>=<code>nil</code>, <i>acct</i>=<code>nil</code> ) -&gt; aString
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Logs into
+      the remote host. <i>aSession</i> must have been previously
+      connected. If <i>user</i> is the string ``anonymous'' and the
+      password is <code>nil</code>, a password of <em>user@host</em> is
+      synthesized. If the <i>acct</i> parameter is not <code>nil</code>, an FTP
+      <code>ACCT</code> command is sent following the successful
+      login. Raises an exception on error (typically
+      <code>Net::FTPPermError</code>).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.ls">ls</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.ls( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.ls( <i>[</i>pattern<i>]<sup>*</sup>
+          </i> ) {| line | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>FTP#list</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.mtime">mtime</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.mtime( <i>remoteFile</i>,
+        <i>local</i>=<code>false</code> ) -&gt; <i>aTime</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the last-modified time of <i>remoteFile</i>, interpreting
+      the server's response as a GMT time if <i>local</i> is
+      <code>false</code>, or as a local time otherwise.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.passive">passive</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.passive -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the state of the <code>passive</code> flag.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.passive_eq">passive=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.passive = <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Puts the connection into passive mode if <code>true</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.putbinaryfile">putbinaryfile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.putbinaryfile(
+          <i>localfile</i>, <i>remotefile</i>, <i>blocksize</i>,
+          <i>callback</i>=<code>nil</code>)<br>
+          <i>aSession</i>.putbinaryfile(
+          <i>localfile</i>, <i>remotefile</i>, <i>blocksize</i> )
+          {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Transfers <i>localfile</i> to the server in binary mode, storing
+      the result in
+      <i>remotefile</i>. If <i>callback</i> or an associated block is
+      supplied, calls it, passing in the transmitted data in
+      <i>blocksize</i> chunks.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.puttextfile">puttextfile</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.puttextfile(
+          <i>localfile</i>, <i>remotefile</i>,
+          <i>callback</i>=<code>nil</code>)<br>
+          <i>aSession</i>.puttextfile(
+          <i>localfile</i>, <i>remotefile</i>, <i>blocksize</i> )
+          {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Transfers <i>localfile</i> to the server in ASCII (text) mode,
+      storing the result in <i>remotefile</i>. If <i>callback</i> or an
+      associated block is supplied, calls it, passing in the
+      transmitted data one line at a time.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.resume">resume</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.resume -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the status of the <em>resume</em> flag (see
+      <code>FTP#resume=</code>).  Default is <code>false</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.resume_eq">resume=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.resume=<i>aBoolean</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the status of the <em>resume</em> flag.  When <em>resume</em> is
+      <code>true</code>, partially received files will resume where they
+      left off, instead of starting from the beginning again.  This is
+      done by sending a <code>REST</code> command (<code>REST</code>art incomplete
+      transfer) to the server.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.retrbinary">retrbinary</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.retrbinary(
+        <i>cmd</i>, <i>blocksize</i> ) {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Puts the connection into binary (image) mode, issues the given
+      command, and fetches the data returned, passing it to the associated 
+      block in chunks of <i>blocksize</i> characters.  Note that 
+      <i>cmd</i> is a server command (such as ``RETR myfile'').
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.retrlines">retrlines</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.retrlines(cmd) {| line | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Puts the connection into ASCII (text) mode, issues the given
+      command, and passes the resulting data, one line at a time, to the
+      associated block. If no block is given, prints the lines. Note that 
+      <i>cmd</i> is a server command (such as ``RETR myfile'').
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.return_code">return_code</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.return_code -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the return code from the last operation.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.storbinary">storbinary</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.storbinary( <i>cmd</i>, <i>fileName</i>, <i>blocksize</i>,
+          <i>callback</i>=<code>nil</code>) <br>
+          <i>aSession</i>.storbinary( <i>cmd</i>, <i>fileName</i>, <i>blocksize</i> )
+          {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Puts the connection into binary (image) mode, issues the given
+      server-side command (such as ``STOR myfile''), and sends the
+      contents of the file named <i>fileName</i> to the server. If the optional
+      block is given, or if the <i>callBack</i> parameter is a <code>Proc</code>,
+      also passes it the data, in chunks of <i>blocksize</i> characters.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.storlines">storlines</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>aSession</i>.storlines( <i>cmd</i>, <i>fileName</i>,
+        <i>callback</i>=<code>nil</code>) <br>
+          <i>aSession</i>.storlines( <i>cmd</i>, <i>fileName</i> )
+        {| data | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+    Puts the connection into ASCII (text) mode, issues the given
+    server-side command (such as ``STOR myfile''), and sends the
+    contents of the file named <i>fileName</i> to the server, one line at a 
+    time. If the optional
+    block is given, or if the <i>callBack</i> parameter is a <code>Proc</code>,
+    also passes it the lines.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::FTP.welcome">welcome</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.welcome -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the host's welcome message.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::HTTP</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Net::Protocol</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Net::HTTP.new">new</a> 
+     <a href="#Net::HTTP.port">port</a> 
+     <a href="#Net::HTTP.start">start</a> 
+     <i>
+      <a href="#Net::HTTP.get">get</a>
+    </i> <i>
+      <a href="#Net::HTTP.head">head</a>
+    </i> <i>
+      <a href="#Net::HTTP.post">post</a>
+    </i> <i>
+      <a href="#Net::HTTP.start">start</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/http'
+<P></P>
+h&nbsp;=&nbsp;Net::HTTP.new('www.pragmaticprogrammer.com',&nbsp;80)
+resp,&nbsp;data&nbsp;=&nbsp;h.get('/index.html',&nbsp;nil&nbsp;)
+puts&nbsp;"Code&nbsp;=&nbsp;#{resp.code}"
+puts&nbsp;"Message&nbsp;=&nbsp;#{resp.message}"
+resp.each&nbsp;{|key,&nbsp;val|&nbsp;printf&nbsp;"%-14s&nbsp;=&nbsp;%-40.40s\n",&nbsp;key,&nbsp;val&nbsp;}
+p&nbsp;data[0..55]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Code&nbsp;=&nbsp;200
+Message&nbsp;=&nbsp;OK
+last-modified&nbsp;&nbsp;=&nbsp;Wed,&nbsp;29&nbsp;May&nbsp;2002&nbsp;11:08:01&nbsp;GMT
+connection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;close
+content-type&nbsp;&nbsp;&nbsp;=&nbsp;text/html
+etag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;"804d98-255c-3cf4b691"
+date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;Sun,&nbsp;09&nbsp;Jun&nbsp;2002&nbsp;05:15:10&nbsp;GMT
+server&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;Rapidsite/Apa/1.3.20&nbsp;(Unix)&nbsp;FrontPage/4.
+content-length&nbsp;=&nbsp;9564
+accept-ranges&nbsp;&nbsp;=&nbsp;bytes
+"&lt;!DOCTYPE&nbsp;HTML&nbsp;PUBLIC&nbsp;\"-//W3C//DTD&nbsp;HTML&nbsp;4.0&nbsp;Transitional"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>net/http</code> library provides a simple client to fetch headers
+  and Web page contents using the HTTP protocol.
+<P></P>
+  The <code>get</code>, <code>post</code>, and <code>head</code> requests raise
+  exceptions on any error, including some HTTP status responses that
+  would normally be considered recoverable. There are two ways of
+  handling these.
+<P></P>
+  <ol>
+  <li> Each method has a corresponding version <code>get2</code>,
+    <code>post2</code>, or <code>head2</code> that does not raise an
+    exception. These versions are documented in the source.
+  </li>
+      <li> Recoverable errors raise a
+    <code>Net::ProtoRetriableError</code> exception. This exception contains a
+    <code>data</code> attribute containing the response returned by the
+    server.
+  </li>
+    </ol>
+<P></P>
+  The code below illustrates the handling of an HTTP status 301, a redirect.
+  It uses Tomoyuki Kosimizu's URI    
+  package, available in the RAA.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+h&nbsp;=&nbsp;Net::HTTP.new(ARGV[0]&nbsp;||&nbsp;'www.ruby-lang.org',&nbsp;80)
+url&nbsp;=&nbsp;ARGV[1]&nbsp;||&nbsp;'/'
+<P></P>
+begin
+&nbsp;&nbsp;resp,&nbsp;data&nbsp;=&nbsp;h.get(url,&nbsp;nil)&nbsp;{&nbsp;|a|&nbsp;}
+rescue&nbsp;Net::ProtoRetriableError&nbsp;=&gt;&nbsp;detail
+&nbsp;&nbsp;head&nbsp;=&nbsp;detail.data
+<P></P>
+&nbsp;&nbsp;if&nbsp;head.code&nbsp;==&nbsp;"301"
+&nbsp;&nbsp;&nbsp;&nbsp;uri&nbsp;=&nbsp;URI.create(head['location'])
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;=&nbsp;uri['host']
+&nbsp;&nbsp;&nbsp;&nbsp;url&nbsp;&nbsp;=&nbsp;uri['path']
+&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;=&nbsp;uri['port']
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;h.finish
+&nbsp;&nbsp;&nbsp;&nbsp;h&nbsp;=&nbsp;Net::HTTP.new(host,&nbsp;port)
+<P></P>
+&nbsp;&nbsp;&nbsp;&nbsp;retry
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Net::HTTP.new( <i>host</i>='localhost',
+        <i>port</i>=80,
+        <i>proxy</i>=<code>nil</code>, <i>proxy_port</i>=<code>nil</code> )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates and returns a new <code>HTTP</code> object. No connection is
+      made until <code>HTTP#start</code> is called.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.port">port</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Net::HTTP.port -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the default HTTP port (80).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  Net::HTTP.start( <i>host</i>=<code>nil</code>, <i>port</i>=80 )<br>Net::HTTP.start( <i>host</i>=<code>nil</code>, <i>port</i>=80 )
+          {| <i>aSession</i> | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>Net::HTTP.new(<i>host</i>, <i>port</i>).start</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.get">get</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.get( <i>path</i>, <i>headers</i>=<code>nil</code>, <i>dest</i>="" )
+          -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.get( <i>path</i>, <i>headers</i>=<code>nil</code>) {| result | block }
+<P></P>
+          -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Retrieves headers and content from the specified <i>path</i> on
+      the host specified when <i>aSession</i> was created. If specified, the
+      <i>headers</i> parameter is a <code>Hash</code> containing additional
+      header names and values to be sent with the request. The method
+      returns a two-element array. The first element is an
+      <code>HTTPResponse</code> object (documented in the next section).
+      The second element is the page's content.
+      The page's content is also passed to the <code>&lt;&lt;</code> method of 
+      the <i>dest</i> parameter, or to the block if specified. This
+      result is built network block by network block, not line by line.
+      An exception is raised
+      if an error is encountered. Multiple <code>get</code> calls may be
+      made on <i>aSession</i>. Unless <code>Protocol#finish</code> is explicitly
+      called, the connection will use the HTTP/1.1 keep-alive
+      protocol, and will not close between requests.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.head">head</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.head( <i>path</i>, <i>headers</i>=<code>nil</code> )
+        -&gt; <i>aHash</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Retrieves headers from the specified <i>path</i> on the host
+      specified when <i>aSession</i> was created. If specified, the
+      <i>headers</i> parameter is a hash containing additional
+      header names and values to be sent with the request. The method
+      returns a hash of received headers.  An exception is raised if
+      an error is encountered. Multiple <code>head</code> calls may be
+      made on <i>aSession</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.post">post</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.post( <i>path</i>, <i>data</i>, <i>headers</i>=<code>nil</code>,
+          <i>dest</i>="" ) -&gt; <i>anArray</i>
+          <br>
+          <i>aSession</i>.post( <i>path</i>, <i>data</i>, <i>headers</i>=<code>nil</code> )
+          {| result | block }
+ -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends <i>data</i> to <i>path</i> using an HTTP POST
+      request. <i>headers</i> is a hash containing additional
+      headers. Assigns the result to <i>data</i> or to the block, as
+      for <code>Net_HTTP#get</code>. Returns a two-element array containing
+      an HTTPResponse object and the reply body.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.start<br>
+          <i>aSession</i>.start {| <i>aSession</i> | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Establishes a connection to the host associated with
+      <i>aSession</i>. (<code>start</code> is actually a method in
+      <code>Net::Protocol</code>, but its use is required in HTTP objects.) In 
+      the block form, closes the session at the end of the block.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::HTTPResponse</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white"></font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Net::HTTPResponse._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#Net::HTTPResponse._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#Net::HTTPResponse.code">code</a>
+    </i> <i>
+      <a href="#Net::HTTPResponse.each">each</a>
+    </i> <i>
+      <a href="#Net::HTTPResponse.key_qm">key?</a>
+    </i> <i>
+      <a href="#Net::HTTPResponse.message">message</a>
+    </i> <p></p>
+    <hr>  
+  Represents an HTTP response to a GET or POST request.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>[ <i>aKey</i> ]
+        -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the header corresponding to the case-insensitive
+      key. For example, a key of ``Content-type'' might return
+      ``text/html''.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>[ <i>aKey</i> ] = <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the header corresponding to the case-insensitive
+      key. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse.code">code</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.code -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the result code from the request (for example, ``404'').
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.each {| key, val | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates over all the header key-value pairs.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse.key_qm">key?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.key?( <i>aKey</i> ) -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> only if a header with the given key exists.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::HTTPResponse.message">message</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.message -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the result message from the request (for example, ``Not found'').
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::POP</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Net::Protocol</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Net::POP.new">new</a> 
+     <i>
+      <a href="#Net::POP.each">each</a>
+    </i> <i>
+      <a href="#Net::POP.finish">finish</a>
+    </i> <i>
+      <a href="#Net::POP.mails">mails</a>
+    </i> <i>
+      <a href="#Net::POP.start">start</a>
+    </i> <p></p>
+    <hr>      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/pop'
+pop&nbsp;=&nbsp;Net::POP3.new('server.ruby-stuff.com')
+pop.start('user',&nbsp;'secret')&nbsp;do&nbsp;|pop|
+&nbsp;&nbsp;msg&nbsp;=&nbsp;pop.mails[0]
+<P></P>
+&nbsp;&nbsp;#&nbsp;Print&nbsp;the&nbsp;'From:'&nbsp;header&nbsp;line
+&nbsp;&nbsp;puts&nbsp;msg.header.split("\r\n").grep(/^From:&nbsp;/)
+<P></P>
+&nbsp;&nbsp;#&nbsp;Put&nbsp;message&nbsp;to&nbsp;$stdout&nbsp;(by&nbsp;calling&nbsp;&lt;&lt;)
+&nbsp;&nbsp;puts&nbsp;"\nFull&nbsp;message:\n"
+&nbsp;&nbsp;msg.all($stdout)
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+From:&nbsp;dummy&nbsp;msg&nbsp;for&nbsp;Andy
+<P></P>
+Full&nbsp;message:
+From:&nbsp;dummy&nbsp;msg&nbsp;for&nbsp;Andy
+looks-better:&nbsp;on&nbsp;dave's&nbsp;box
+<P></P>
+That's&nbsp;all&nbsp;folks!
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>net/pop</code> library provides a simple client to fetch and
+  delete mail on a Post Office Protocol (POP) server.
+<P></P>
+  The class <code>Net::POP3</code> is used to access a POP server, returning
+  a list of <code>Net::POPMail</code> objects, one per message stored on the
+  server. These <code>POPMail</code> objects are then used to fetch and/or
+  delete individual messages.
+  The library also provides an alternative to the <code>POP3</code> class that
+  performs <code>APOP</code> authentication.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POP.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        HTTP.new( <i>host</i>='localhost', <i>port</i>=110 )
+        -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates and returns a new <code>POP3</code> object. No connection is
+      made until <code>POP3#start</code> is called.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POP.each">each</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.each {| popmail | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Calls the associated block once for each e-mail stored on the
+      server, passing in the corresponding <code>POPMail</code> object.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POP.finish">finish</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.finish -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Closes the pop connection. Some servers require that a
+      connection is closed before they honor actions such as deleting
+      mail. Returns <code>false</code> if the connection was never used.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POP.mails">mails</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.mails -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of <code>POPMail</code> objects, where each object
+      corresponds to an e-mail message stored on the server.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.start( <i>user</i>, <i>password</i> )<br>
+          <i>aSession</i>.start( <i>user</i>, <i>password</i> ) {| pop | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Establishes a connection to the pop server, using the supplied
+      username and password. Fetches a list of mail held on the server, 
+      which may be accessed using the <code>POP3#mails</code> and
+      <code>POP3#each</code> methods. In block form, passes <i>aSession</i> to the
+      block, and closes the connection using <code>finish</code> when the
+      block terminates.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::APOP</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Net::POP3</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Net::APOP.start">start</a>
+    </i> <p></p>
+    <hr>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::APOP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.start( <i>user</i>, <i>password</i>
+        )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Establishes a connection to the APOP server.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::POPMail</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Net::POPMail.all">all</a>
+    </i> <i>
+      <a href="#Net::POPMail.delete">delete</a>
+    </i> <i>
+      <a href="#Net::POPMail.delete_oh">delete!</a>
+    </i> <i>
+      <a href="#Net::POPMail.header">header</a>
+    </i> <i>
+      <a href="#Net::POPMail.size">size</a>
+    </i> <i>
+      <a href="#Net::POPMail.top">top</a>
+    </i> <i>
+      <a href="#Net::POPMail.uidl">uidl</a>
+    </i> <p></p>
+    <hr>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.all">all</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.all -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.all( <i>dest</i> )<br>
+          <i>aSession</i>.all {| aString | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Fetches the corresponding e-mail from the server. With no argument 
+      or associated block, returns the e-mail as a string. With an
+      argument but no block, appends the e-mail to <i>dest</i> by
+      invoking <i>dest</i>
+        <code>&lt;&lt;</code> for each line in the e-mail. With
+      an associated block, invokes the block once for each line in the e-mail.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.delete">delete</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.delete
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Deletes the e-mail from the server.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.delete_oh">delete!</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.delete!
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <code>POPMail#delete</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.header">header</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.header -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the header lines for the corresponding e-mail message.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.size">size</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.size -&gt; <i>aFixnum</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the size in bytes of the corresponding e-mail.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.top">top</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.top( <i>lines</i> )  -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the header lines, plus <i>lines</i> message lines for the
+      corresponding e-mail message.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::POPMail.uidl">uidl</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.uidl -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the server-specific unique identifier for the
+      corresponding e-mail.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::SMTP</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Net::Protocol</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Net::SMTP.new">new</a> 
+     <a href="#Net::SMTP.start">start</a> 
+     <i>
+      <a href="#Net::SMTP.ready">ready</a>
+    </i> <i>
+      <a href="#Net::SMTP.sendmail">sendmail</a>
+    </i> <i>
+      <a href="#Net::SMTP.start">start</a>
+    </i> <p></p>
+    <hr>    
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/smtp'
+<P></P>
+#&nbsp;---&nbsp;Send&nbsp;using&nbsp;class&nbsp;methods
+msg&nbsp;=&nbsp;[&nbsp;"Subject:&nbsp;Test\n",&nbsp;"\n",&nbsp;"Now&nbsp;is&nbsp;the&nbsp;time\n"&nbsp;]
+Net::SMTP.start&nbsp;do&nbsp;|smtp|
+&nbsp;&nbsp;smtp.sendmail(&nbsp;msg,&nbsp;&nbsp;'dave@localhost',&nbsp;['dave']&nbsp;)
+end
+<P></P>
+#&nbsp;---&nbsp;Send&nbsp;using&nbsp;SMTP&nbsp;object&nbsp;and&nbsp;an&nbsp;adaptor
+smtp&nbsp;=&nbsp;Net::SMTP.new
+smtp.start('pragprog.com')
+smtp.ready('dave@localhost',&nbsp;'dave')&nbsp;do&nbsp;|a|
+&nbsp;&nbsp;a.write&nbsp;"Subject:&nbsp;Test1\r\n"
+&nbsp;&nbsp;a.write&nbsp;"\r\n"
+&nbsp;&nbsp;a.write&nbsp;"And&nbsp;so&nbsp;is&nbsp;this"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>net/smtp</code> library provides a simple client to send
+  electronic mail using the Simple Mail Transfer Protocol (SMTP).
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::SMTP.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Net::SMTP.new( <i>server</i>='localhost',
+        <i>port</i>=25 ) -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a new <code>SMTP</code> object connected to the given server and
+      port.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::SMTP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  Net::SMTP.start( <i>server</i>='localhost', <i>port</i>=25,
+            <i>domain</i>=ENV['HOSTNAME'], <i>acct</i>=<code>nil</code>,
+            <i>passwd</i>=<code>nil</code>, <i>authtype</i>=:cram_md5 ) -&gt; <i>aSession</i>
+          <br>Net::SMTP.start( <i>server</i>='localhost', <i>port</i>=25,
+            <i>domain</i>=ENV['HOSTNAME'], <i>acct</i>=<code>nil</code>,
+            <i>passwd</i>=<code>nil</code>, <i>authtype</i>=:cram_md5 )
+            {| smtp | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Equivalent to <code>Net::SMTP.new(<i>server</i>,
+          <i>port</i>).start(...)</code>. For an explanation of the remainder 
+        of the parameters, see the instance method <code>Net_SMTP#start</code>.
+        Creates a new <code>SMTP</code> object. The <i>domain</i> parameter will be 
+      used in the initial <code>HELO</code> or <code>EHLO</code> transaction with the
+      SMTP server. In the block form, the <i>smtp</i> object is passed
+      into the block. When the block terminates, the session is closed.
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::SMTP.ready">ready</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.ready( <i>from</i>, <i>to</i> )
+          {| anAdaptor | block }
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <code>sendmail(from, to) { ...}</code>. 
+      Sends header and body lines to the sendmail server. The
+      <i>from</i> parameter is used as the sender's name in the
+      <code>MAIL FROM:</code> command, and the <i>to</i> is either a string or
+      an array of strings containing the recipients
+      for the <code>RCPT TO:</code> command. 
+      The block is passed an adaptor object. Lines are
+      sent to the server by calling the adaptor's <code>write</code> method. The
+      terminating '.' and <code>QUIT</code> are sent automatically.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::SMTP.sendmail">sendmail</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.sendmail( <i>src</i>, <i>from</i>, <i>to</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends header and body lines to the sendmail server. The
+      <i>from</i> parameter is used as the sender's name in the
+      <code>MAIL FROM:</code> command, and <i>to</i> is either a string or an
+      array of strings containing the
+      recipients for the <code>RCPT TO:</code> command. 
+      Lines to be sent are fetched by invoking <i>src</i>
+        <code>.each</code>.  The
+      terminating '.' and <code>QUIT</code> are sent automatically.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::SMTP.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.start( <i>domain</i>=ENV['HOSTNAME'], <i>acct</i>=<code>nil</code>,
+            <i>passwd</i>=<code>nil</code>, <i>authtype</i>=:cram_md5 ) -&gt; <code>true</code> or <code>false</code>
+          <br>
+          <i>aSession</i>.start( <i>domain</i>=ENV['HOSTNAME'], <i>acct</i>=<code>nil</code>,
+            <i>passwd</i>=<code>nil</code>, <i>authtype</i>=:cram_md5 )
+            {| smtp | block }
+-&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Starts an SMTP session by connecting to the given domain
+        (host). If <i>acct</i> and <i>passwd</i> are given,
+        authentication will be attempted using the given
+        authentication type (<code>:plain</code> or <code>:cram_md5</code>). If a
+        block is supplied, it will be invoked with <i>aSession</i> as a
+        parameter. The connection will be closed when the block terminates.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Net::Telnet</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">[Socket]</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Net::Telnet.new">new</a> 
+     <i>
+      <a href="#Net::Telnet.binmode">binmode</a>
+    </i> <i>
+      <a href="#Net::Telnet.binmode_eq">binmode=</a>
+    </i> <i>
+      <a href="#Net::Telnet.cmd">cmd</a>
+    </i> <i>
+      <a href="#Net::Telnet.login">login</a>
+    </i> <i>
+      <a href="#Net::Telnet.print">print</a>
+    </i> <i>
+      <a href="#Net::Telnet.telnetmode">telnetmode</a>
+    </i> <i>
+      <a href="#Net::Telnet.telnetmode_eq">telnetmode=</a>
+    </i> <i>
+      <a href="#Net::Telnet.waitfor">waitfor</a>
+    </i> <i>
+      <a href="#Net::Telnet.write">write</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+    Connect to a <code>localhost</code>, run the ``date'' command, and disconnect.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>require&nbsp;'net/telnet'</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>tn&nbsp;=&nbsp;Net::Telnet.new({})</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>tn.login&nbsp;"guest",&nbsp;"secret"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tn.cmd&nbsp;"date"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"date\r\nSun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:15:20&nbsp;CDT&nbsp;2002\n\r&gt;&nbsp;"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+    Monitor output as it occurs. We associate a block with each of the 
+    library calls; this block is called whenever data becomes
+    available from the host.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/telnet'
+<P></P>
+tn&nbsp;=&nbsp;Net::Telnet.new({})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;|str|&nbsp;print&nbsp;str&nbsp;}
+tn.login("guest",&nbsp;"secret")&nbsp;&nbsp;{&nbsp;|str|&nbsp;print&nbsp;str&nbsp;}
+tn.cmd("date")&nbsp;&nbsp;{&nbsp;|str|&nbsp;print&nbsp;str&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Trying&nbsp;localhost...
+Connected&nbsp;to&nbsp;localhost.
+Welcome&nbsp;to&nbsp;SuSE&nbsp;Linux&nbsp;7.1&nbsp;(i386)&nbsp;-&nbsp;Kernel&nbsp;2.4.0-64GB-SMP&nbsp;(8).
+<P></P>
+zip&nbsp;login:&nbsp;guest
+Password:
+Last&nbsp;login:&nbsp;Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:15:19&nbsp;from&nbsp;localhost
+/etc/zshrc:&nbsp;setopt:&nbsp;no&nbsp;such&nbsp;option:&nbsp;histexpiredupsfirst&nbsp;[31]
+
+&gt;&nbsp;date
+Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:15:20&nbsp;CDT&nbsp;2002
+
+&gt;
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+    Get the time from an NTP server.    
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/telnet'
+tn&nbsp;=&nbsp;Net::Telnet.new('Host'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'time.nonexistent.org',
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Port'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;'time',
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Timeout'&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;60,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'Telnetmode'&nbsp;=&gt;&nbsp;false)
+atomicTime&nbsp;=&nbsp;tn.recv(4).unpack('N')[0]
+puts&nbsp;"Atomic&nbsp;time:&nbsp;"&nbsp;+&nbsp;Time.at(atomicTime&nbsp;-&nbsp;2208988800).to_s
+puts&nbsp;"Local&nbsp;time:&nbsp;&nbsp;"&nbsp;+&nbsp;Time.now.to_s
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Atomic&nbsp;time:&nbsp;Sun&nbsp;Jun&nbsp;09&nbsp;00:15:12&nbsp;CDT&nbsp;2002
+Local&nbsp;time:&nbsp;&nbsp;Sun&nbsp;Jun&nbsp;09&nbsp;00:15:20&nbsp;CDT&nbsp;2002
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+  The <code>net/telnet</code> library provides a complete implementation of a
+  telnet client and includes features that make it a convenient
+  mechanism for interacting with non-telnet services.
+<P></P>
+  Although the class description that follows indicates that
+  <code>Net::Telnet</code> is a subclass of class <code>Socket</code>, this is a lie.
+  In reality, the class delegates to <code>Socket</code>. The net effect is the
+  same: the methods of <code>Socket</code> and its parent, class <code>IO</code>, are
+  available through <code>Net::Telnet</code> objects.
+<P></P>
+  The methods <code>new</code>, <code>cmd</code>, <code>login</code>, and
+  <code>waitfor</code> take an optional block. If present, the block is
+  passed output from the server as it is received by the routine.
+  This can be used to provide realtime output, rather than waiting for
+  (for example) a login to complete before displaying the server's
+  response.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  Net::Telnet.new( <i>options</i> ) -&gt; <i>aSession</i>
+          <br>Net::Telnet.new( <i>options</i> ) {| str | block }
+ -&gt; <i>aSession</i>          
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Connects to a server. <i>options</i> is a
+      <code>Hash</code> with zero or more of the following:
+<P></P>
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <b>Option</b>
+            </td>
+  <td valign="top">
+              <b>Default</b>
+            </td>
+  <td valign="top">
+              <b>Meaning</b>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Binmode</code>
+            </td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+  <td valign="top">If true, no end-of-line
+        processing will be performed.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Host</code>
+            </td>
+  <td valign="top">localhost</td>
+  <td valign="top">Name or address of server's host.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Port</code>
+            </td>
+  <td valign="top">23</td>
+  <td valign="top">Name or number of service to call.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Prompt</code>
+            </td>
+  <td valign="top">
+              <code>/[$%#&gt;]/</code>
+            </td>
+  <td valign="top">Pattern that matches the host's
+        prompt.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Telnetmode</code>
+            </td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+  <td valign="top">If <code>false</code>, ignore the
+        majority of telnet embedded escape sequences. Used when
+        talking with a non-telnet server.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Timeout</code>
+            </td>
+  <td valign="top">10</td>
+  <td valign="top">Time in seconds to wait for a server
+        response (both during connection and during regular data
+        transmission).</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Waittime</code>
+            </td>
+  <td valign="top">0</td>
+  <td valign="top">Time to wait for prompt to appear in
+        received data stream.</td>
+</tr>
+<tr>
+            <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.binmode">binmode</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.binmode -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current value of the <code>Binmode</code> flag.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.binmode_eq">binmode=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.binmode = <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the <code>Binmode</code> flag, returning the new value.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.cmd">cmd</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.cmd( <i>options</i> ) -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.cmd( <i>options</i> ) {| str | block }
+-&gt; <i>aString</i>          
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends a string to the server and waits (using a timeout) for a
+      string that matches a pattern to be returned by the server. If
+      the parameter is not a <code>Hash</code>, it is sent as a string to the server, and
+      the pattern to match and the timeout are the <code>Prompt</code> and
+      <code>Timeout</code> options given when <i>aSession</i> was created. 
+      If <i>options</i> is a <code>Hash</code>, then <i>options['String']</i> is
+      sent to the server. <i>options['Match']</i> may be used to
+      override the class <code>Prompt</code> parameter, and <i>options['Timeout']</i> 
+      the timeout. The method returns the complete server response.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.login">login</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>aSession</i>.login( <i>options</i>,
+            <i>password</i>=nil ) -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.login( <i>options</i>,
+            <i>password</i>=nil ) {| str | block }
+ -&gt; <i>aString</i>          
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>options</i> is a <code>Hash</code>, a username is taken from
+      <i>options['Name']</i> and a password from
+      <i>options['Password']</i>; otherwise, <i>options</i> is assumed to
+      be the username, and <i>password</i> the password. The method
+      waits for the server to send the string matching the pattern
+      <code>/login[:<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">]*\z/</code> and sends the username. If a
+      password is given, it then waits for the server to send
+      <code>/Password[:<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">]*\z/</code> and sends the password. The
+      method returns the full server response.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.print">print</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.print( <i>aString</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sends <i>aString</i> to the server, honoring <code>Telnetmode</code>,
+      <code>Binarymode</code>, and any additional modes negotiated with the
+      server. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.telnetmode">telnetmode</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.telnetmode -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the current value of the <code>Telnetmode</code> flag.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.telnetmode_eq">telnetmode=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.telnetmode= <code>true</code> or <code>false</code>
+        </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the <code>Telnetmode</code>
+      flag, returning the new value.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.waitfor">waitfor</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                  <i>aSession</i>.waitfor( <i>options</i> ) -&gt; <i>aString</i>
+          <br>
+          <i>aSession</i>.waitfor( <i>options</i> ) {| str | block }
+ -&gt; <i>aString</i>          
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for the server to respond with a string that matches a
+      string or pattern. If <i>options</i> is not a <code>Hash</code>, it
+      is compared against the cumulative server output as that output 
+      is received using <i>options.</i>
+        <code>===</code>. It is likely that you will
+      want to use a regular expression in this case.
+<P></P>
+      If <i>options</i> is a <code>Hash</code>, then <i>options['Match']</i>,
+      <i>options['Prompt']</i>, or <i>options['String']</i> provides the
+      match. In the latter case, the string will be converted to a
+      regular expression before being used. <i>options</i> may also
+      include the keys ``Timeout'' and ``Waittime'' to override the
+      class options of the same names.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Net::Telnet.write">write</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.write( <i>aString</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Writes <i>aString</i> to the server with no translation.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<h2><a name="S3">CGI Development</a></h2>
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class CGI</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#CGI.escape">escape</a> 
+     <a href="#CGI.escapeElement">escapeElement</a> 
+     <a href="#CGI.escapeHTML">escapeHTML</a> 
+     <a href="#CGI.new">new</a> 
+     <a href="#CGI.parse">parse</a> 
+     <a href="#CGI.pretty">pretty</a> 
+     <a href="#CGI.rfc1123_date">rfc1123_date</a> 
+     <a href="#CGI.unescape">unescape</a> 
+     <a href="#CGI.unescapeElement">unescapeElement</a> 
+     <a href="#CGI.unescapeHTML">unescapeHTML</a> 
+     <i>
+      <a href="#CGI._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#CGI.cookies">cookies</a>
+    </i> <i>
+      <a href="#CGI.has_key_qm">has_key?</a>
+    </i> <i>
+      <a href="#CGI.header">header</a>
+    </i> <i>
+      <a href="#CGI.keys">keys</a>
+    </i> <i>
+      <a href="#CGI.out">out</a>
+    </i> <i>
+      <a href="#CGI.params">params</a>
+    </i> <p></p>
+    <hr>  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;"cgi"
+cgi&nbsp;=&nbsp;CGI.new("html3")&nbsp;&nbsp;#&nbsp;add&nbsp;HTML&nbsp;generation&nbsp;methods
+cgi.out&nbsp;{
+&nbsp;&nbsp;CGI.pretty&nbsp;(
+&nbsp;&nbsp;&nbsp;&nbsp;cgi.html&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.head&nbsp;{&nbsp;cgi.title{"TITLE"}&nbsp;}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.body&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.form&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.textarea("get_text")&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.br&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.submit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.h1&nbsp;{&nbsp;"This&nbsp;is&nbsp;big!"&nbsp;}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.center&nbsp;{&nbsp;"Jazz&nbsp;Greats&nbsp;of&nbsp;the&nbsp;20"&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.small&nbsp;{"th"}&nbsp;+&nbsp;"&nbsp;century"&nbsp;+&nbsp;cgi.hr
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;+&nbsp;cgi.p&nbsp;+&nbsp;cgi.table&nbsp;('BORDER'&nbsp;=&gt;&nbsp;'5')&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.tr&nbsp;{&nbsp;cgi.td&nbsp;{"Artist"}&nbsp;+&nbsp;cgi.td&nbsp;{"Album"}&nbsp;}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.tr&nbsp;{&nbsp;cgi.td&nbsp;{"Davis,&nbsp;Miles"}&nbsp;+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cgi.td&nbsp;{"Kind&nbsp;of&nbsp;Blue"}&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;)&nbsp;#&nbsp;CGI.pretty&nbsp;is&nbsp;a&nbsp;method&nbsp;call,&nbsp;not&nbsp;a&nbsp;block
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+(The output of this script is shown in Figure 26.2 on page 499.)
+<P></P>
+  The <code>CGI</code> class provides support for programs used as a Web server
+  CGI (Common Gateway Interface) script.  It contains several
+  methods for accessing fields in a CGI form, manipulating ``cookies'' and
+  the environment, and outputting formatted HTML.
+<P></P>
+  Since environment variables contain a lot of useful information for
+  a CGI script, <code>CGI</code> makes accessing them very easy---environment
+  variables are accessible as attributes of <code>CGI</code> objects.  For
+  instance, <code>cgi.auth_type</code> returns the value of
+  <code>ENV["AUTH_TYPE"]</code>.  To create the method name, the environment
+  variable name is translated to all lowercase, and the
+  ``<code>HTTP_</code>'' prefix is stripped off.  Thus,
+  <code>HTTP_USER_AGENT</code> would be available as the method
+  <code>user_agent</code>.
+<P></P>
+  Cookies are represented using a separate object of class
+  <code>CGI::Cookie</code>, containing the following accessors:  
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>Accessor</b>
+        </td>
+  <td valign="top">
+          <b>Description</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>name</code>
+        </td>
+  <td valign="top">Name of this cookie</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>value</code>
+        </td>
+  <td valign="top">Array of values</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>path</code>
+        </td>
+  <td valign="top">Path (optional)</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>domain</code>
+        </td>
+  <td valign="top">Domain (optional)</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>expires</code>
+        </td>
+  <td valign="pickaxe/top">Time of expiry, defaults to <a href="ref_c_time.html#Time.now">
+            <code>Time.now</code>
+          </a> (optional)</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>secure</code>
+        </td>
+  <td valign="top">
+          <code>true</code> for a secure cookie</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>Figure not available...</td>
+      </tr>
+    </table>
+<P></P>
+You create a cookie object using <code>CGI_Cookie.new</code>, which takes
+  as arguments the accessors listed above, or <code>CGI_Cookie.parse</code>,
+  which takes an encoded string and returns a cookie object.
+<P></P>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.escape">escape</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.escape( <i>aString</i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a URL-encoded string made from the given argument, where unsafe
+        characters (not alphanumeric, ``_'', ``-'', or ``.'') are encoded 
+        using ``%xx'' escapes.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.escapeElement">escapeElement</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.escapeElement( <i>aString</i>  
+          <i>[</i>, <i>elements</i>
+          <i>]<sup>*</sup>
+          </i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string made from the given argument with certain
+          HTML-special characters escaped. The HTML elements given in
+          <i>elements</i> will be escaped; other HTML elements will not
+          be affected.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+print&nbsp;CGI::escapeElement('&lt;BR&gt;&lt;A&nbsp;HREF="url"&gt;&lt;/A&gt;&lt;P&gt;',&nbsp;"A",&nbsp;"IMG")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+&lt;BR&gt;&amp;lt;A&nbsp;HREF=&amp;quot;url&amp;quot;&amp;gt;&amp;lt;/A&amp;gt;&lt;P&gt;
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.escapeHTML">escapeHTML</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.escapeHTML( <i>aString</i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string made from the given argument with
+          HTML-special characters (such as
+          ``<code>&amp;</code>'',``<code>"</code>'',``<code>&lt;</code>'',``<code>&gt;</code>'') quoted using
+          ``<code>&amp;amp;</code>'', ``<code>&amp;quot;</code>'', ``<code>&amp;lt;</code>'',
+          ``<code>&amp;gt;</code>'', and so on.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.new( <i>[</i>
+          <i>aString</i>
+          <i>]<sup>*</sup>
+          </i> )
+            -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a new <code>CGI</code> object.  If HTML output is required, the
+        desired standards level must be given in <i>aString</i>
+        (otherwise, no output routines will be created). The level may be
+        one of:
+<P></P>
+        <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <b>String</b>
+            </td>
+  <td valign="top">
+              <b>Standards Level</b>
+            </td>
+  <td valign="top">
+              <b>String</b>
+            </td>
+  <td valign="top">
+              <b>Standards Level</b>
+            </td>
+</tr>
+<tr>
+  <td valign="top">``html3''</td>
+  <td valign="top">HTML 3.2</td>
+  <td valign="top">``html4''</td>
+  <td valign="top">HTML 4.0 Strict</td>
+</tr>
+<tr>
+  <td valign="top">``html4Tr''</td>
+  <td valign="top">HTML 4.0 Transitional</td>
+  <td valign="top">``html4Fr''</td>
+  <td valign="top">HTML 4.0 Frameset</td>
+</tr>
+<tr>
+            <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.parse">parse</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.parse( <i>aString</i> )
+          -&gt; <i>aHash</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Parses a query string and returns
+        a hash of its <em>key-value</em> pairs.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.pretty">pretty</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.pretty( <i>anHTMLString</i>,
+            <i>aLeaderString</i>="  " )
+            -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Formats the given <i>anHTMLString</i> in a nice, readable
+          format, optionally prefixing each line with
+          <i>aLeaderString</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.rfc1123_date">rfc1123_date</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.rfc1123_date( <i>aTime</i> )
+            -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string representing the given time according to
+          RFC 1123 (for instance, <code>Mon, 1 Jan 2001 00:00:00 GMT</code>).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.unescape">unescape</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.unescape( <i>aString</i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string containing ``unsafe'' characters made from
+          the given URL-encoded argument, where unsafe characters were
+          encoded using ``%'' escapes.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.unescapeElement">unescapeElement</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.unescapeElement( <i>aString</i>  
+          <i>[</i>, <i>elements</i>
+          <i>]<sup>*</sup>
+          </i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string with the selected escaped HTML elements
+          expanded to the actual characters.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.unescapeHTML">unescapeHTML</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI.unescapeHTML( <i>aString</i> )
+            -&gt; <i>aNewString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string made from the given argument with
+          HTML-special quoted characters expanded to the actual
+          characters.
+<P></P>
+      </td>
+    </table>
+<P></P>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>[ <i>[</i>
+          <i>aString</i>
+          <i>]<sup>+</sup>
+          </i> ]
+            -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns the values of the given field names from the CGI
+        form in an <code>Array</code>.  See the note on multipart forms on page 503.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.cookies">cookies</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.cookies
+          -&gt; <i>aHash</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a new <code>Hash</code> object containing <em>key-value</em>
+        pairs of cookie keys and values.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.has_key_qm">has_key?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.has_key( <i>aString</i> )
+          -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns <code>true</code> if the form contains a field named
+        <i>aString</i>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.header">header</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>aSession</i>.header( <i>aContentType</i>="text/html" )
+            -&gt; <i>aString</i> <br>
+          <i>aSession</i>.header( <i>aHash</i> )
+            -&gt; <i>aString</i> <br>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a string containing the given headers
+          (in the <code>MOD_RUBY</code> environment, the resulting header is
+          sent immediately instead). If a hash is given as an
+          argument, then the <em>key-value</em> pairs will be used to
+          generate headers.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.keys">keys</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.keys
+            -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns an array of all existing field names for the form.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.out">out</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                    <i>aSession</i>.out( <i>aContentType</i>="text/html" ) { block }
+-&gt; <code>nil</code> <br>
+          <i>aSession</i>.out( <i>aHash</i> ) { block }
+-&gt; <code>nil</code> <br>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Generates HTML output using the results of the block as the
+          content.  Headers are generated as with <code>CGI#header</code>.
+          See the example at the start of this section.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI.params">params</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.params
+          -&gt; <i>aHash</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+        Returns a new <code>Hash</code> object containing <em>key-value</em>
+        pairs of field names and values from the form.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+<h3><a name="UA">HTML Output Methods</a></h3>
+In addition, <code>CGI</code> supports the following HTML output methods.  Each
+of these methods is named after the corresponding HTML feature (or
+close to it).  Those tags that require content (such as
+<code>blockquote</code>) take an optional block; the block should return a
+<code>String</code> that will be used as the content for the feature.  These
+methods may take arguments as indicated, or as a hash with the given
+names as keys.
+<P></P>\<hr>
+<br>
+    <code>a</code>( <em>
+      <i>url</i>
+    </em> )<br>
+    <code>a</code>( <em>
+      <code>HREF</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>base</code>( <em>
+      <i>url</i>
+    </em> )<br>
+    <code>base</code>( <em>
+      <code>HREF</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>blockquote</code>( <em>
+      <i>cite=""</i>
+    </em> ) { <em>aString</em> }<br>
+    <code>blockquote</code>( <em>
+      <code>CITE</code>
+    </em> =&gt; ) { <em>aString</em> }<P></P>
+<P></P>
+<br>
+    <code>caption</code>( <em>
+      <i>align=nil</i>
+    </em> ) { <em>aString</em> }<br>
+    <code>caption</code>( <em>
+      <code>ALIGN</code>
+    </em> =&gt; ) { <em>aString</em> }<P></P>
+<P></P>
+<br>
+    <code>checkbox</code>( <em>
+      <i>name</i>=<code>nil</code>, <i>value</i>=<code>nil</code>, <i>checked</i>=<code>nil</code>
+    </em> )<br>
+    <code>checkbox</code>( <em>
+      <code>NAME</code>, <code>VALUE</code>, <code>CHECKED</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>checkbox_group</code>( <em>
+      <i>name</i>=<code>nil</code>, <i>[</i>
+      <i>items</i>
+      <i>]<sup>+</sup>
+      </i>
+    </em> )<br>
+    <code>checkbox_group</code>( <em>  <code>NAME</code>, <code>VALUES</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<blockquote>Items may be individual <code>String</code> names, or any of: 
+  an array of [&nbsp;<i>name</i>,&nbsp;<i>checked</i>&nbsp;], 
+  an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>&nbsp;],
+  or an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>,&nbsp;<i>checked</i>&nbsp;].
+  The value for the hash key VALUES should be an array of these items.
+  </blockquote>
+<P></P>
+<br>
+    <code>file_field</code>( <em>
+      <i>name</i>="", <i>size</i>=20, <i>maxlength</i>=<code>nil</code>
+    </em> )<br>
+    <code>file_field</code>( <em>  <code>NAME</code>, <code>SIZE</code>, <code>MAXLENGTH</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>form</code>( <em>
+      <i>method</i>="post", <i>action</i>=<code>nil</code>,
+  <i>enctype</i>="application/x-www-form-urlencoded"</em> ) { <em>aStr</em> }<br>
+    <code>form</code>( <em>  <code>METHOD</code>, <code>ACTION</code>, <code>ENCTYPE</code>
+    </em> =&gt; ) { <em>aStr</em> }<P></P>
+<P></P>
+<br>
+    <code>hidden</code>( <em>
+      <i>name</i>="", <i>value</i>=<code>nil</code>
+    </em> )<br>
+    <code>hidden</code>( <em>
+      <code>NAME</code>, <code>VALUE</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>html</code>( <em></em> ) { <em>aString</em> }<br>
+    <code>html</code>( <em>
+      <code>PRETTY</code>, <code>DOCTYPE</code>
+    </em> =&gt; ) { <em>aString</em> }<P></P>
+<P></P>
+<br>
+    <code>img_button</code>( <em>
+      <i>src</i>="", <i>name</i>=<code>nil</code>, <i>alt</i>=<code>nil</code>
+    </em> )<br>
+    <code>img_button</code>( <em>  <code>SRC</code>, <code>NAME</code>, <code>ALT</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>img</code>( <em>
+      <i>src</i>="", <i>alt</i>="", <i>width</i>=<code>nil</code>, <i>height</i>=<code>nil</code>
+    </em> )<br>
+    <code>img</code>( <em>  <code>SRC</code>, <code>ALT</code>, <code>WIDTH</code>, <code>HEIGHT</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>multipart_form</code>( <em>
+      <i>action</i>=<code>nil</code>, <i>enctype</i>="multipart/form-data"</em> ) { <em>aString</em> }<br>
+    <code>multipart_form</code>( <em>
+      <code>METHOD</code>, <code>ACTION</code>, <code>ENCTYPE</code>
+    </em> =&gt; ) { <em>aString</em> }<P></P>
+<P></P>
+<br>
+    <code>password_field</code>( <em>
+      <i>name</i>="", <i>value</i>=<code>nil</code>, <i>size</i>=40, 
+  <i>maxlength</i>=<code>nil</code>
+    </em> )<br>
+    <code>password_field</code>( <em>
+      <code>NAME</code>, <code>VALUE</code>, <code>SIZE</code>, <code>MAXLENGTH</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>popup_menu</code>( <em>
+      <i>name</i>="", <i>items</i>
+    </em> )<br>
+    <code>popup_menu</code>( <em>  <code>NAME</code>, <code>SIZE</code>,  <code>MULTIPLE</code>, <code>VALUES</code> <em>(array of items)</em>
+    </em> =&gt; )<P></P>
+<P></P>
+<blockquote>Items may be individual <code>String</code> names, or any of: 
+  an array of [&nbsp;<i>name</i>,&nbsp;<i>selected</i>&nbsp;], 
+  an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>&nbsp;],
+  or an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>,&nbsp;<i>selected</i>&nbsp;].
+  The value for the hash key VALUES should be an array of these items.
+  </blockquote>
+<P></P>
+<br>
+    <code>radio_button</code>( <em>
+      <i>name</i>="", <i>value</i>=<code>nil</code>, <i>checked</i>=<code>nil</code>
+    </em> )<br>
+    <code>radio_button</code>( <em>  <code>NAME</code>, <code>VALUE</code>, <code>CHECKED</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>radio_group</code>( <em>
+      <i>name</i>="", <i>items</i>
+    </em> )<br>
+    <code>radio_group</code>( <em>
+      <code>NAME</code>, <code>VALUES</code>
+  <em>(array of items)</em>
+    </em> =&gt; )<P></P>
+<P></P>
+<blockquote>Items may be individual <code>String</code> names, or any of: 
+  an array of [&nbsp;<i>name</i>,&nbsp;<i>selected</i>&nbsp;], 
+  an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>&nbsp;],
+  or an array of [&nbsp;<i>value</i>,&nbsp;<i>name</i>,&nbsp;<i>selected</i>&nbsp;].
+  The value for the hash key VALUES should be an array of these items.
+  </blockquote>
+<P></P>
+<br>
+    <code>reset</code>( <em>
+      <i>value</i>=<code>nil</code>, <i>name</i>=<code>nil</code>
+    </em> )<br>
+    <code>reset</code>( <em>
+      <code>VALUE</code>, <code>NAME</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>scrolling_list</code>( <em>
+      <em>alias for</em> popup_menu</em> )<br>
+    <code>scrolling_list</code>( <em></em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>submit</code>( <em>
+      <i>value</i>=<code>nil</code>, <i>name</i>=<code>nil</code>
+    </em> )<br>
+    <code>submit</code>( <em>
+      <code>VALUE</code>, <code>NAME</code>
+    </em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>text_field</code>( <em>
+      <i>name</i>="", <i>value</i>=<code>nil</code>, <i>size</i>=40,
+  <i>maxlength</i>=<code>nil</code>
+    </em> )<br>
+    <code>text_field</code>( <em>
+      <code>NAME</code>, <code>VALUE</code>, <code>SIZE</code>, MAXLENGTH</em> =&gt; )<P></P>
+<P></P>
+<br>
+    <code>textarea</code>( <em>
+      <i>name</i>="", <i>cols</i>=70, <i>rows</i>=10</em> )<br>
+    <code>textarea</code>( <em>  <code>NAME</code>, <code>COLS</code>, <code>ROWS</code>
+    </em> =&gt; )<P></P>
+<P></P>
+\<hr>
+<P></P>
+In addition, all HTML tags are supported as methods, including
+<code>title</code>, <code>head</code>, <code>body</code>, <code>br</code>, <code>pre</code>, and so on.
+The block given to the method must return a <code>String</code>, which will be
+used as the content for that tag type.  Not all tags require content:
+<code>&lt;P&gt;</code>, for example, does not.
+The available tags vary according to the supported HTML level---Table
+26.1 on page 503 lists the complete set.  For these methods, you
+can pass in a hash with attributes for the given tag.  For instance, you
+might pass in <code>'BORDER'=&gt;'5'</code> to the <code>table</code> method to set the
+border width of the table.
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>HTML tags available as methods</b>  
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">{<b>HTML 3</b>}</td>
+</tr>
+<tr>
+  <td valign="top">a address applet area b base basefont big blockquote body br caption
+    center cite code dd dfn dir div dl dt em font form h1 h2 h3 h4 h5 h6
+    head hr html i img input isindex kbd li link listing map menu meta
+    ol option p param plaintext pre samp script select small strike
+    strong style sub sup table td textarea th title tr tt u ul var xmp</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top">{<b>HTML 4</b>}</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">a abbr acronym address area b base bdo big blockquote body br
+    button caption cite code col colgroup dd del dfn div dl dt em
+    fieldset form h1 h2 h3 h4 h5 h6 head hr html i img input ins kbd
+    label legend li link map meta noscript object ol optgroup option p
+    param pre q samp script select small span strong style sub sup
+    table tbody td textarea tfoot th thead title tr tt ul var</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">{<b>HTML 4 Transitional</b>}</td>
+</tr>
+<tr>
+  <td valign="top">a abbr acronym address applet area b base basefont bdo big
+    blockquote body br button caption center cite code col colgroup dd
+    del dfn dir div dl dt em fieldset font form h1 h2 h3 h4 h5 h6 head
+    hr html i iframe img input ins isindex kbd label legend li link map
+    menu meta noframes noscript object ol optgroup option p param pre q
+    s samp script select small span strike strong style sub sup table
+    tbody td textarea tfoot th thead title tr tt u ul var</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+            <tr>
+  <td valign="top"></td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">frame frameset</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+<h3><a name="UB">Multipart Form Values</a></h3>
+<P></P>
+When dealing with a multipart form, the array returned by <code>CGI#[]</code>
+is composed of objects of class <code>Tempfile</code>, with the following
+dynamically added methods:
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+          <b>Method</b>
+        </td>
+  <td valign="top">
+          <b>Description</b>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>read</code>
+        </td>
+  <td valign="top">Body</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>local_path</code>
+        </td>
+  <td valign="top">Path to local file containing the content</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>original_filename</code>
+        </td>
+  <td valign="top">Original filename of the content</td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>content_type</code>
+        </td>
+  <td valign="top">Content type</td>
+</tr>
+<tr>
+        <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+      </tr>
+    </table>
+<P></P>
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class CGI::Session</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#CGI::Session.new">new</a> 
+     <i>
+      <a href="#CGI::Session._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#CGI::Session._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#CGI::Session.delete">delete</a>
+    </i> <i>
+      <a href="#CGI::Session.update">update</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  A <code>CGI::Session</code> maintains a persistent state for web users in a
+  CGI environment.  Sessions may be memory-resident or may be stored
+  on disk.  See the discussion on page 146 for details.
+<P></P>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI::Session.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        CGI::Session.new( <i>aCgi</i>, <i>[</i>
+          <i>aHash</i>
+          <i>]<sup>*</sup>
+          </i> )
+            -&gt; <i>aSession</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns a new session object for the <code>CGI</code> query.  Options 
+          that may be given in <i>aHash</i> include:
+<P></P>
+          <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <b>Option</b>
+            </td>
+  <td valign="top">
+              <b>Description</b>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>session_key</code>
+            </td>
+  <td valign="top">Name of CGI key for session
+          identification.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>session_id</code>
+            </td>
+  <td valign="top">Value of session id.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>new_session</code>
+            </td>
+  <td valign="top">If <code>true</code>, create a new session 
+                 id for this session. If <code>false</code>, use an
+                 existing session identified by <code>session_id</code>. If
+                 omitted, use an existing session if available,
+                 otherwise create a new one.</td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>database_manager</code>
+            </td>
+  <td valign="top">Class to use to save sessions; may be
+          <code>CGI::Session::FileStore</code> or
+          <code>CGI::Session::MemoryStore</code>
+          (or user defined if you're
+          brave). Default is <code>FileStore</code>.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <code>tmpdir</code>
+            </td>
+  <td valign="top">For <code>FileStore,</code> directory for session files.</td>
+</tr>
+<tr bgcolor="#ff9999">
+  <td valign="top">
+              <code>prefix</code>
+            </td>
+  <td valign="top">For <code>FileStore,</code> prefix of session filenames.</td>
+</tr>
+<tr>
+            <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+          </tr>
+        </table>
+<P></P>
+      </td>
+    </table>
+<P></P>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI::Session._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>[ <i>aKey</i> ]
+            -&gt; <i>aValue</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Returns the value for the given key.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI::Session._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>[ <i>aKey</i> ] = <i>aValue</i>
+            -&gt; <i>aValue</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Sets the value for the given key.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI::Session.delete">delete</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.delete
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Calls the <code>delete</code> method of the underlying database
+          manager. For <code>FileStore</code>, deletes the physical file
+          containing the session.
+          For <code>MemoryStore</code>, removes the session from memory.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="CGI::Session.update">update</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>aSession</i>.update
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+          Calls the <code>update</code> method of the underlying database
+          manager. For <code>FileStore</code>, writes the session data out to
+          disk. Has no effect with <code>MemoryStore</code>.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="lib_patterns.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="lib_windows.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

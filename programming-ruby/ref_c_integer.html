@@ -1,0 +1,477 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_hash.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_io.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Integer</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Numeric</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Integer.chr">chr</a>
+    </i> <i>
+      <a href="#Integer.downto">downto</a>
+    </i> <i>
+      <a href="#Integer.integer_qm">integer?</a>
+    </i> <i>
+      <a href="#Integer.next">next</a>
+    </i> <i>
+      <a href="#Integer.step">step</a>
+    </i> <i>
+      <a href="#Integer.succ">succ</a>
+    </i> <i>
+      <a href="#Integer.times">times</a>
+    </i> <i>
+      <a href="#Integer.upto">upto</a>
+    </i> <p></p>
+    <hr>    <br>
+    <font size="-1">Subclasses: Bignum, Fixnum</font>
+    <p></p>
+<P></P>
+  <code>Integer</code> is the basis for the two concrete classes that hold
+  whole numbers, <code>Bignum</code> and <code>Fixnum</code>.
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.chr">chr</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.chr -&gt; <i>aString</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns a string containing the ASCII character represented by 
+      the receiver's value.            
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>65.chr</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"A"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>?a.chr</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"a"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>230.chr</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"\346"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.downto">downto</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.downto( <i>anInteger</i> ) {| i | block }
+<P></P>
+        -&gt; <i>int</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates <em>block</em>, passing decreasing values
+      from <i>int</i> down to and including <i>anInteger</i>.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+5.downto(1)&nbsp;{&nbsp;|n|&nbsp;print&nbsp;n,&nbsp;"..&nbsp;"&nbsp;}
+print&nbsp;"&nbsp;&nbsp;Liftoff!\n"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+5..&nbsp;4..&nbsp;3..&nbsp;2..&nbsp;1..&nbsp;&nbsp;&nbsp;Liftoff!
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.integer_qm">integer?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.integer? -&gt; <code>true</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Always returns <code>true</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.next">next</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.next -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the <code>Integer</code> equal to <i>int</i>&nbsp;+&nbsp;1.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>1.next</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>2</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(-1).next</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.step">step</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.step( <i>endNum</i>, <i>step</i> ) {| i | block }
+<P></P>
+        -&gt; <i>int</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes <em>block</em> with the sequence of numbers starting at
+      <i>int</i>,      
+      incremented by <i>step</i> on each call. The loop
+      finishes when the value to be passed to the block is greater
+      than <i>endNum</i> (if <i>step</i> is positive) or less than
+      <i>endNum</i> (if <i>step</i> is negative).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+1.step(10,&nbsp;2)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+1&nbsp;3&nbsp;5&nbsp;7&nbsp;9
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.succ">succ</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.succ -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_integer.html#Integer.next">
+          <code>Integer#next</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.times">times</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.times {| i | block }
+<P></P>
+        -&gt; <i>int</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates block <i>int</i> times, passing in values from zero to
+      <i>int</i> - 1.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+5.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+print&nbsp;"\n"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Integer.upto">upto</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>int</i>.upto( <i>anInteger</i> ) {| i | block }
+<P></P>
+        -&gt; <i>int</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Iterates <em>block</em>, passing in integer values from
+      <i>int</i> up to and including <i>anInteger</i>.      
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+5.upto(10)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+5&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;10
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_hash.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_io.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

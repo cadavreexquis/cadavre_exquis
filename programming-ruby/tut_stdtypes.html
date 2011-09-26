@@ -1,0 +1,2659 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_containers.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_methods.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Standard Types</h1>
+    <hr>
+    <br>
+<P></P>
+So far we've been having fun implementing pieces of our jukebox code,
+but we've been negligent. We've looked at arrays, hashes,
+and procs, but we haven't really covered the other basic types in
+Ruby: numbers, strings, ranges, and regular expressions. Let's
+spend a few pages on these basic building blocks now.
+<h2><a name="S1">Numbers</a></h2>
+<P></P>
+Ruby supports integers and floating point numbers. Integers can be any length (up to a
+maximum determined by the amount of free memory on your system).
+Integers within a certain range (normally -2<sup>30</sup> to 2<sup>30</sup>-1 or
+-2<sup>62</sup> to 2<sup>62</sup>-1) are held internally in binary form,
+and are objects of class <code>Fixnum</code>.  Integers outside this range are
+stored in objects of class <code>Bignum</code> (currently implemented as a
+variable-length set of short integers).  This process is transparent,
+and Ruby automatically manages the conversion back and forth.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+num&nbsp;=&nbsp;8
+7.times&nbsp;do
+&nbsp;&nbsp;print&nbsp;num.type,&nbsp;"&nbsp;",&nbsp;num,&nbsp;"\n"
+&nbsp;&nbsp;num&nbsp;*=&nbsp;num
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Fixnum&nbsp;8
+Fixnum&nbsp;64
+Fixnum&nbsp;4096
+Fixnum&nbsp;16777216
+Bignum&nbsp;281474976710656
+Bignum&nbsp;79228162514264337593543950336
+Bignum&nbsp;6277101735386680763835789423207666416102355444464034512896
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You write integers
+using an optional leading sign, an
+optional base indicator (<code>0</code> for octal, <code>0x</code> for hex, or
+<code>0b</code> for binary), followed by a string of digits in the
+appropriate base. Underscore characters are ignored in the digit
+string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+123456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum
+123_456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum&nbsp;(underscore&nbsp;ignored)
+-543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Negative&nbsp;Fixnum
+123_456_789_123_345_789&nbsp;&nbsp;&nbsp;#&nbsp;Bignum
+0xaabb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Hexadecimal
+0377&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Octal
+-0b101_010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary&nbsp;(negated)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You can also get the integer value corresponding to an ASCII
+character or escape sequence by preceding it with a question mark.
+Control and meta combinations can also be generated using
+?\C-<em>x</em>, ?\M-<em>x</em>, and ?\M-\C-<em>x</em>.
+The control version of a value is the same as
+``<code>value&nbsp;&amp;&nbsp;0x9f</code>''. The meta version of a value is
+``<code>value&nbsp;|&nbsp;0x80</code>''. Finally, the sequence ?\C-? generates an
+ASCII delete, <code>0177</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+?a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;character&nbsp;code
+?\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;code&nbsp;for&nbsp;a&nbsp;newline&nbsp;(0x0a)
+?\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;control&nbsp;a&nbsp;=&nbsp;?A&nbsp;&amp;&nbsp;0x9f&nbsp;=&nbsp;0x01
+?\M-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;sets&nbsp;bit&nbsp;7
+?\M-\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;and&nbsp;control&nbsp;a
+?\C-?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;delete&nbsp;character
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A numeric literal with a decimal point and/or an exponent is turned
+into a <code>Float</code> object,
+corresponding to the native architecture's
+<code>double</code> data type. You must follow the decimal point with a
+digit, as <code>1.e3</code> tries to invoke the method <code>e3</code> in class <code>Fixnum</code>.
+<P></P>
+All numbers are objects, and respond to a variety of messages (listed
+in full starting on pages 290, 313,
+315, 323, and
+349). So, unlike (say) C++, you find the absolute
+value of a number by writing <code>aNumber.abs</code>, not
+<code>abs(aNumber)</code>.
+<P></P>
+Integers also support several useful iterators. We've seen one
+already---<code>7.times</code> in the code example
+on page 47.
+Others include <code>upto</code> and
+<code>downto</code>, for iterating up and down between two integers, and
+<code>step</code>, which is more like a traditional <code>for</code> loop.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+3.times&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;print&nbsp;"X&nbsp;"&nbsp;}
+1.upto(5)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+99.downto(95)&nbsp;&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+50.step(80,&nbsp;5)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+X&nbsp;X&nbsp;X&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;99&nbsp;98&nbsp;97&nbsp;96&nbsp;95&nbsp;50&nbsp;55&nbsp;60&nbsp;65&nbsp;70&nbsp;75&nbsp;80
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, a warning for Perl users.
+Strings that contain numbers are
+not automatically converted into numbers when used in
+expressions. This tends to bite most often when reading numbers from a 
+file. The following code (probably) doesn't do what was intended.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+DATA.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;vals&nbsp;=&nbsp;line.split&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;split&nbsp;line,&nbsp;storing&nbsp;tokens&nbsp;in&nbsp;val
+&nbsp;&nbsp;print&nbsp;vals[0]&nbsp;+&nbsp;vals[1],&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Feed it a file containing
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+3&nbsp;4
+5&nbsp;6
+7&nbsp;8
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+and you'll get the output ``34 56 78.'' 
+What happened?
+<P></P>
+The problem is that the input was read as strings, not numbers. The plus
+operator concatenates strings, so that's what we see in the output.
+To fix this, use the <a href="ref_c_string.html#String.to_i">
+      <code>String#to_i</code>
+    </a> method to convert the string to
+an integer.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+DATA.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;vals&nbsp;=&nbsp;line.split
+&nbsp;&nbsp;print&nbsp;vals[0].to_i&nbsp;+&nbsp;vals[1].to_i,&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+7&nbsp;11&nbsp;15
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S2">Strings</a></h2>
+<P></P>
+Ruby strings are simply sequences of 8-bit
+bytes. They normally hold printable
+characters, but that is not a requirement; a string can also hold
+binary data. Strings are objects of class <code>String</code>.
+<P></P>
+Strings are often created using string literals---sequences of
+characters between delimiters. Because binary data is otherwise
+difficult to represent within program source, you can place various
+escape sequences in a string literal. Each is replaced with the
+corresponding binary value as the program is compiled. The type of
+string delimiter determines the degree of substitution performed.
+Within single-quoted strings, two consecutive backslashes are replaced
+by a single backslash, and a backslash followed by a single quote
+becomes a single quote.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>'escape&nbsp;using&nbsp;"\\"'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>escape&nbsp;using&nbsp;"\"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>'That\'s&nbsp;right'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>That's&nbsp;right</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Double-quoted strings support a boatload more escape sequences.  The
+most common is probably ``\n'', the newline character. 
+Table 18.2 on page 203 gives the complete list. In addition,
+you can substitute the value of any Ruby expression into a string
+using the sequence <code>#{</code>&nbsp;<em>expr</em>&nbsp;<code>}</code>.
+If the expression is just a global variable, a class variable, or an instance variable,
+you can omit the braces.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>"Seconds/day:&nbsp;#{24*60*60}"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Seconds/day:&nbsp;86400</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"#{'Ho!&nbsp;'*3}Merry&nbsp;Christmas"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Ho!&nbsp;Ho!&nbsp;Ho!&nbsp;Merry&nbsp;Christmas</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"This&nbsp;is&nbsp;line&nbsp;#$."</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>This&nbsp;is&nbsp;line&nbsp;3</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+There are three more ways to construct string literals:
+<code>%q</code>, <code>%Q</code>, and ``here documents.''
+<P></P>
+<code>%q</code> and <code>%Q</code> start delimited single- and double-quoted
+strings.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>%q/general&nbsp;single-quoted&nbsp;string/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>general&nbsp;single-quoted&nbsp;string</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%Q!general&nbsp;double-quoted&nbsp;string!</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>general&nbsp;double-quoted&nbsp;string</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%Q{Seconds/day:&nbsp;#{24*60*60}}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Seconds/day:&nbsp;86400</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The character following the ``q'' or ``Q'' is the delimiter. If it is
+an opening bracket, brace, parenthesis, or less-than sign, the string
+is read until the matching close symbol is found. Otherwise the string 
+is read until the next occurrence of the same delimiter.
+<P></P>
+Finally, you can construct a string using a <em>here document</em>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aString&nbsp;=&nbsp;&lt;&lt;END_OF_STRING
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;body&nbsp;of&nbsp;the&nbsp;string
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;the&nbsp;input&nbsp;lines&nbsp;up&nbsp;to
+&nbsp;&nbsp;&nbsp;&nbsp;one&nbsp;ending&nbsp;with&nbsp;the&nbsp;same
+&nbsp;&nbsp;&nbsp;&nbsp;text&nbsp;that&nbsp;followed&nbsp;the&nbsp;'&lt;&lt;'
+END_OF_STRING
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A here document consists of lines in the source up to, but not
+including, the terminating string that you specify after the <code>&lt;&lt;</code> 
+characters. Normally, this terminator must start in the first
+column. However, if you put a minus sign after the  <code>&lt;&lt;</code> 
+characters, you can indent the terminator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+print&nbsp;&lt;&lt;-STRING1,&nbsp;&lt;&lt;-STRING2
+&nbsp;&nbsp;&nbsp;Concat
+&nbsp;&nbsp;&nbsp;STRING1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enate
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;STRING2
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Concat
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;enate
+<P></P>
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UA">Working with Strings</a></h3>
+<P></P>
+<code>String</code> is probably the largest built-in Ruby class, with over 75
+standard methods. We won't go through them all here; the library
+reference has a complete list. Instead, we'll look at
+some common string idioms---things that are likely to pop up during
+day-to-day programming.
+<P></P>
+Let's get back to our jukebox. Although it's designed to be connected
+to the Internet, it also holds copies of some popular songs on a local
+hard drive. That way, if a squirrel chews through our 'net connection
+we'll still be able to entertain the customers.
+<P></P>
+For historical reasons (are there any other kind?), the list of songs
+is stored as rows in a flat file. Each row holds the name of the file
+containing the song, the song's duration, the artist, and the title,
+all in vertical-bar-separated fields. A typical file might
+start:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+/jazz/j00132.mp3&nbsp;&nbsp;|&nbsp;3:45&nbsp;|&nbsp;Fats&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Waller&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;Ain't&nbsp;Misbehavin'
+/jazz/j00319.mp3&nbsp;&nbsp;|&nbsp;2:58&nbsp;|&nbsp;Louis&nbsp;&nbsp;&nbsp;&nbsp;Armstrong&nbsp;&nbsp;|&nbsp;Wonderful&nbsp;World
+/bgrass/bg0732.mp3|&nbsp;4:09&nbsp;|&nbsp;Strength&nbsp;in&nbsp;Numbers&nbsp;|&nbsp;Texas&nbsp;Red
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Looking at the data, it's clear that we'll be using some of class
+<code>String</code>'s many methods to extract and clean up the fields before we 
+create <code>Song</code> objects based on them. At a minimum, we'll need to:
+<P></P>
+<ul>
+<li> break the line into fields,
+</li>
+      <li> convert the running time from mm:ss to seconds, and
+</li>
+      <li> remove those extra spaces from the artist's name.
+</li>
+    </ul>
+<P></P>
+Our first task is to split each line into fields, and
+<a href="ref_c_string.html#String.split">
+      <code>String#split</code>
+    </a> will do the job nicely. In
+this case, we'll pass <code>split</code> a regular expression,
+<code>/\s*\|\s*/</code>, which splits the line into tokens
+wherever <code>split</code> finds a vertical bar, optionally surrounded by
+spaces.  And, because the line read from the file has a trailing
+newline, we'll use <a href="ref_c_string.html#String.chomp">
+      <code>String#chomp</code>
+    </a> to strip it off just before we
+apply the split.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songs&nbsp;=&nbsp;SongList.new
+<P></P>
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;length)
+end
+puts&nbsp;songs[1]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;&nbsp;&nbsp;&nbsp;Armstrong&nbsp;(2:58)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Unfortunately, whoever created the original file entered the artists'
+names in columns, so some of them contain extra spaces. These will
+look ugly on our high-tech, super-twist, flat-panel Day-Glo display, so 
+we'd better remove these extra spaces before we go much further.
+There are many ways of doing this, but
+probably the simplest is <a href="ref_c_string.html#String.squeeze">
+      <code>String#squeeze</code>
+    </a>, which trims runs of
+repeated characters. We'll use the <code>squeeze!</code> form of the
+method, which alters the string in place.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songs&nbsp;=&nbsp;SongList.new
+<P></P>
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;name.squeeze!("&nbsp;")
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;length)
+end
+puts&nbsp;songs[1]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(2:58)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, there's the minor matter of the time format: the file says
+2:58, and we want the number of seconds, 178. We could use
+<code>split</code> again, this time splitting the time field around the
+colon character.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+mins,&nbsp;secs&nbsp;=&nbsp;length.split(/:/)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Instead, we'll use a related method. <a href="ref_c_string.html#String.scan">
+      <code>String#scan</code>
+    </a> is similar to
+<code>split</code> in that it breaks a string into chunks based on a
+pattern. However, unlike <code>split</code>, with <code>scan</code> you
+specify the pattern that you want the chunks to match. In this case,
+we want to match one or more digits for both the minutes and seconds
+component. The pattern for one or more digits is <code>/\d+/</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songs&nbsp;=&nbsp;SongList.new
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;name.squeeze!("&nbsp;")
+&nbsp;&nbsp;mins,&nbsp;secs&nbsp;=&nbsp;length.scan(/\d+/)
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;mins.to_i*60+secs.to_i)
+end
+puts&nbsp;songs[1]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(178)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Our jukebox has a keyword search capability. Given a word from a song
+title or an artist's name, it will list all matching tracks. Type in
+``fats,'' and it might come back with songs by Fats Domino, Fats
+Navarro, and Fats Waller, for example. We'll implement this by
+creating an indexing class. Feed it an object and some strings,
+and it will index that object under every word (of two or more
+characters) that occurs in those strings. This will illustrate a few
+more of class <code>String</code>'s many methods.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;WordIndex
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@index&nbsp;=&nbsp;Hash.new(nil)
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;index(anObject,&nbsp;*phrases)
+&nbsp;&nbsp;&nbsp;&nbsp;phrases.each&nbsp;do&nbsp;|aPhrase|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aPhrase.scan&nbsp;/\w[-\w']+/&nbsp;do&nbsp;|aWord|&nbsp;&nbsp;&nbsp;#&nbsp;extract&nbsp;each&nbsp;word
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aWord.downcase!
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord]&nbsp;=&nbsp;[]&nbsp;if&nbsp;@index[aWord].nil?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord].push(anObject)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;lookup(aWord)
+&nbsp;&nbsp;&nbsp;&nbsp;@index[aWord.downcase]
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <a href="ref_c_string.html#String.scan">
+      <code>String#scan</code>
+    </a> method extracts elements from a string that
+match a regular expression. In this case, the pattern
+``<code>\w[-\w']+</code>'' matches any character that can
+appear in a word, followed by one or more of the things specified in
+the brackets (a hyphen, another word character, or a single quote). We'll talk
+more about regular expressions beginning on page 56.  To make our
+searches case insensitive, we map both the words we extract and the
+words used as keys during the lookup to lowercase. Note the
+exclamation mark at the end of the first <code>downcase!</code> method
+name. As with the <code>squeeze!</code> method we used previously, this is 
+an indication that the method will modify the receiver in place, in this 
+case converting the string to lowercase.<em>[There's a minor bug 
+  in this code example: the song ``Gone, Gone, Gone'' would get
+  indexed three times. Can you come up with a fix?]</em>
+<P></P>
+We'll extend our <code>SongList</code> class to index songs as they're added,
+and add a method to look up a song given a word.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@songs&nbsp;=&nbsp;Array.new
+&nbsp;&nbsp;&nbsp;&nbsp;@index&nbsp;=&nbsp;WordIndex.new
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;append(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@songs.push(aSong)
+&nbsp;&nbsp;&nbsp;&nbsp;@index.index(aSong,&nbsp;aSong.name,&nbsp;aSong.artist)
+&nbsp;&nbsp;&nbsp;&nbsp;self
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;lookup(aWord)
+&nbsp;&nbsp;&nbsp;&nbsp;@index.lookup(aWord)
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, we'll test it all.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songs&nbsp;=&nbsp;SongList.new
+songFile.each&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;file,&nbsp;length,&nbsp;name,&nbsp;title&nbsp;=&nbsp;line.chomp.split(/\s*\|\s*/)
+&nbsp;&nbsp;name.squeeze!("&nbsp;")
+&nbsp;&nbsp;mins,&nbsp;secs&nbsp;=&nbsp;length.scan(/\d+/)
+&nbsp;&nbsp;songs.append&nbsp;Song.new(title,&nbsp;name,&nbsp;mins.to_i*60+secs.to_i)
+end
+puts&nbsp;songs.lookup("Fats")
+puts&nbsp;songs.lookup("ain't")
+puts&nbsp;songs.lookup("RED")
+puts&nbsp;songs.lookup("WoRlD")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Song:&nbsp;Ain't&nbsp;Misbehavin'--Fats&nbsp;Waller&nbsp;(225)
+Song:&nbsp;Ain't&nbsp;Misbehavin'--Fats&nbsp;Waller&nbsp;(225)
+Song:&nbsp;Texas&nbsp;Red--Strength&nbsp;in&nbsp;Numbers&nbsp;(249)
+Song:&nbsp;Wonderful&nbsp;World--Louis&nbsp;Armstrong&nbsp;(178)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We could spend the next 50 pages looking at all the methods in class
+<code>String</code>. However, let's move on instead to look at a simpler
+datatype: ranges.
+<h2><a name="S3">Ranges</a></h2>
+<P></P>
+Ranges occur everywhere: January to December, 0 to 9, rare to
+well-done, lines 50 through 67, and so on.  If Ruby is to help us
+model reality, it seems natural for it to support these ranges. In
+fact, Ruby goes one better: it actually uses ranges to implement three
+separate features: sequences, conditions, and intervals.<h3><a name="UB">Ranges as Sequences</a></h3>
+<P></P>
+The first and perhaps most natural use of ranges is to express a
+sequence.
+Sequences have a start point, an end point, and a way to
+produce successive values in the sequence. In Ruby, these sequences
+are created using the ``..'' and ``...'' range operators. The
+two-dot form creates an inclusive range, while the three-dot form
+creates a range that excludes the specified high value.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+1..10
+'a'..'z'
+0...anArray.length
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In Ruby, unlike in some earlier versions of Perl, ranges are not
+represented internally as lists: the sequence 1..100000 is held as a
+<code>Range</code> object containing references to two <code>Fixnum</code> objects.  If
+you need to, you can convert a range to a list using the
+<code>to_a</code> method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>(1..10).to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5,&nbsp;6,&nbsp;7,&nbsp;8,&nbsp;9,&nbsp;10]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('bar'..'bat').to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["bar",&nbsp;"bas",&nbsp;"bat"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Ranges implement methods that let you iterate over them and test their
+contents in a variety of ways.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>digits&nbsp;=&nbsp;0..9</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>digits.include?(5)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>digits.min</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>digits.max</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>9</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>digits.reject&nbsp;{|i|&nbsp;i&nbsp;&lt;&nbsp;5&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[5,&nbsp;6,&nbsp;7,&nbsp;8,&nbsp;9]</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>digits.each&nbsp;do&nbsp;|digit|</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;dial(digit)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+So far we've shown ranges of numbers and strings. However, as you'd
+expect from an object-oriented language, Ruby can create ranges based
+on objects that you define. The only constraints are that the objects
+must respond to <code>succ</code> by returning the next object in sequence
+and the objects must be comparable using <code>&lt;=&gt;</code>,
+the general comparison operator.
+Sometimes called the
+spaceship operator, <code>&lt;=&gt;</code> compares two values, returning -1, 0, or +1
+depending on whether the first is less than, equal to, or greater than
+the second.
+<P></P>
+Here's a simple class that represents rows of ``#'' signs. We might
+use it as a text-based stub when testing the jukebox volume control.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;VU
+<P></P>
+&nbsp;&nbsp;include&nbsp;Comparable
+<P></P>
+&nbsp;&nbsp;attr&nbsp;:volume
+<P></P>
+&nbsp;&nbsp;def&nbsp;initialize(volume)&nbsp;&nbsp;#&nbsp;0..9
+&nbsp;&nbsp;&nbsp;&nbsp;@volume&nbsp;=&nbsp;volume
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;inspect
+&nbsp;&nbsp;&nbsp;&nbsp;'#'&nbsp;*&nbsp;@volume
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;#&nbsp;Support&nbsp;for&nbsp;ranges
+<P></P>
+&nbsp;&nbsp;def&nbsp;&lt;=&gt;(other)
+&nbsp;&nbsp;&nbsp;&nbsp;self.volume&nbsp;&lt;=&gt;&nbsp;other.volume
+&nbsp;&nbsp;end
+<P></P>
+&nbsp;&nbsp;def&nbsp;succ
+&nbsp;&nbsp;&nbsp;&nbsp;raise(IndexError,&nbsp;"Volume&nbsp;too&nbsp;big")&nbsp;if&nbsp;@volume&nbsp;&gt;=&nbsp;9
+&nbsp;&nbsp;&nbsp;&nbsp;VU.new(@volume.succ)
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We can test it by creating a range of <code>VU</code> objects.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>medium&nbsp;=&nbsp;VU.new(4)..VU.new(7)</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>medium.to_a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[####,&nbsp;#####,&nbsp;######,&nbsp;#######]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>medium.include?(VU.new(3))</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UC">Ranges as Conditions</a></h3>
+<P></P>
+As well as representing sequences, ranges may also be used as
+conditional expressions.
+For example, the
+following code fragment prints sets of lines from standard input,
+where the first line in each set contains the word ``start'' and the
+last line the word ``end.''
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+while&nbsp;gets
+&nbsp;&nbsp;print&nbsp;if&nbsp;/start/../end/
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Behind the scenes, the range keeps track of the state of each of the
+tests.  We'll show some examples of this in the description of loops
+that starts on page 82.
+<h3><a name="UD">Ranges as Intervals</a></h3>
+<P></P>
+A final use of the versatile range is as an interval test:
+seeing if
+some value falls within the interval represented by the range.
+This is done using <code>===</code>, the case equality operator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;5</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;15</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>(1..10)&nbsp;&nbsp;&nbsp;&nbsp;===&nbsp;3.14159</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('a'..'j')&nbsp;===&nbsp;'c'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>true</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>('a'..'j')&nbsp;===&nbsp;'z'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>false</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The example of a case expression on page 81 shows this
+test in action, determining a jazz style given a year.
+<h2><a name="S4">Regular Expressions</a></h2>
+<P></P>
+Back on page 50 when we were creating a song list
+from a file, we used a regular expression to match the field delimiter
+in the input file. We claimed that the expression <code>line.split(/\s*\|\s*/)</code> matched a vertical bar surrounded by optional
+whitespace. Let's explore regular expressions in more detail to see why
+this claim is true.
+<P></P>
+Regular expressions are used to match patterns against strings.
+Ruby provides built-in support that makes pattern matching and
+substitution convenient and concise. In this section we'll work
+through all the main features of regular expressions. There are some
+details we won't cover: have a look at page 205 for
+more information.
+<P></P>
+Regular expressions are objects of type <code>Regexp</code>. They can be
+created by calling the constructor explicitly or by using the literal
+forms /<em>pattern</em>/ and %r\<em>pattern</em>\.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=&nbsp;Regexp.new('^\s*[a-z]')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>/^\s*[a-z]/</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b&nbsp;=&nbsp;/^\s*[a-z]/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>/^\s*[a-z]/</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>c&nbsp;=&nbsp;%r{^\s*[a-z]}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>/^\s*[a-z]/</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Once you have a regular expression object, you can match it against a
+string using <code>Regexp#match(<i>aString</i>)</code>
+or the match
+operators <code>=~</code>
+(positive match) and <code>!~</code>
+(negative match). The
+match operators are defined for both <code>String</code> and <code>Regexp</code> objects.
+If both operands of the match operator are <code>Strings</code>, the one on
+the right will be converted to a regular expression.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"Fats&nbsp;Waller"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=~&nbsp;/a/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>1</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=~&nbsp;/z/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=~&nbsp;"ll"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>7</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The match operators return the character position at which the match
+occurred. They also have the side effect of setting a whole load of
+Ruby variables. <code>$&amp;</code> receives the part of the string that was
+matched by the pattern, <code>$`</code> receives the part of the string
+that preceded the match, and <code>$'</code> receives the string after the
+match. We can use this to write a method, <code>showRE</code>, which
+illustrates where a particular pattern matches.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;showRE(a,re)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;if&nbsp;a&nbsp;=~&nbsp;re</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"#{$`}&lt;&lt;#{$&amp;}&gt;&gt;#{$'}"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;else</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"no&nbsp;match"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('very&nbsp;interesting',&nbsp;/t/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>very&nbsp;in&lt;&lt;t&gt;&gt;eresting</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('Fats&nbsp;Waller',&nbsp;/ll/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Fats&nbsp;Wa&lt;&lt;ll&gt;&gt;er</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The match also sets the thread-global variables <code>$~</code> and
+<code>$1</code> through <code>$9</code>.
+The variable <code>$~</code> is a <code>MatchData</code> object
+(described beginning on page 336) that holds everything you might
+want to know about the match. <code>$1</code> and so on hold the values of
+parts of the match. We'll talk about these later. And for people who
+cringe when they see these Perl-like variable names, stay
+tuned. There's good news at the end of the chapter.
+<h3><a name="UE">Patterns</a></h3>
+<P></P>
+Every regular expression  contains a pattern, which is used to match
+the regular expression against a string.
+<P></P>
+Within a pattern, all characters except ., |, (, ), [, {, +, \,
+^, $, *, and ? match themselves.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('kangaroo',&nbsp;/angar/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>k&lt;&lt;angar&gt;&gt;oo</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('!@%&amp;-_=+',&nbsp;/%&amp;/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>!@&lt;&lt;%&amp;&gt;&gt;-_=+</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+If you want to match one of these special characters literally,
+precede it with a backslash.
+This explains part of the pattern we used
+to split the song line, <code>/\s*\|\s*/</code>. The <code>\|</code> means 
+``match a vertical bar.'' Without the backslash, the ``<code>|</code>'' would have
+meant <em>alternation</em> (which we'll describe later).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('yes&nbsp;|&nbsp;no',&nbsp;/\|/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>yes&nbsp;&lt;&lt;|&gt;&gt;&nbsp;no</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('yes&nbsp;(no)',&nbsp;/\(no\)/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>yes&nbsp;&lt;&lt;(no)&gt;&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('are&nbsp;you&nbsp;sure?',&nbsp;/e\?/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>are&nbsp;you&nbsp;sur&lt;&lt;e?&gt;&gt;</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+A backslash followed by an alphanumeric character is used to introduce
+a special match construct, which we'll cover later.  In addition, a
+regular expression may contain <code>#{...}</code> expression
+substitutions.
+<h3><a name="UF">Anchors</a></h3>
+<P></P>
+By default, a regular expression will try to find the first match for
+the pattern in a string. Match <code>/iss/</code> against the string
+``Mississippi,'' and it will find the substring ``iss'' starting at
+position one. But what if you want to force a pattern to match only at
+the start or end of a string?
+<P></P>
+The patterns <code>^</code>
+and <code>$</code> match the beginning and end of a
+line, respectively.  These are often used to <em>anchor</em> a pattern
+match: for example, <code>/^option/</code> matches the word ``option'' only
+if it appears at the start of a line. The sequence <code>\A</code> matches
+the beginning of a string, and <code>\z</code> and <code>\Z</code> match the
+end of a string.  (Actually, <code>\Z</code> matches the end of a string
+<em>unless</em> the string ends with a ``\n'', it which case it
+matches just before the ``\n''.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/^the/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>this&nbsp;is\n&lt;&lt;the&gt;&gt;&nbsp;time</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/is$/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>this&nbsp;&lt;&lt;is&gt;&gt;\nthe&nbsp;time</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Athis/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;this&gt;&gt;&nbsp;is\nthe&nbsp;time</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Athe/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>no&nbsp;match</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Similarly, the patterns <code>\b</code> and <code>\B</code> match word boundaries
+and nonword boundaries, respectively. Word characters are letters,
+numbers, and underscore.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\bis/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>this&nbsp;&lt;&lt;is&gt;&gt;\nthe&nbsp;time</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE("this&nbsp;is\nthe&nbsp;time",&nbsp;/\Bis/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>th&lt;&lt;is&gt;&gt;&nbsp;is\nthe&nbsp;time</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UG">Character Classes</a></h3>
+<P></P>
+A character class is a set of characters between brackets:
+<code>[</code>
+    <em>characters</em>
+    <code>]</code> matches any single character between the
+brackets. <code>[aeiou]</code> will match a vowel, <code>[,.:;!?]</code> matches
+punctuation, and so on. The significance of the special regular
+expression characters---<code>.|()[{+^$*?</code>---is turned off inside
+the brackets. However, normal string substitution still occurs, so
+(for example) <code>\b</code> represents a backspace character and
+<code>\n</code> a newline (see Table 18.2 on page 203).  In addition,
+you can use the abbreviations shown in Table 5.1 on page 59, so
+that (for example) <code>\s</code> matches any whitespace character, not
+just a literal space.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/[aeiou]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&nbsp;c&lt;&lt;o&gt;&gt;sts&nbsp;$12.</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/[\s]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&lt;&lt;&nbsp;&gt;&gt;costs&nbsp;$12.</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Within the brackets, the sequence c<sub>1</sub>-c<sub>2</sub> represents all the
+characters between c<sub>1</sub> and c<sub>2</sub>, inclusive. 
+<P></P>
+If you want to include the literal characters <code>]</code> and <code>-</code> within
+a character class, they must appear at the start.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;'Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;123]'</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/[]]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;123&lt;&lt;]&gt;&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/[B-F]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Gamma&nbsp;[&lt;&lt;D&gt;&gt;esign&nbsp;Patterns-page&nbsp;123]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/[-]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Gamma&nbsp;[Design&nbsp;Patterns&lt;&lt;-&gt;&gt;page&nbsp;123]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/[0-9]/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Gamma&nbsp;[Design&nbsp;Patterns-page&nbsp;&lt;&lt;1&gt;&gt;23]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Put a <code>^</code>
+immediately after the opening bracket to negate a
+character class: <code>[^a-z]</code> matches any character that isn't a
+lowercase alphabetic.
+<P></P>
+Some character classes are used so frequently that Ruby provides
+abbreviations for them. These abbreviations are listed in Table
+5.1 on page 59---they may be used both within brackets and in
+the body of a pattern.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/\s/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&lt;&lt;&nbsp;&gt;&gt;costs&nbsp;$12.</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('It&nbsp;costs&nbsp;$12.',&nbsp;/\d/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&nbsp;costs&nbsp;$&lt;&lt;1&gt;&gt;2.</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>Character class abbreviations</b>
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Sequence</b>
+              </td>
+  <td valign="top">
+                <b>As [ ... ]</b>
+              </td>
+  <td valign="top">
+                <b>Meaning</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\d</code>
+              </td>
+  <td valign="top">[0-9]</td>
+  <td valign="top">Digit character</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\D</code>
+              </td>
+  <td valign="top">[^0-9]</td>
+  <td valign="top">Nondigit</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\s</code>
+              </td>
+  <td valign="top">[\s\t\r\n\f]</td>
+  <td valign="top">Whitespace character</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\S</code>
+              </td>
+  <td valign="top">[^\s\t\r\n\f]</td>
+  <td valign="top">Nonwhitespace character</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\w</code>
+              </td>
+  <td valign="top">[A-Za-z0-9_]</td>
+  <td valign="top">Word character</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>\W</code>
+              </td>
+  <td valign="top">[^A-Za-z0-9_]</td>
+  <td valign="top">Nonword character</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+Finally, a period (``.'') appearing outside brackets represents any
+character except a newline (and in multiline mode it matches a newline,
+too).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;'It&nbsp;costs&nbsp;$12.'</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/c.s/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&nbsp;&lt;&lt;cos&gt;&gt;ts&nbsp;$12.</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/./)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;I&gt;&gt;t&nbsp;costs&nbsp;$12.</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/\./)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>It&nbsp;costs&nbsp;$12&lt;&lt;.&gt;&gt;</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UH">Repetition</a></h3>
+<P></P>
+When we specified the pattern that split the song list line, <code>/\s*\|\s*/</code>, we said we wanted to match a vertical bar surrounded by
+an arbitrary amount of whitespace. We now know that the <code>\s</code>
+sequences match a single whitespace character, so it seems likely that 
+the asterisks somehow mean ``an arbitrary amount.'' In fact, the
+asterisk is one of a number of modifiers that allow you to match multiple
+occurrences of a pattern.
+<P></P>
+If <em>r</em> stands for the immediately preceding regular expression
+within a pattern, then:
+<P></P>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">
+          <em>r</em>
+          <code>*</code>
+        </td>
+  <td valign="top">matches zero or more occurrences of <em>r</em>.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <em>r</em>
+          <code>+</code>
+        </td>
+  <td valign="top">matches one or more occurrences of <em>r</em>.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <em>r</em>
+          <code>?</code>
+        </td>
+  <td valign="top">matches zero or one occurrence of <em>r</em>.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <em>r</em>
+          <code>{m,n}</code>
+        </td>
+  <td valign="top">matches at least ``m'' and at most ``n'' occurrences of <em>r</em>.</td>
+</tr>
+<tr>
+  <td valign="top">
+          <em>r</em>
+          <code>{m,}</code>
+        </td>
+  <td valign="top">matches at least ``m'' occurrences of <em>r</em>.</td>
+</tr>
+</table>
+<P></P>
+These repetition constructs have a high precedence---they bind only to
+the immediately preceding regular expression in the
+pattern. <code>/ab+/</code> matches an ``a'' followed by one or more ``b''s,
+not a sequence of ``ab''s. You have to be careful with the <code>*</code>
+construct too---the pattern /a*/ will match any string; every string
+has zero or more ``a''s.
+<P></P>
+These patterns are called <em>greedy</em>,
+because by default they will
+match as much of the string as they can. You can alter this
+behavior, and have them match the minimum, by adding a question mark
+suffix. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"The&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/\w+/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;The&gt;&gt;&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/\s.*\s/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>The&lt;&lt;&nbsp;moon&nbsp;is&nbsp;made&nbsp;of&nbsp;&gt;&gt;cheese</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/\s.*?\s/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>The&lt;&lt;&nbsp;moon&nbsp;&gt;&gt;is&nbsp;made&nbsp;of&nbsp;cheese</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/[aeiou]{2,99}/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>The&nbsp;m&lt;&lt;oo&gt;&gt;n&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/mo?o/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>The&nbsp;&lt;&lt;moo&gt;&gt;n&nbsp;is&nbsp;made&nbsp;of&nbsp;cheese</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UI">Alternation</a></h3>
+<P></P>
+We know that the vertical bar is special, because our line splitting
+pattern had to escape it with a backslash. That's because an unescaped 
+vertical bar ``|'' matches either the regular expression that
+precedes it or the regular expression that follows it.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"red&nbsp;ball&nbsp;blue&nbsp;sky"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/d|e/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>r&lt;&lt;e&gt;&gt;d&nbsp;ball&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/al|lu/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>red&nbsp;b&lt;&lt;al&gt;&gt;l&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/red&nbsp;ball|angry&nbsp;sky/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+There's a trap for the unwary here, as ``|'' has a very low precedence.
+The last example above matches ``red ball'' or ``angry sky'', not ``red
+ball sky'' or ``red angry sky''. To match ``red ball sky'' or ``red
+angry sky'', you'd need to override
+the default precedence using grouping.
+<h3><a name="UJ">Grouping</a></h3>
+<P></P>
+You can use parentheses to group terms within a regular
+expression. Everything within the group is treated as a single regular
+expression.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('banana',&nbsp;/an*/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>b&lt;&lt;an&gt;&gt;ana</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('banana',&nbsp;/(an)*/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;&gt;&gt;banana</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('banana',&nbsp;/(an)+/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>b&lt;&lt;anan&gt;&gt;a</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;'red&nbsp;ball&nbsp;blue&nbsp;sky'</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/blue|red/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;red&gt;&gt;&nbsp;ball&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/(blue|red)&nbsp;\w+/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/(red|blue)&nbsp;\w+/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;red&nbsp;ball&gt;&gt;&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/red|blue&nbsp;\w+/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>&lt;&lt;red&gt;&gt;&nbsp;ball&nbsp;blue&nbsp;sky</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/red&nbsp;(ball|angry)&nbsp;sky/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>no&nbsp;match</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;'the&nbsp;red&nbsp;angry&nbsp;sky'</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE(a,&nbsp;/red&nbsp;(ball|angry)&nbsp;sky/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>the&nbsp;&lt;&lt;red&nbsp;angry&nbsp;sky&gt;&gt;</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Parentheses are also used to collect the results of pattern
+matching. Ruby counts opening parentheses, and for each stores the result of
+the partial match between it and the corresponding closing
+parenthesis.   You can use this partial match both within the remainder
+of the pattern and in your Ruby program. Within the pattern, the
+sequence <code>\1</code> refers to the match of the first group, <code>\2</code> the
+second group, and so on. Outside the pattern, the special variables
+<code>$1</code>, <code>$2</code>, and so on, serve the same purpose.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>"12:50am"&nbsp;=~&nbsp;/(\d\d):(\d\d)(..)/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Hour&nbsp;is&nbsp;#$1,&nbsp;minute&nbsp;#$2"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hour&nbsp;is&nbsp;12,&nbsp;minute&nbsp;50"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"12:50am"&nbsp;=~&nbsp;/((\d\d):(\d\d))(..)/</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Time&nbsp;is&nbsp;#$1"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Time&nbsp;is&nbsp;12:50"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"Hour&nbsp;is&nbsp;#$2,&nbsp;minute&nbsp;#$3"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hour&nbsp;is&nbsp;12,&nbsp;minute&nbsp;50"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"AM/PM&nbsp;is&nbsp;#$4"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"AM/PM&nbsp;is&nbsp;am"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The ability to use part of the current match later in that match
+allows you to look for various forms of repetition.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>#&nbsp;match&nbsp;duplicated&nbsp;letter</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('He&nbsp;said&nbsp;"Hello"',&nbsp;/(\w)\1/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>He&nbsp;said&nbsp;"He&lt;&lt;ll&gt;&gt;o"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>#&nbsp;match&nbsp;duplicated&nbsp;substrings</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE('Mississippi',&nbsp;/(\w+)\1/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>M&lt;&lt;ississ&gt;&gt;ippi</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+You can also use back references to match delimiters.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>showRE('He&nbsp;said&nbsp;"Hello"',&nbsp;/(["']).*?\1/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>He&nbsp;said&nbsp;&lt;&lt;"Hello"&gt;&gt;</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>showRE("He&nbsp;said&nbsp;'Hello'",&nbsp;/(["']).*?\1/)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>He&nbsp;said&nbsp;&lt;&lt;'Hello'&gt;&gt;</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UK">Pattern-Based Substitution</a></h3>
+<P></P>
+Sometimes finding a pattern in a string is good enough.
+If a friend
+challenges you to find a word that contains the letters a, b, c, d,
+and e in order, you could search a word list with the pattern
+<code>/a.*b.*c.*d.*e/</code> and find ``absconded'' and ``ambuscade.'' That
+has to be worth something.
+<P></P>
+However, there are times when you need to change things based on a
+pattern match. Let's go back to our song list file. Whoever created it 
+entered all the artists' names in lowercase. When we display them on
+our jukebox's screen, they'd look better in mixed case. How can we
+change the first character of each word to uppercase?
+<P></P>
+The methods <a href="ref_c_string.html#String.sub">
+      <code>String#sub</code>
+    </a> and <a href="ref_c_string.html#String.gsub">
+      <code>String#gsub</code>
+    </a> look for a portion of
+a string matching their first argument and replace it with their
+second argument. <a href="ref_c_string.html#String.sub">
+      <code>String#sub</code>
+    </a> performs one replacement, while
+<a href="ref_c_string.html#String.gsub">
+      <code>String#gsub</code>
+    </a> replaces every occurrence of the match. Both routines
+return a new copy of the <code>String</code> containing the substitutions.
+Mutator versions <a href="ref_c_string.html#String.sub_oh">
+      <code>String#sub!</code>
+    </a> and <a href="ref_c_string.html#String.gsub_oh">
+      <code>String#gsub!</code>
+    </a> modify the
+original string.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"the&nbsp;quick&nbsp;brown&nbsp;fox"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.sub(/[aeiou]/,&nbsp;&nbsp;'*')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"th*&nbsp;quick&nbsp;brown&nbsp;fox"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.gsub(/[aeiou]/,&nbsp;'*')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"th*&nbsp;q**ck&nbsp;br*wn&nbsp;f*x"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.sub(/\s\S+/,&nbsp;&nbsp;'')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"the&nbsp;brown&nbsp;fox"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.gsub(/\s\S+/,&nbsp;'')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"the"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The second argument to both functions can be either a <code>String</code> or
+a block. If a block is used, the block's value is substituted into the
+<code>String</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;"the&nbsp;quick&nbsp;brown&nbsp;fox"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.sub(/^./)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"The&nbsp;quick&nbsp;brown&nbsp;fox"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.gsub(/[aeiou]/)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"thE&nbsp;qUIck&nbsp;brOwn&nbsp;fOx"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+So, this looks like the answer to converting our artists' names. The
+pattern that matches the first character of a word is <code>\b\w</code>---look for a word boundary followed by a word character. Combine
+this with <code>gsub</code> and we can hack the artists' names.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;mixedCase(aName)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;aName.gsub(/\b\w/)&nbsp;{&nbsp;$&amp;.upcase&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>mixedCase("fats&nbsp;waller")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Fats&nbsp;Waller"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>mixedCase("louis&nbsp;armstrong")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Louis&nbsp;Armstrong"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>mixedCase("strength&nbsp;in&nbsp;numbers")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Strength&nbsp;In&nbsp;Numbers"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UL">Backslash Sequences in the Substitution</a></h3>
+<P></P>
+Earlier we noted that the sequences <code>\1</code>, <code>\2</code>,
+and so on are
+available in the pattern, standing for the <em>n</em>th group matched so
+far. The same sequences are available in the second argument of
+<code>sub</code> and <code>gsub</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>"fred:smith".sub(/(\w+):(\w+)/,&nbsp;'\2,&nbsp;\1')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"smith,&nbsp;fred"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>"nercpyitno".gsub(/(.)(.)/,&nbsp;'\2\1')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"encryption"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+There are additional backslash sequences that work in substitution
+strings: <code>\&amp;</code> (last match), <code>\+</code> (last matched group),
+<code>\`</code> (string prior to match), <code>\'</code> (string after match), and
+<code>\\</code> (a literal backslash).
+It gets confusing if you want to include a literal backslash in a
+substitution.  The obvious thing is to write
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+str.gsub(/\\/,&nbsp;'\\\\')
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Clearly, this code is trying to replace each backslash in <code>str</code>
+with two. The programmer doubled up the backslashes in the replacement
+text, knowing that they'd be converted to ``<code>\\</code>'' in syntax
+analysis. However, when the substitution occurs, the regular
+expression engine performs another pass through the string, converting
+``<code>\\</code>'' to ``<code>\</code>'', so the net effect is to replace
+each single backslash with another single backslash. You need to write
+<code>gsub(/\\/, '\\\\\\\\')</code>!
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>str&nbsp;=&nbsp;'a\b\c'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\b\c"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str.gsub(/\\/,&nbsp;'\\\\\\\\')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\\b\\c"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+However, using the fact that <code>\&amp;</code> is replaced by the matched
+string, you could also write
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>str&nbsp;=&nbsp;'a\b\c'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\b\c"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str.gsub(/\\/,&nbsp;'\&amp;\&amp;')</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\\b\\c"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+If you use the block form of <code>gsub</code>, the string
+for substitution is analyzed only once (during the syntax pass) and
+the result is what you intended.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>str&nbsp;=&nbsp;'a\b\c'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\b\c"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str.gsub(/\\/)&nbsp;{&nbsp;'\\\\'&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"a\\b\\c"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Finally, as an example of the wonderful expressiveness of combining
+regular expressions with code blocks, consider the following code
+fragment from the CGI library module, written by Wakou Aoyama. The code takes a string containing <font size="-2">HTML</font>
+escape sequences and converts it into normal ASCII. Because it was
+written for a Japanese audience, it uses the ``n'' modifier on the
+regular expressions, which turns off wide-character processing. It
+also illustrates Ruby's <code>case</code> expression, which we discuss
+starting on page 81.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;unescapeHTML(string)
+&nbsp;&nbsp;str&nbsp;=&nbsp;string.dup
+&nbsp;&nbsp;str.gsub!(/&amp;(.*?);/n)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;match&nbsp;=&nbsp;$1.dup
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;match
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Aamp\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&amp;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Aquot\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'"'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Agt\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&gt;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\Alt\z/ni&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;'&lt;'
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\A#(\d+)\z/n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;Integer($1).chr
+&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;/\A#x([0-9a-f]+)\z/ni&nbsp;then&nbsp;$1.hex.chr
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;}
+&nbsp;&nbsp;str
+end
+<P></P>
+puts&nbsp;unescapeHTML("1&amp;lt;2&nbsp;&amp;amp;&amp;amp;&nbsp;4&amp;gt;3")
+puts&nbsp;unescapeHTML("&amp;quot;A&amp;quot;&nbsp;=&nbsp;&amp;#65;&nbsp;=&nbsp;&amp;#x41;")
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+1&lt;2&nbsp;&amp;&amp;&nbsp;4&gt;3
+"A"&nbsp;=&nbsp;A&nbsp;=&nbsp;A
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UM">Object-Oriented Regular Expressions</a></h3>
+<P></P>
+We have to admit that while all these weird variables are very
+convenient to use, they aren't very object oriented, and they're
+certainly cryptic. And didn't we say that everything in Ruby was an
+object? What's gone wrong here?
+<P></P>
+Nothing, really. It's just that when Matz designed Ruby, he produced a
+fully object-oriented regular expression handling system. He then made
+it look familiar to Perl programmers by wrapping all these
+$-variables on top of it all. The objects and classes are still there,
+underneath the surface.  So let's spend a while digging them out.
+<P></P>
+We've already come across one class: regular expression literals
+create instances of class <code>Regexp</code> (documented beginning on page
+361).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>re&nbsp;=&nbsp;/cat/</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>re.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Regexp</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The method <a href="ref_c_regexp.html#Regexp.match">
+      <code>Regexp#match</code>
+    </a> matches a regular expression
+against a string. If unsuccessful, the method returns <code>nil</code>. On success,
+it returns an instance of class <code>MatchData</code>, documented beginning
+on page 336. And that <code>MatchData</code> object gives you
+access to all available information about the match. All that good stuff
+that you can get from the $-variables is bundled in a handy little
+object.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>re&nbsp;=&nbsp;/(\d+):(\d+)/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;match&nbsp;a&nbsp;time&nbsp;hh:mm</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>md&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>MatchData</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md[0]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$&amp;</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"12:34"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md[1]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"12"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md[2]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;==&nbsp;$2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"34"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md.pre_match&nbsp;&nbsp;#&nbsp;==&nbsp;$`</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Time:&nbsp;"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md.post_match&nbsp;#&nbsp;==&nbsp;$'</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"am"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Because the match data is stored in its own object, you can keep the
+results of two or more pattern matches available at the same time,
+something you can't do using the $-variables. In the next example,
+we're matching the same <code>Regexp</code> object against two strings. Each
+match returns a unique <code>MatchData</code> object, which we verify by
+examining the two subpattern fields.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>re&nbsp;=&nbsp;/(\d+):(\d+)/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;match&nbsp;a&nbsp;time&nbsp;hh:mm</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>md1&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>md2&nbsp;=&nbsp;re.match("Time:&nbsp;10:30pm")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md1[1,&nbsp;2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["12",&nbsp;"34"]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>md2[1,&nbsp;2]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["10",&nbsp;"30"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+So how do the $-variables fit in? Well, after every pattern match,
+Ruby stores a reference to the result (<code>nil</code> or a <code>MatchData</code>
+object) in a thread-local variable (accessible using <code>$~</code>).
+All the other regular expression variables are then derived from this
+object. Although we can't really think of a use for the following
+code, it demonstrates that all the other <code>MatchData</code>-related $-variables
+are indeed slaved off the value in <code>$~</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>re&nbsp;=&nbsp;/(\d+):(\d+)/</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>md1&nbsp;=&nbsp;re.match("Time:&nbsp;12:34am")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>md2&nbsp;=&nbsp;re.match("Time:&nbsp;10:30pm")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;$1,&nbsp;$2&nbsp;]&nbsp;&nbsp;&nbsp;#&nbsp;last&nbsp;successful&nbsp;match</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["10",&nbsp;"30"]</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>$~&nbsp;=&nbsp;md1</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;$1,&nbsp;$2&nbsp;]&nbsp;&nbsp;&nbsp;#&nbsp;previous&nbsp;successful&nbsp;match</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>["12",&nbsp;"34"]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Having said all this, we have to 'fess up. Andy and Dave normally use
+the $-variables rather than worrying about <code>MatchData</code> objects. For
+everyday use, they just end up being more convenient. Sometimes we just 
+can't help being pragmatic.
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_containers.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_methods.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

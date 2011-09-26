@@ -1,0 +1,582 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_modules.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_threads.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Basic Input and Output</h1>
+    <hr>
+    <br>
+<P></P>
+Ruby
+provides what at first sight looks like two separate sets of I/O
+routines.  The first is the simple interface---we've been using it
+pretty much exclusively so far.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+print&nbsp;"Enter&nbsp;your&nbsp;name:&nbsp;"
+name&nbsp;=&nbsp;gets
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There are a whole set of I/O-related methods implemented in the
+<code>Kernel</code> module---<code>gets</code>, <code>open</code>, <code>print</code>,
+<code>printf</code>, <code>putc</code>, <code>puts</code>, <code>readline</code>,
+<code>readlines</code>, and <code>test</code>---that make it simple and
+convenient to write straightforward Ruby programs. These methods
+typically do I/O to standard input and standard output, which makes
+them useful for writing filters. You'll find them documented starting
+on page 411.   
+<P></P>
+The second way, which gives you a lot more control, is to use <code>IO</code>
+objects.
+<h2><a name="S1">What Is an IO Object?</a></h2>
+<P></P>
+Ruby defines a single base class, <code>IO</code>, to handle input and output.
+This base class is subclassed by classes <code>File</code> and
+<code>BasicSocket</code> to provide more specialized behavior, but the
+principles are the same throughout. An <code>IO</code> object is a bidirectional
+channel between a Ruby program and some external resource.<em>[For those
+who just have to know the implementation details, this means that a
+single <code>IO</code> object can sometimes be managing more than one operating
+system file descriptor. For example, if you open a pair of pipes, a
+single <code>IO</code> object contains both a read pipe and a write pipe.]</em>
+There may be more to an <code>IO</code> object than meets the eye, but in the
+end you still simply write to it and read from it.
+<P></P>
+In this chapter, we'll be concentrating on class <code>IO</code> and its most
+commonly used subclass, class <code>File</code>. For more details on using the
+socket classes for networking, see the section beginning on page 469.
+<h2><a name="S2">Opening and Closing Files</a></h2>
+<P></P>
+As you might expect, you can create a new file object using
+<a href="ref_c_file.html#File.new">
+      <code>File.new</code>
+    </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aFile&nbsp;=&nbsp;File.new("testfile",&nbsp;"r")
+<P></P>
+#&nbsp;...&nbsp;process&nbsp;the&nbsp;file
+<P></P>
+aFile.close
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You can create a <code>File</code> object that is open for reading, writing, or
+both, according to the mode string (here we opened ``<code>testfile</code>'' for
+reading with an ``<code>r</code>'').  The full list of allowed modes appears
+on page 326.  You can also optionally specify file
+permissions when creating a file; see the description of
+<a href="ref_c_file.html#File.new">
+      <code>File.new</code>
+    </a> on page 303 for details.  After opening
+the file, we can work with it, writing and/or reading data as needed.
+Finally, as responsible software citizens, we close the file, ensuring
+that all buffered data is written and that all related resources are
+freed.
+<P></P>
+But here Ruby can make life a little bit easier for you. The method
+<a href="ref_c_file.html#File.open">
+      <code>File.open</code>
+    </a> also opens a file. In regular use, it behaves just
+like <a href="ref_c_file.html#File.new">
+      <code>File.new</code>
+    </a>.
+However, if there's a block associated with the
+call, <code>open</code> behaves differently. Instead of returning a new
+<code>File</code> object, it invokes the block, passing the
+newly opened <code>File</code> as a parameter. When the block exits, the file
+is automatically closed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+File.open("testfile",&nbsp;"r")&nbsp;do&nbsp;|aFile|
+<P></P>
+#&nbsp;...&nbsp;process&nbsp;the&nbsp;file
+<P></P>
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S3">Reading and Writing Files</a></h2>
+<P></P>
+The same methods that we've been using for ``simple'' I/O are available 
+for all file objects. So, <code>gets</code> reads a line from standard
+input, and <code>aFile.gets</code> reads a line from the file object
+<code>aFile</code>.
+<P></P>
+However, I/O objects enjoy an additional set of access methods, 
+all intended to make our lives easier.
+<h3><a name="UA">Iterators for Reading</a></h3>
+<P></P>
+As well as using the usual loops to read data from an <code>IO</code> stream,
+you can also use various Ruby iterators.  <a href="ref_c_io.html#IO.each_byte">
+      <code>IO#each_byte</code>
+    </a> invokes a
+block with the next 8-bit byte from the <code>IO</code> object (in this case,
+an object of type <code>File</code>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aFile&nbsp;=&nbsp;File.new("testfile")
+aFile.each_byte&nbsp;{|ch|&nbsp;putc&nbsp;ch;&nbsp;putc&nbsp;?.&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.o.n.e.
+.T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.t.w.o.
+.T.h.i.s.&nbsp;.i.s.&nbsp;.l.i.n.e.&nbsp;.t.h.r.e.e.
+.A.n.d.&nbsp;.s.o.&nbsp;.o.n.......
+.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<a href="ref_c_io.html#IO.each_line">
+      <code>IO#each_line</code>
+    </a> calls the block with the next line from the file.
+In the next example, we'll make the original newlines visible using
+<a href="ref_c_string.html#String.dump">
+      <code>String#dump</code>
+    </a>, so you can see that we're not cheating.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aFile.each_line&nbsp;{|line|&nbsp;puts&nbsp;"Got&nbsp;#{line.dump}"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;one\n"
+Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;two\n"
+Got&nbsp;"This&nbsp;is&nbsp;line&nbsp;three\n"
+Got&nbsp;"And&nbsp;so&nbsp;on...\n"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You can pass <code>each_line</code> any sequence of characters as a line
+separator, and it will break up the input accordingly, returning
+the line ending at the end of each line of data. That's why you see
+the ``<code>\n</code>'' characters in the output of the previous example.
+In the next example, we'll use ``<code>e</code>'' as the line separator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aFile.each_line("e")&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;puts&nbsp;"Got&nbsp;#{&nbsp;line.dump&nbsp;}"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Got&nbsp;"This&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;one"
+Got&nbsp;"\nThis&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;two\nThis&nbsp;is&nbsp;line"
+Got&nbsp;"&nbsp;thre"
+Got&nbsp;"e"
+Got&nbsp;"\nAnd&nbsp;so&nbsp;on...\n"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If you combine the idea of an iterator with the auto-closing block
+feature, you get <a href="ref_c_io.html#IO.foreach">
+      <code>IO.foreach</code>
+    </a>. This method takes the name of an
+I/O source, opens it for reading, calls the iterator once for every
+line in the file, and then closes the file automatically.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+IO.foreach("testfile")&nbsp;{&nbsp;|line|&nbsp;puts&nbsp;line&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+This&nbsp;is&nbsp;line&nbsp;one
+This&nbsp;is&nbsp;line&nbsp;two
+This&nbsp;is&nbsp;line&nbsp;three
+And&nbsp;so&nbsp;on...
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Or, if you prefer, you can retrieve an entire file into an array of
+lines:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>arr&nbsp;=&nbsp;IO.readlines("testfile")</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>arr.length</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>4</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>arr[0]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"This&nbsp;is&nbsp;line&nbsp;one\n"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Don't forget that I/O is never certain in an uncertain
+world---exceptions will be raised on most errors, and you should be
+ready to catch them and take appropriate action.
+<h3><a name="UB">Writing to Files</a></h3>
+<P></P>
+So far, we've been merrily calling <code>puts</code> and <code>print</code>,
+passing in any old object and trusting that Ruby will do the right
+thing (which, of course, it does). But what exactly <em>is</em> it doing?
+<P></P>
+The answer is pretty simple. With a couple of exceptions, every object 
+you pass to <code>puts</code> and <code>print</code> is converted to a string
+by calling that object's <code>to_s</code> method. If for some reason
+the <code>to_s</code> method doesn't return a valid string, a string is
+created containing the object's class name and id, something like
+<code>&lt;ClassName:0x123456&gt;</code>.
+<P></P>
+The exceptions are simple, too. The <code>nil</code> object will print as the
+string ``nil,'' and an array passed to <code>puts</code> will be written
+as if each of its elements in turn were passed separately to
+<code>puts</code>.
+<P></P>
+What if you want to write binary data and don't want Ruby messing
+with it?
+Well, normally you can simply use <a href="ref_c_io.html#IO.print">
+      <code>IO#print</code>
+    </a> and pass
+in a string containing the bytes to be written. However, you can
+get at the low-level input and output routines if you really
+want---have a look at the documentation for <a href="ref_c_io.html#IO.sysread">
+      <code>IO#sysread</code>
+    </a> and
+<a href="ref_c_io.html#IO.syswrite">
+      <code>IO#syswrite</code>
+    </a> on page 335.
+<P></P>
+And how do you get the binary data into a string in the first place?
+The two common ways are to poke it in byte by byte or to use
+<a href="ref_c_array.html#Array.pack">
+      <code>Array#pack</code>
+    </a>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>str&nbsp;=&nbsp;""</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>""</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>str&nbsp;&lt;&lt;&nbsp;1&nbsp;&lt;&lt;&nbsp;2&nbsp;&lt;&lt;&nbsp;3</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"\001\002\003"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;4,&nbsp;5,&nbsp;6&nbsp;].pack("c*")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"\004\005\006"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UC">But I Miss My C++ Iostream</a></h3>
+<P></P>
+Sometimes there's just no accounting for taste...However, just as you can append an object to an <code>Array</code> using the
+<code>&lt;&lt;</code> operator, you can also append an object to an output <code>IO</code>
+stream:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+endl&nbsp;=&nbsp;"\n"
+$stdout&nbsp;&lt;&lt;&nbsp;99&nbsp;&lt;&lt;&nbsp;"&nbsp;red&nbsp;balloons"&nbsp;&lt;&lt;&nbsp;endl
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+99&nbsp;red&nbsp;balloons
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Again, the <code>&lt;&lt;</code> method uses <code>to_s</code> to convert its
+arguments to strings before sending them on their merry way.
+<h2><a name="S4">Talking to Networks</a></h2>
+<P></P>
+Ruby is fluent in most of the Internet's protocols, both low-level and
+high-level.
+<P></P>
+For those who enjoy groveling around at the network level, Ruby
+comes with a set of classes in the socket library (documented starting 
+on page 469). These classes give you access to TCP, UDP, SOCKS, and
+Unix domain sockets, as well as any additional socket types supported
+on your architecture. The library also provides helper classes to make
+writing servers easier. Here's a simple program that gets information
+about the ``oracle'' user on our local machine using the finger
+protocol. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'socket'
+client&nbsp;=&nbsp;TCPSocket.open('localhost',&nbsp;'finger')
+client.send("oracle\n",&nbsp;0)&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;0&nbsp;means&nbsp;standard&nbsp;packet
+puts&nbsp;client.readlines
+client.close
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Login:&nbsp;oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;			Name:&nbsp;Oracle&nbsp;installation
+Directory:&nbsp;/home/oracle&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	Shell:&nbsp;/bin/bash
+Never&nbsp;logged&nbsp;in.
+No&nbsp;Mail.
+No&nbsp;Plan.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+At a higher level, the lib/net set of library modules provides
+handlers for a set of application-level protocols (currently FTP,
+HTTP, POP, SMTP, and telnet). These are documented starting
+on page 482. For example, the following program lists the
+images that are displayed on the Pragmatic Programmer home page.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+require&nbsp;'net/http'
+<P></P>
+h&nbsp;=&nbsp;Net::HTTP.new('www.pragmaticprogrammer.com',&nbsp;80)
+resp,&nbsp;data&nbsp;=&nbsp;h.get('/index.html',&nbsp;nil)
+if&nbsp;resp.message&nbsp;==&nbsp;"OK"
+&nbsp;&nbsp;data.scan(/&lt;img&nbsp;src="(.*?)"/)&nbsp;{&nbsp;|x|&nbsp;puts&nbsp;x&nbsp;}
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+images/title_main.gif
+images/dot.gif
+images/dot.gif
+images/dot.gif
+images/aafounders_70.jpg
+images/pp_cover_thumb.png
+images/ruby_cover_thumb.png
+images/dot.gif
+images/dot.gif
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_modules.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_threads.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

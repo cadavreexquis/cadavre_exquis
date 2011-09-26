@@ -1,0 +1,706 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_nilclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_object.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Numeric</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <i>
+      <a href="#Numeric._pl_at">+@</a>
+    </i> <i>
+      <a href="#Numeric._mi_mi_at">--@</a>
+    </i> <i>
+      <a href="#Numeric.abs">abs</a>
+    </i> <i>
+      <a href="#Numeric.coerce">coerce</a>
+    </i> <i>
+      <a href="#Numeric.divmod">divmod</a>
+    </i> <i>
+      <a href="#Numeric.eql_qm">eql?</a>
+    </i> <i>
+      <a href="#Numeric.integer_qm">integer?</a>
+    </i> <i>
+      <a href="#Numeric.modulo">modulo</a>
+    </i> <i>
+      <a href="#Numeric.nonzero_qm">nonzero?</a>
+    </i> <i>
+      <a href="#Numeric.remainder">remainder</a>
+    </i> <i>
+      <a href="#Numeric.zero_qm">zero?</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  <br>
+    <font size="-1">Subclasses: Float, Integer</font>
+    <p></p>
+<P></P>
+  Numeric is the fundamental base type for the concrete number classes 
+  <code>Float</code>, <code>Fixnum</code>, and <code>Bignum</code>.
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">
+         mixins
+       </font>
+        </td>
+      </tr>
+    <tr>
+        <td>Comparable:
+    </td>
+        <td>
+   &lt;, &lt;=, ==, &gt;=, &gt;, between?</td>
+      </tr>
+  </table>
+<P></P>
+  <table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+        <b>Difference between modulo and
+          remainder. The modulo operator
+          (``%'') always has the sign of the divisor, whereas
+          <code>remainder</code> has the sign of the dividend.</b> 
+        <center>
+<P></P>
+          <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                  <b>a</b>
+                </td>
+  <td valign="top">
+                  <b>b</b>
+                </td>
+<td colspan="2" valign="top">
+                  <b>a.divmod(b)</b>
+                </td>
+<td colspan="1" valign="top">
+                  <b>a / b</b>
+                </td>
+<td colspan="1" valign="top">
+                  <b>a.modulo(b)</b>
+                </td>
+<td colspan="1" valign="top">
+                  <b>a.remainder(b)</b>
+                </td>
+</tr>
+<tr>
+  <td valign="top">13</td>
+  <td valign="top">4</td>
+  <td valign="top">3,</td>
+  <td valign="top">1</td>
+  <td valign="top">3</td>
+  <td valign="top">1</td>
+  <td valign="top">1</td>
+</tr>
+<tr>
+  <td valign="top">13</td>
+  <td valign="top">-4</td>
+  <td valign="top">-4,</td>
+  <td valign="top">-3</td>
+  <td valign="top">-4</td>
+  <td valign="top">-3</td>
+  <td valign="top">1</td>
+</tr>
+<tr>
+  <td valign="top">-13</td>
+  <td valign="top">4</td>
+  <td valign="top">-4,</td>
+  <td valign="top">3</td>
+  <td valign="top">-4</td>
+  <td valign="top">3</td>
+  <td valign="top">-1</td>
+</tr>
+<tr>
+  <td valign="top">-13</td>
+  <td valign="top">-4</td>
+  <td valign="top">3,</td>
+  <td valign="top">-1</td>
+  <td valign="top">3</td>
+  <td valign="top">-1</td>
+  <td valign="top">-1</td>
+</tr>
+<tr>
+  <td valign="top">11.5</td>
+  <td valign="top">4</td>
+  <td valign="top">2.0,</td>
+  <td valign="top">3.5</td>
+  <td valign="top">2.875</td>
+  <td valign="top">3.5</td>
+  <td valign="top">3.5</td>
+</tr>
+<tr>
+  <td valign="top">11.5</td>
+  <td valign="top">-4</td>
+  <td valign="top">-3.0,</td>
+  <td valign="top">-0.5</td>
+  <td valign="top">-2.875</td>
+  <td valign="top">-0.5</td>
+  <td valign="top">3.5</td>
+</tr>
+<tr>
+  <td valign="top">-11.5</td>
+  <td valign="top">4</td>
+  <td valign="top">-3.0,</td>
+  <td valign="top">0.5</td>
+  <td valign="top">-2.875</td>
+  <td valign="top">0.5</td>
+  <td valign="top">-3.5</td>
+</tr>
+<tr>
+  <td valign="top">-11.5</td>
+  <td valign="top">-4</td>
+  <td valign="top">2.0,</td>
+  <td valign="top">-3.5</td>
+  <td valign="top">2.875</td>
+  <td valign="top">-3.5</td>
+  <td valign="top">-3.5</td>
+</tr>
+<tr>
+                <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+              </tr>
+            </table>
+<P></P>
+        </center>
+    </td>
+      </tr>
+    </table>
+    <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric._pl_at">+@</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        +<i>num</i> -&gt; <i>num</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Unary Plus---Returns the receiver's value.      
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric._mi_mi_at">--@</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        --<i>num</i> -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Unary Minus---Returns the receiver's value, negated.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.abs">abs</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.abs -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the absolute value of <i>num</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>12.abs</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>12</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(-34.56).abs</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>34.56</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>-34.56.abs</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>34.56</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.coerce">coerce</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.coerce( <i>aNumeric</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>aNumeric</i> is the same type as <i>num</i>, returns an array
+      containing <i>aNumeric</i> and <i>num</i>. Otherwise, returns an
+      array with both <i>aNumeric</i> and <i>num</i> represented as
+      <code>Float</code> objects.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>1.coerce(2.5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[2.5,&nbsp;1.0]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>1.2.coerce(3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3.0,&nbsp;1.2]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>1.coerce(2)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[2,&nbsp;1]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.divmod">divmod</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.divmod( <i>aNumeric</i> )
+        -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array containing the quotient and modulus obtained by
+      dividing <i>num</i> by <i>aNumeric</i>.
+      If <code>q,&nbsp;r&nbsp;=&nbsp;x.divmod(y)</code>,
+      <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">q</td>
+  <td valign="top">=</td>
+  <td valign="top">floor(float(x) /  float(y))</td>
+</tr>
+<tr>
+  <td valign="top">x</td>
+  <td valign="top">=</td>
+  <td valign="top">q * y + r</td>
+</tr>
+</table>
+<P></P>
+      The quotient is rounded toward -infinity. See Table
+      22.6 on page 350.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>11.divmod(3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3,&nbsp;2]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>11.divmod(-3)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[-4,&nbsp;-1]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>11.divmod(3.5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3.0,&nbsp;0.5]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(-11).divmod(3.5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[-4.0,&nbsp;3.0]</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(11.5).divmod(3.5)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[3.0,&nbsp;1.0]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.eql_qm">eql?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.eql?( <i>aNumeric</i> )
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>num</i> and <i>aNumeric</i> are the same
+      type and have equal values.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>1&nbsp;==&nbsp;1.0</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>1.eql?(1.0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>(1.0).eql?(1.0)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.integer_qm">integer?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.integer? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>num</i> is an <code>Integer</code> (including
+      <code>Fixnum</code> and <code>Bignum</code>).
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.modulo">modulo</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.modulo( <i>aNumeric</i> )
+        -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Equivalent to <i>num</i>.<code>divmod(</code>
+        <i>aNumeric</i>
+        <code>)[1]</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.nonzero_qm">nonzero?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.nonzero?
+        -&gt; <i>num</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <i>num</i> if <i>num</i> is not zero, <code>nil</code> otherwise. This
+      behavior is useful when chaining comparisons:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;%w(&nbsp;z&nbsp;Bb&nbsp;bB&nbsp;bb&nbsp;BB&nbsp;a&nbsp;aA&nbsp;Aa&nbsp;AA&nbsp;A&nbsp;)</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;a.sort&nbsp;{|a,b|&nbsp;(a.downcase&nbsp;&lt;=&gt;&nbsp;b.downcase).nonzero?&nbsp;||&nbsp;a&nbsp;&lt;=&gt;&nbsp;b&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>b</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>["A",&nbsp;"a",&nbsp;"AA",&nbsp;"Aa",&nbsp;"aA",&nbsp;"BB",&nbsp;"Bb",&nbsp;"bB",&nbsp;"bb",&nbsp;"z"]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.remainder">remainder</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.remainder( <i>aNumeric</i> )
+        -&gt; <i>aNumeric</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      If <i>num</i> and <i>aNumeric</i> have different signs, returns
+       <em>mod</em>-<i>aNumeric</i>; otherwise, returns
+      <em>mod</em>. In both cases 
+      <em>mod</em> is the value <i>num</i>.<code>modulo(</code>
+        <i>aNumeric</i>
+        <code>)</code>.  The
+      differences between <code>remainder</code> and modulo (<code>%</code>) are
+      shown in Table 22.6 on page 350.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Numeric.zero_qm">zero?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>num</i>.zero? -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>num</i> has a zero value.
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_nilclass.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_object.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

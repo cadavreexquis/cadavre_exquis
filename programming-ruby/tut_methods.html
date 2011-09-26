@@ -1,0 +1,825 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_stdtypes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_expressions.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>More About Methods</h1>
+    <hr>
+    <br>
+<P></P>
+Other languages have functions, procedures, methods, or routines, but
+in Ruby there is only the <em>method</em>---a chunk of expressions that
+return a value.
+<P></P>
+So far in this book, we've been defining and using methods without
+much thought. Now it's time to get into the details.
+<h2><a name="S1">Defining a Method</a></h2>
+<P></P>
+As we've seen throughout this book, a method is defined using the
+keyword <code>def</code>.
+Method names should begin with a lowercase
+letter.<em>[You won't get an immediate error if you use an
+  uppercase letter, but when Ruby sees you calling the method, it
+  will first guess that it is a constant, not a method invocation, and
+  as a result it may parse the call incorrectly.]</em>  Methods that act as
+queries are often named with a trailing ``<code>?</code>'', such as
+<code>instance_of?</code>.  Methods that are ``dangerous,'' or modify the
+receiver, might be named with a trailing ``<code>!</code>''.  For instance,
+<code>String</code> provides both a <code>chop</code> and a <code>chop!</code>.  The first one
+returns a modified string; the second modifies the receiver in
+place. ``<code>?</code>'' and ``<code>!</code>'' are the only weird characters allowed 
+as method name suffixes.
+<P></P>
+Now that we've specified a name for our new method, we may need to
+declare some parameters.
+These are simply a list of local variable
+names in parentheses.  Some sample method declarations are
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;myNewMethod(arg1,&nbsp;arg2,&nbsp;arg3)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;3&nbsp;arguments
+&nbsp;&nbsp;#&nbsp;Code&nbsp;for&nbsp;the&nbsp;method&nbsp;would&nbsp;go&nbsp;here
+end
+<P></P>
+def&nbsp;myOtherNewMethod&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;No&nbsp;arguments
+&nbsp;&nbsp;#&nbsp;Code&nbsp;for&nbsp;the&nbsp;method&nbsp;would&nbsp;go&nbsp;here
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Ruby lets you specify default values for a method's arguments---values
+that will be used if the caller doesn't pass them explicitly. This is
+done using the assignment operator.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;coolDude(arg1="Miles",&nbsp;arg2="Coltrane",&nbsp;arg3="Roach")</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;"#{arg1},&nbsp;#{arg2},&nbsp;#{arg3}."</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>coolDude</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Miles,&nbsp;Coltrane,&nbsp;Roach."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>coolDude("Bart")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Bart,&nbsp;Coltrane,&nbsp;Roach."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>coolDude("Bart",&nbsp;"Elwood")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Bart,&nbsp;Elwood,&nbsp;Roach."</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>coolDude("Bart",&nbsp;"Elwood",&nbsp;"Linus")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Bart,&nbsp;Elwood,&nbsp;Linus."</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The body of a method contains normal Ruby expressions, except that you may
+not define an instance method, class, or module within a method.  The
+return value of a method is the value of the last expression executed,
+or the result of an explicit <code>return</code> expression.
+<h3><a name="UA">Variable-Length Argument Lists</a></h3>
+<P></P>
+But what if you want to pass in a variable number of arguments, or
+want to capture multiple arguments into a single parameter?
+Placing an asterisk before the name of the parameter after the
+``normal'' parameters does just that.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;varargs(arg1,&nbsp;*rest)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;"Got&nbsp;#{arg1}&nbsp;and&nbsp;#{rest.join(',&nbsp;')}"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>varargs("one")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Got&nbsp;one&nbsp;and&nbsp;"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>varargs("one",&nbsp;"two")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Got&nbsp;one&nbsp;and&nbsp;two"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>varargs&nbsp;"one",&nbsp;"two",&nbsp;"three"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Got&nbsp;one&nbsp;and&nbsp;two,&nbsp;three"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+In this example, the first argument is assigned to the first method
+parameter as usual. However, the next parameter is prefixed with an
+asterisk, so all the remaining arguments are bundled into a new
+<code>Array</code>, which is then assigned to that parameter.
+<h3><a name="UB">Methods and Blocks</a></h3>
+<P></P>
+As we discussed in the section on blocks and iterators beginning
+on page 38, when a method is called, it may be
+associated with a block. Normally, you simply call the block from
+within the method using
+<code>yield</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;takeBlock(p1)
+&nbsp;&nbsp;if&nbsp;block_given?
+&nbsp;&nbsp;&nbsp;&nbsp;yield(p1)
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;p1
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>takeBlock("no&nbsp;block")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"no&nbsp;block"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>takeBlock("no&nbsp;block")&nbsp;{&nbsp;|s|&nbsp;s.sub(/no&nbsp;/,&nbsp;'')&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"block"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+However, if the last parameter in a method definition is
+prefixed with an ampersand, any associated block is converted to a
+<code>Proc</code> object, and that object is assigned to the parameter.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;TaxCalculator</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;initialize(name,&nbsp;&amp;block)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@name,&nbsp;@block&nbsp;=&nbsp;name,&nbsp;block</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;getTax(amount)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;"#@name&nbsp;on&nbsp;#{amount}&nbsp;=&nbsp;#{&nbsp;@block.call(amount)&nbsp;}"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>tc&nbsp;=&nbsp;TaxCalculator.new("Sales&nbsp;tax")&nbsp;{&nbsp;|amt|&nbsp;amt&nbsp;*&nbsp;0.075&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tc.getTax(100)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Sales&nbsp;tax&nbsp;on&nbsp;100&nbsp;=&nbsp;7.5"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>tc.getTax(250)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Sales&nbsp;tax&nbsp;on&nbsp;250&nbsp;=&nbsp;18.75"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h2><a name="S2">Calling a Method</a></h2>
+<P></P>
+You call a method by specifying a receiver, the name of the method,
+and optionally some parameters and an associated block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+connection.downloadMP3("jitterbug")&nbsp;{&nbsp;|p|&nbsp;showProgress(p)&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+In this example, the object <code>connection</code> is the receiver,
+<code>downloadMP3</code> is the name of the method, <code>"jitterbug"</code> is
+the parameter, and the stuff between the braces is the associated
+block.
+<P></P>
+For class and module methods, the receiver will be the class or module
+name.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+File.size("testfile")
+Math.sin(Math::PI/4)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If you omit the receiver, it defaults to <code>self</code>, the current
+object.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>self.id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>537794160</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>id</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>537794160</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>self.type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Object</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>type</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>Object</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This defaulting mechanism is how Ruby implements private
+methods. Private methods may <em>not</em> be called with a receiver, so
+they must be methods available in the current object.
+<P></P>
+The optional parameters follow the method name.  If there is no
+ambiguity you can omit the parentheses around the argument list when
+calling a method.<em>[Other Ruby documentation sometimes calls
+  these method calls without parentheses ``commands.'']</em>  However,
+except in the simplest cases we don't recommend this---there are some
+subtle problems that can trip you up.<em>[In particular, you
+  <em>must</em> use parentheses on a method call that is itself a
+  parameter to another method call (unless it is the last parameter).]</em>
+Our rule is simple: if there's any doubt, use parentheses.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;=&nbsp;obj.hash&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Same&nbsp;as
+a&nbsp;=&nbsp;obj.hash()&nbsp;&nbsp;#&nbsp;this.
+<P></P>
+obj.someMethod&nbsp;"Arg1",&nbsp;arg2,&nbsp;arg3&nbsp;&nbsp;&nbsp;#&nbsp;Same&nbsp;thing&nbsp;as
+obj.someMethod("Arg1",&nbsp;arg2,&nbsp;arg3)&nbsp;&nbsp;#&nbsp;with&nbsp;parentheses.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UC">Expanding Arrays in Method Calls</a></h3>
+<P></P>
+Earlier we saw that if you put an asterisk in front of a formal
+parameter in a method definition, multiple arguments in the call to the
+method will be bundled up into an array. Well, the same thing works in 
+reverse.
+<P></P>
+When you call a method, you can explode an array, so that each of its
+members is taken as a separate parameter. Do this by prefixing the
+array argument (which must follow all the regular arguments) with an
+asterisk.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;five(a,&nbsp;b,&nbsp;c,&nbsp;d,&nbsp;e)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;"I&nbsp;was&nbsp;passed&nbsp;#{a}&nbsp;#{b}&nbsp;#{c}&nbsp;#{d}&nbsp;#{e}"</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>five(1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"I&nbsp;was&nbsp;passed&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>five(1,&nbsp;2,&nbsp;3,&nbsp;*['a',&nbsp;'b'])</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"I&nbsp;was&nbsp;passed&nbsp;1&nbsp;2&nbsp;3&nbsp;a&nbsp;b"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>five(*(10..14).to_a)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"I&nbsp;was&nbsp;passed&nbsp;10&nbsp;11&nbsp;12&nbsp;13&nbsp;14"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UD">Making Blocks More Dynamic</a></h3>
+<P></P>
+We've already seen how you can associate a block with a method call.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+listBones("aardvark")&nbsp;do&nbsp;|aBone|
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Normally, this is perfectly good enough---you associate a fixed block
+of code with a method, in the same way you'd have a chunk of code
+after an <code>if</code> or <code>while</code> statement.
+<P></P>
+Sometimes, however, you'd like to be more flexible.  For example, we
+may be teaching math skills.<em>[Of course, Andy and Dave would
+  have to <em>learn</em> math skills first. Conrad Schneiker   reminded us that there are three kinds
+  of people: those who can count and those who can't.]</em> The student
+could ask for an <em>n</em>-plus table or an <em>n</em>-times table.  If
+the student asked for a 2-times table, we'd output 2, 4, 6, 8, and
+so on. (This code does not check its inputs for errors.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+print&nbsp;"(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;"
+times&nbsp;=&nbsp;gets
+print&nbsp;"number:&nbsp;"
+number&nbsp;=&nbsp;gets.to_i
+<P></P>
+if&nbsp;times&nbsp;=~&nbsp;/^t/
+&nbsp;&nbsp;puts((1..10).collect&nbsp;{&nbsp;|n|&nbsp;n*number&nbsp;}.join(",&nbsp;"))
+else
+&nbsp;&nbsp;puts((1..10).collect&nbsp;{&nbsp;|n|&nbsp;n+number&nbsp;}.join(",&nbsp;"))
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;t
+number:&nbsp;2
+2,&nbsp;4,&nbsp;6,&nbsp;8,&nbsp;10,&nbsp;12,&nbsp;14,&nbsp;16,&nbsp;18,&nbsp;20
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This works, but it's ugly, with virtually identical code on each branch
+of the <code>if</code> statement. If would be nice if we could factor out the
+block that does the calculation.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+print&nbsp;"(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;"
+times&nbsp;=&nbsp;gets
+print&nbsp;"number:&nbsp;"
+number&nbsp;=&nbsp;gets.to_i
+<P></P>
+if&nbsp;times&nbsp;=~&nbsp;/^t/
+&nbsp;&nbsp;calc&nbsp;=&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;n*number&nbsp;}
+else
+&nbsp;&nbsp;calc&nbsp;=&nbsp;proc&nbsp;{&nbsp;|n|&nbsp;n+number&nbsp;}
+end
+puts((1..10).collect(&amp;calc).join(",&nbsp;"))
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+(t)imes&nbsp;or&nbsp;(p)lus:&nbsp;t
+number:&nbsp;2
+2,&nbsp;4,&nbsp;6,&nbsp;8,&nbsp;10,&nbsp;12,&nbsp;14,&nbsp;16,&nbsp;18,&nbsp;20
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If the last argument to a method is preceded by an ampersand, Ruby
+assumes that it is a <code>Proc</code> object. It removes it from the parameter 
+list, converts the <code>Proc</code> object into a block, and
+associates it with the method.
+<P></P>
+This technique can also be used to add some syntactic sugar to block
+usage. For example, you sometimes want to take an
+iterator and store each value it yields into an array. We'll reuse our 
+Fibonacci number generator from page 40.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;[]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>fibUpTo(20)&nbsp;{&nbsp;|val|&nbsp;a&nbsp;&lt;&lt;&nbsp;val&nbsp;}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.inspect</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"[1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5,&nbsp;8,&nbsp;13]"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+This works, but our intention isn't quite as transparent as we may
+like. Instead, we'll define a method called <code>into</code>, which
+returns the block that fills the array. (Notice at the same time that 
+the block returned really is a closure---it references the parameter
+<i>anArray</i> even after method <code>into</code> has returned.)
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>def&nbsp;into(anArray)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;return&nbsp;proc&nbsp;{&nbsp;|val|&nbsp;anArray&nbsp;&lt;&lt;&nbsp;val&nbsp;}</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>fibUpTo&nbsp;20,&nbsp;&amp;into(a&nbsp;=&nbsp;[])</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a.inspect</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"[1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5,&nbsp;8,&nbsp;13]"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UE">Collecting Hash Arguments</a></h3>
+<P></P>
+Some languages feature ``keyword arguments''---that is, instead of
+passing arguments in a given order and quantity, you pass the name
+of the argument with its value, in any order.  Ruby 1.6 does not have
+keyword arguments (although they are scheduled to be implemented in
+Ruby 1.8).
+<P></P>
+In the meantime, people are using hashes as a way of achieving the
+same effect. For example, we might consider adding a more powerful
+named-search facility to our <code>SongList</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;SongList
+&nbsp;&nbsp;def&nbsp;createSearch(name,&nbsp;params)
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;end
+end
+aList.createSearch("short&nbsp;jazz&nbsp;songs",&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'genre'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;"jazz",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'durationLessThan'&nbsp;=&gt;&nbsp;270
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The first parameter is the search name, and the second is a hash literal
+containing search parameters. The use of a hash means that we can
+simulate keywords: look for songs with a genre of ``jazz'' and a
+duration less than  4 1/2  minutes. However, this approach is
+slightly clunky, and that set of braces could easily be mistaken for a 
+block associated with the method. So, Ruby has a short cut. You can
+place <i>key</i>&nbsp;<code>=&gt;</code>&nbsp;<i>value</i> pairs in an argument list, as long 
+as they follow any normal arguments and precede any array and block
+arguments. All these pairs will be collected into a single hash and
+passed as one argument to the method. No braces are needed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aList.createSearch("short&nbsp;jazz&nbsp;songs",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'genre'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&gt;&nbsp;"jazz",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'durationLessThan'&nbsp;=&gt;&nbsp;270
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_stdtypes.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_expressions.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

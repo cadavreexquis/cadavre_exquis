@@ -1,0 +1,1540 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_symbol.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_threadgroup.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<table>
+      <tr>
+        <td height="20"><img src="dot.gif" width="1" height="20"></td>
+      </tr>
+    </table>
+    <table border="0" width="100%" bgcolor="660066" cellpadding="10">
+      <tr>
+        <td valign="center">
+          <font color="white" size="7">class Thread</font>
+        </td>
+        <td>
+          <table border="0">
+            <tr>
+              <td>
+                <font color="white">
+                Parent:
+              </font>
+              </td>
+              <td>
+                <font color="white">Object</font>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <font color="white">
+                Version:
+              </font>
+              </td>
+              <td>
+                <font color="white">
+               1.6
+              </font>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <H3>Index:</H3>
+    <a href="#Thread.abort_on_exception">abort_on_exception</a> 
+     <a href="#Thread.abort_on_exception_eq">abort_on_exception=</a> 
+     <a href="#Thread.critical">critical</a> 
+     <a href="#Thread.critical_eq">critical=</a> 
+     <a href="#Thread.current">current</a> 
+     <a href="#Thread.exit">exit</a> 
+     <a href="#Thread.fork">fork</a> 
+     <a href="#Thread.kill">kill</a> 
+     <a href="#Thread.list">list</a> 
+     <a href="#Thread.main">main</a> 
+     <a href="#Thread.new">new</a> 
+     <a href="#Thread.pass">pass</a> 
+     <a href="#Thread.start">start</a> 
+     <a href="#Thread.stop">stop</a> 
+     <i>
+      <a href="#Thread._ob_cb">[ ]</a>
+    </i> <i>
+      <a href="#Thread._ob_cb_eq">[ ]=</a>
+    </i> <i>
+      <a href="#Thread.abort_on_exception">abort_on_exception</a>
+    </i> <i>
+      <a href="#Thread.abort_on_exception_eq">abort_on_exception=</a>
+    </i> <i>
+      <a href="#Thread.alive_qm">alive?</a>
+    </i> <i>
+      <a href="#Thread.exit">exit</a>
+    </i> <i>
+      <a href="#Thread.join">join</a>
+    </i> <i>
+      <a href="#Thread.key_qm">key?</a>
+    </i> <i>
+      <a href="#Thread.kill">kill</a>
+    </i> <i>
+      <a href="#Thread.priority">priority</a>
+    </i> <i>
+      <a href="#Thread.priority_eq">priority=</a>
+    </i> <i>
+      <a href="#Thread.raise">raise</a>
+    </i> <i>
+      <a href="#Thread.run">run</a>
+    </i> <i>
+      <a href="#Thread.safe_level">safe_level</a>
+    </i> <i>
+      <a href="#Thread.status">status</a>
+    </i> <i>
+      <a href="#Thread.stop_qm">stop?</a>
+    </i> <i>
+      <a href="#Thread.value">value</a>
+    </i> <i>
+      <a href="#Thread.wakeup">wakeup</a>
+    </i> <p></p>
+    <hr>
+<P></P>
+  <code>Thread</code> encapsulates the behavior of a thread of execution,
+  including the main thread of the Ruby script. See the tutorial in
+  Chapter 11, beginning on page 111.
+<P></P>
+  In the descriptions that follow, the
+  parameter <i>aSymbol</i> refers to a symbol, which is either a
+  quoted string or a <code>Symbol</code> (such as <code>:name</code>).<table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">class methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.abort_on_exception">abort_on_exception</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.abort_on_exception
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns the status of the global ``abort on exception''
+      condition.  The default is <code>false</code>.      
+      When set to <code>true</code>, will cause all threads to abort (the
+      process will <code>exit(0)</code>) if an
+      exception is raised in any thread. See also <a href="ref_c_thread.html#Thread.abort_on_exception_eq">
+          <code>Thread.abort_on_exception=</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.abort_on_exception_eq">abort_on_exception=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.abort_on_exception= 
+        <i>aBoolean</i>-&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      When set to <code>true</code>, all threads will abort if an
+      exception is raised. Returns the new state.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Thread.abort_on_exception&nbsp;=&nbsp;true
+t1&nbsp;=&nbsp;Thread.new&nbsp;do
+&nbsp;&nbsp;puts&nbsp;&nbsp;"In&nbsp;second&nbsp;thread"
+&nbsp;&nbsp;raise&nbsp;"Raise&nbsp;exception"
+end
+t1.join
+print&nbsp;"not&nbsp;reached\n"
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+In&nbsp;second&nbsp;thread
+prog.rb:4:&nbsp;Raise&nbsp;exception&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:2:in&nbsp;`initialize'
+	from&nbsp;prog.rb:2:in&nbsp;`new'
+	from&nbsp;prog.rb:2
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.critical">critical</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.critical
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the status of the global ``thread critical''
+      condition. 
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.critical_eq">critical=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.critical= <i>aBoolean</i>
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Sets the status of the global ``thread critical''
+      condition and returns it.
+      When set to <code>true</code>, prohibits scheduling of any existing
+      thread.  Does not block new threads from being created and run.
+      Certain thread operations (such as stopping or killing a thread,
+      sleeping in the current thread, and raising an exception) may
+      cause a thread to be scheduled even when in a critical section.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+count=0
+Thread.new&nbsp;{&nbsp;while&nbsp;true;&nbsp;sleep(1);&nbsp;print&nbsp;"a&nbsp;";&nbsp;count+=1;&nbsp;end&nbsp;}
+while&nbsp;count&nbsp;&lt;&nbsp;3&nbsp;do&nbsp;end&nbsp;#&nbsp;no-op&nbsp;wait
+Thread.critical&nbsp;=&nbsp;true
+puts&nbsp;"no&nbsp;more&nbsp;a's&nbsp;will&nbsp;come&nbsp;out."
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;a&nbsp;a&nbsp;no&nbsp;more&nbsp;a's&nbsp;will&nbsp;come&nbsp;out.
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.current">current</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.current
+        -&gt; <i>aThread</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the currently executing thread.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Thread.current</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Thread:0x401be5c8&nbsp;run&gt;</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.exit">exit</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.exit
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Terminates the currently running thread and schedules another
+      thread to be run.  If this thread is already marked to be
+      killed, <code>exit</code> returns the <code>Thread</code>.  If this is the main thread, or
+      the last thread, exit the process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.fork">fork</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.fork { block }
+-&gt; <i>aThread</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_thread.html#Thread.new">
+          <code>Thread.new</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.kill">kill</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.kill( <i>aThread</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Causes the given thread to exit (see <a href="ref_c_thread.html#Thread.exit">
+          <code>Thread.exit</code>
+        </a>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>count&nbsp;=&nbsp;0</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;while&nbsp;true&nbsp;do&nbsp;&nbsp;count&nbsp;+=&nbsp;1&nbsp;end&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sleep(1)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Thread.kill(a)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Thread:0x401b5cac&nbsp;dead&gt;</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>count</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>903877</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.alive?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.list">list</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.list -&gt; <i>anArray</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns an array of <code>Thread</code> objects for all threads that are
+      either runnable or stopped.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>Thread.new&nbsp;{&nbsp;sleep(200)&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>Thread.new&nbsp;{&nbsp;1000000.times&nbsp;{|i|&nbsp;i*i&nbsp;}&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>Thread.new&nbsp;{&nbsp;Thread.stop&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>l&nbsp;=&nbsp;Thread.list</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>l</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>[#&lt;Thread:0x401b5644&nbsp;sleep&gt;,&nbsp;#&lt;Thread:0x401b59f0&nbsp;run&gt;,&nbsp;#&lt;Thread:0x401b5cac&nbsp;sleep&gt;,&nbsp;#&lt;Thread:0x401be5c8&nbsp;run&gt;]</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.main">main</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.main
+        -&gt; <i>aThread</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the main thread for the process.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Thread.main</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>#&lt;Thread:0x401be5c8&nbsp;run&gt;</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.new">new</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.new( <i>[</i>
+          <i>arg</i>
+          <i>]<sup>*</sup>
+          </i> ) {| args | block }
+<P></P>
+        -&gt; <i>aThread</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Creates a new thread to execute the instructions given in
+      <i>block</i>, and begins running it. Any arguments passed to
+      <a href="ref_c_thread.html#Thread.new">
+          <code>Thread.new</code>
+        </a> are passed into the block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+x&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;sleep&nbsp;.1;&nbsp;print&nbsp;"x";&nbsp;print&nbsp;"y";&nbsp;print&nbsp;"z"&nbsp;}
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"a";&nbsp;print&nbsp;"b";&nbsp;sleep&nbsp;.2;&nbsp;print&nbsp;"c"&nbsp;}
+x.join&nbsp;#&nbsp;Let&nbsp;the&nbsp;threads&nbsp;finish&nbsp;before
+a.join&nbsp;#&nbsp;main&nbsp;thread&nbsp;exits...
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+abxyzc
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.pass">pass</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.pass
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Invokes the thread scheduler to pass execution to another
+      thread.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"a";&nbsp;Thread.pass;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"b";&nbsp;Thread.pass;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"c"&nbsp;}
+b&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"x";&nbsp;Thread.pass;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"y";&nbsp;Thread.pass;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"z"&nbsp;}
+a.join
+b.join
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+axbycz
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.start">start</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.start( <i>[</i>
+          <i>args</i>
+          <i>]<sup>*</sup>
+          </i> ) {| args | block }
+<P></P>
+        -&gt; <i>aThread</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Basically the same as <a href="ref_c_thread.html#Thread.new">
+          <code>Thread.new</code>
+        </a>. However, if class
+      <code>Thread</code> is subclassed, then calling <code>start</code> in that
+      subclass will not invoke the subclass's <code>initialize</code> method.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.stop">stop</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        Thread.stop
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Stops execution of the current thread, putting it into a
+      ``sleep'' state, and schedules execution of another thread.
+      Resets the ``critical'' condition to <code>false</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"a";&nbsp;Thread.stop;&nbsp;print&nbsp;"c"&nbsp;}
+Thread.pass
+print&nbsp;"b"
+a.run
+a.join
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+abc
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10">
+      <tr>
+        <td valign="center" colspan="2" bgcolor="990066">
+          <font color="white" size="6">instance methods
+       </font>
+        </td>
+      </tr>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread._ob_cb">[ ]</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+<P></P>
+        <i>thr</i>[ <i>aSymbol</i> ] -&gt; <i>anObject</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Attribute Reference---Returns the value of a thread-local
+      variable, using either a symbol or a string name.  If the
+      specified variable does not exist, returns <code>nil</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.current["name"]&nbsp;=&nbsp;"A";&nbsp;Thread.stop&nbsp;}
+b&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.current[:name]&nbsp;&nbsp;=&nbsp;"B";&nbsp;Thread.stop&nbsp;}
+c&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.current["name"]&nbsp;=&nbsp;"C";&nbsp;Thread.stop&nbsp;}
+Thread.list.each&nbsp;{|x|&nbsp;print&nbsp;x.inspect,&nbsp;x[:name],&nbsp;"\n"&nbsp;}
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+#&lt;Thread:0x401b53c4&nbsp;sleep&gt;C
+#&lt;Thread:0x401b5734&nbsp;sleep&gt;B
+#&lt;Thread:0x401b5cac&nbsp;sleep&gt;A
+#&lt;Thread:0x401be5c8&nbsp;run&gt;nil
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread._ob_cb_eq">[ ]=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+<P></P>
+        <i>thr</i>[ <i>aSymbol</i> ]  = <i>anObject</i>-&gt; <i>anObject</i>
+<P></P>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Attribute Assignment---Sets or creates the value of a thread-local
+      variable, using either a symbol or a string. See also
+      <a href="ref_c_thread.html#Thread._ob_cb">
+          <code>Thread#[]</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.abort_on_exception">abort_on_exception</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.abort_on_exception
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+              Returns the status of the ``abort on exception''
+      condition for <i>thr</i>.  The default is <code>false</code>.
+      See also <a href="ref_c_thread.html#Thread.abort_on_exception_eq">
+          <code>Thread.abort_on_exception=</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.abort_on_exception_eq">abort_on_exception=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.abort_on_exception= 
+        <code>true</code> or <code>false</code>-&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            When set to <code>true</code>, causes all threads (including the main
+      program) to abort if an exception is raised in <i>thr</i>.
+      The process will effectively <code>exit(0)</code>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.alive_qm">alive?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.alive?
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>thr</i> is running or sleeping.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Thread.current.alive?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.exit">exit</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.exit -&gt; <i>thr</i> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Terminates <i>thr</i> and schedules another
+      thread to be run.  If this thread is already marked to be
+      killed, <code>exit</code> returns the <code>Thread</code>.  If this is the main thread, or
+      the last thread, exits the process.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.join">join</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.join
+        -&gt; <i>thr</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      The calling thread will suspend execution and run <i>thr</i>. Does
+      not return until
+      <i>thr</i> exits.  Any threads not joined will be killed when the
+      main program exits.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"a";&nbsp;sleep(10);&nbsp;print&nbsp;"b";&nbsp;print&nbsp;"c"&nbsp;}
+x&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;print&nbsp;"x";&nbsp;Thread.pass;&nbsp;print&nbsp;"y";&nbsp;print&nbsp;"z"&nbsp;}
+x.join&nbsp;#&nbsp;Let&nbsp;x&nbsp;thread&nbsp;finish,&nbsp;a&nbsp;will&nbsp;be&nbsp;killed&nbsp;on&nbsp;exit.
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+axyz
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.key_qm">key?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+                <i>thr</i>.key?( <i>aSymbol</i> ) -&gt; <code>true</code> or <code>false</code>
+          <br>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if the given string (or symbol) exists as a 
+      thread-local variable.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>me&nbsp;=&nbsp;Thread.current</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>me[:oliver]&nbsp;=&nbsp;"a"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>me.key?(:oliver)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>me.key?(:stanley)</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.kill">kill</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.kill
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Synonym for <a href="ref_c_thread.html#Thread.exit">
+          <code>Thread#exit</code>
+        </a>.
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.priority">priority</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.priority
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Returns the priority of <i>thr</i>.  Default is zero; 
+      higher-priority threads will run before lower-priority threads.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Thread.current.priority</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.priority_eq">priority=</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.priority= <i>anInteger</i>
+        -&gt; <i>thr</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+            Sets the priority of <i>thr</i> to <i>anInteger</i>.
+      Higher-priority threads will run before lower-priority threads.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+count1&nbsp;=&nbsp;count2&nbsp;=&nbsp;0
+a&nbsp;=&nbsp;Thread.new&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;{&nbsp;count1&nbsp;+=&nbsp;1&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;end
+a.priority&nbsp;=&nbsp;-1
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;Thread.new&nbsp;do</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loop&nbsp;{&nbsp;count2&nbsp;+=&nbsp;1&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>&nbsp;&nbsp;&nbsp;&nbsp;end</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b.priority&nbsp;=&nbsp;-2</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>sleep&nbsp;1</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>1</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>Thread.critical&nbsp;=&nbsp;1</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>count1</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>577581</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>count2</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>5751</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.raise">raise</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.raise( <i>anException</i> )
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Raises an exception (see <a href="ref_m_kernel.html#Kernel.raise">
+          <code>Kernel::raise</code>
+        </a>
+      on page 420 for details) from <i>thr</i>.
+      The caller does not have to be <i>thr</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+Thread.abort_on_exception&nbsp;=&nbsp;true
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;sleep(200)&nbsp;}
+a.raise("Gotcha")
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+prog.rb:3:&nbsp;Gotcha&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:2:in&nbsp;`initialize'
+	from&nbsp;prog.rb:2:in&nbsp;`new'
+	from&nbsp;prog.rb:2
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.run">run</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.run -&gt; <i>thr</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Wakes up <i>thr</i>, making it eligible for scheduling. If not
+      in a critical section, then invokes the scheduler.  
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;puts&nbsp;"a";&nbsp;Thread.stop;&nbsp;puts&nbsp;"c"&nbsp;}
+Thread.pass
+puts&nbsp;"Got&nbsp;here"
+a.run
+a.join
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+a
+Got&nbsp;here
+c
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.safe_level">safe_level</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.safe_level
+        -&gt; <i>anInteger</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the safe level in effect for <i>thr</i>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+              <code>Thread.current.safe_level</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>0</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.status">status</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.status
+        -&gt; <i>aString</i>, <code>false</code> or <code>nil</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns the status of <i>thr</i>: ``<code>sleep</code>'' if <i>thr</i> is sleeping 
+      or waiting on I/O, ``<code>run</code>'' if <i>thr</i> is executing,
+      <code>false</code> if <i>thr</i> terminated normally, and <code>nil</code> if
+      <i>thr</i> terminated with an exception.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;raise("die&nbsp;now")&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.stop&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>c&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.exit&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.status</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>nil</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>b.status</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"sleep"</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>c.status</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>Thread.current.status</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>"run"</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.stop_qm">stop?</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.stop?
+        -&gt; <code>true</code> or <code>false</code>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Returns <code>true</code> if <i>thr</i> is dead or sleeping.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.stop&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+              <code>b&nbsp;=&nbsp;Thread.current</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.stop?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>true</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>b.stop?</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>false</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.value">value</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.value
+        -&gt; <i>anObject</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Waits for <i>thr</i> to complete (via <a href="ref_c_thread.html#Thread.join">
+          <code>Thread#join</code>
+        </a>) and
+      returns its value.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+              <code>a&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;2+2&nbsp;}</code>
+            </td>
+</tr>
+<tr>
+  <td valign="top">
+              <code>a.value</code>
+            </td>
+  <td valign="top">»</td>
+  <td valign="top">
+              <code>4</code>
+            </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td>
+      <tr>
+        <td valign="center" bgcolor="#ff9999">
+          <font size="4">
+            <b>
+              <a name="Thread.wakeup">wakeup</a>
+            </b>
+          </font>
+        </td>
+        <td bgcolor="#ffaaaa">
+        <i>thr</i>.wakeup
+        -&gt; <i>thr</i>
+      </td>
+      </tr>
+      <td></td>
+      <td>
+<P></P>
+      Marks <i>thr</i> as eligible for scheduling (it may still remain
+      blocked on I/O, however). Does not invoke the scheduler (see
+      <a href="ref_c_thread.html#Thread.run">
+          <code>Thread#run</code>
+        </a>).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+c&nbsp;=&nbsp;Thread.new&nbsp;{&nbsp;Thread.stop;&nbsp;puts&nbsp;"hey!"&nbsp;}
+c.wakeup
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+          <tr>
+            <td>
+              <pre>
+hey!
+</pre>
+            </td>
+          </tr>
+        </table>
+
+<P></P>
+      </td>
+    </table>
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="ref_c_symbol.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="builtins.html">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="ref_c_threadgroup.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>

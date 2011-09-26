@@ -1,0 +1,2155 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <title>Programming Ruby: The Pragmatic Programmer's Guide</title>
+    <link rel="StyleSheet" href="pr_style.css" type="text/css" media="screen">
+  </head>
+  <body bgcolor="white">
+    <table bgcolor="#c09090" cellpadding="3" border="0" cellspacing="0" width="100%">
+      <tr>
+        <td colspan="3">
+          <table bgcolor="#701a1a" cellpadding="20" width="100%">
+            <tr>
+              <td width="6in">
+                <h1 class="header">Programming Ruby</h1>
+                <h3 class="subheader">The Pragmatic Programmer's Guide</h3>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_methods.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_exceptions.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+<!--
+Copyright (c) 2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at http://www.opencontent.org/openpub/).
+<P></P>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+<P></P>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+-->
+<h1>Expressions</h1>
+    <hr>
+    <br>
+<P></P>
+So far we've been fairly cavalier in our use of expressions in Ruby.
+After all, <code>a=b+c</code> is pretty standard
+stuff.  You could write a whole heap of Ruby code without reading any
+of this chapter.
+<P></P>
+But it wouldn't be as much fun <code>;-)</code>.
+<P></P>
+One of the first differences with Ruby is that anything that can
+reasonably return a value does: just about everything is an
+expression. What does this mean in practice?
+<P></P>
+Some obvious things include the ability to chain statements together.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=&nbsp;b&nbsp;=&nbsp;c&nbsp;=&nbsp;0</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;3,&nbsp;1,&nbsp;7,&nbsp;0&nbsp;].sort.reverse</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[7,&nbsp;3,&nbsp;1,&nbsp;0]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Perhaps less obvious, things that are normally statements in C
+or Java are expressions in Ruby. For example, the <code>if</code> and
+<code>case</code> statements both return the value of the last expression
+executed.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songType&nbsp;=&nbsp;if&nbsp;song.mp3Type&nbsp;==&nbsp;MP3::Jazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;song.written&nbsp;&lt;&nbsp;Date.new(1935,&nbsp;1,&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::TradJazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::Jazz
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Song::Other
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+<P></P>
+&nbsp;rating&nbsp;=&nbsp;case&nbsp;votesCast
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;0...10&nbsp;&nbsp;&nbsp;&nbsp;then&nbsp;Rating::SkipThisOne
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;10...50&nbsp;&nbsp;&nbsp;then&nbsp;Rating::CouldDoBetter
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rating::Rave
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+We'll talk more about <code>if</code> and <code>case</code> starting
+on page 79.
+<h2><a name="S1">Operator Expressions</a></h2>
+<P></P>
+Ruby has the basic set of operators (+, -, *, /, and so on) as well
+as a few surprises. A complete list of the operators, and their
+precedences, is given in Table 18.4 on page 219.
+<P></P>
+In Ruby, many operators are actually method calls. When you write
+<code>a*b+c</code>
+you're actually asking the object referenced by <code>a</code> to execute the 
+method ``<code>*</code>'', passing in the parameter <code>b</code>. You then ask the
+object that results from that calculation to execute ``<code>+</code>'',
+passing <code>c</code> as a parameter. This is exactly equivalent
+to writing
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+(a.*(b)).+(c)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Because everything is an object, and because you can redefine
+instance methods, you can always redefine basic arithmetic if you
+don't like the answers you're getting.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Fixnum</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;alias&nbsp;oldPlus&nbsp;+</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;+(other)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;oldPlus(other).succ</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>1&nbsp;+&nbsp;2</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>4</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;+=&nbsp;4</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>8</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+More useful is the fact that classes that you write can participate in
+operator expressions just as if they were built-in objects. For
+example, we might want to be able to extract a number of seconds of
+music from the middle of a song. We could using the indexing operator
+``<code>[]</code>'' to specify the music to be extracted.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;[](fromTime,&nbsp;toTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;Song.new(self.title&nbsp;+&nbsp;"&nbsp;[extract]",
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.artist,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;toTime&nbsp;-&nbsp;fromTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result.setStartTime(fromTime)
+&nbsp;&nbsp;&nbsp;&nbsp;result
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This code fragment extends class <code>Song</code> with the method
+``<code>[]</code>'', which takes two parameters (a start time and an end
+time).  It returns a new song, with the music clipped to the given
+interval.  We could then play the introduction to a song with code
+such as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aSong[0,&nbsp;0.15].play
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S2">Miscellaneous Expressions</a></h2>
+<P></P>
+As well as the obvious operator expressions and method calls, and the
+(perhaps) less obvious statement expressions (such as <code>if</code> and
+<code>case</code>), Ruby has a few more things that you can use in
+expressions.
+<h3><a name="UA">Command Expansion</a></h3>
+<P></P>
+If you enclose a string in backquotes, or use the delimited form
+prefixed by <code>%x</code>, it will (by default) be executed as a command by
+your underlying operating system.
+The value of the expression is the
+standard output of that command. Newlines will not be stripped, so it is
+likely that the value you get back will have a trailing return or
+linefeed character. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>`date`</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:26&nbsp;CDT&nbsp;2002\n"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>`dir`.split[34]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"lib_singleton.tip"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>%x{echo&nbsp;"Hello&nbsp;there"}</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"Hello&nbsp;there\n"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+You can use expression expansion and all the usual escape sequences in
+the command string. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+for&nbsp;i&nbsp;in&nbsp;0..3
+&nbsp;&nbsp;status&nbsp;=&nbsp;`dbmanager&nbsp;status&nbsp;id=#{i}`
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The exit status of the command is available in the global variable
+<code>$?</code>.
+<h3><a name="UB">Backquotes Are Soft</a></h3>
+<P></P>
+In the description of the command output expression, we said that the
+string in backquotes would ``by default'' be executed as a command. In 
+fact, the string is passed to the method called <a href="ref_m_kernel.html#Kernel._bq">
+      <code>Kernel::`</code>
+    </a>
+(a single backquote). If you want, you can override
+this.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+alias&nbsp;oldBackquote&nbsp;`
+def&nbsp;`(cmd)
+&nbsp;&nbsp;result&nbsp;=&nbsp;oldBackquote(cmd)
+&nbsp;&nbsp;if&nbsp;$?&nbsp;!=&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;raise&nbsp;"Command&nbsp;#{cmd}&nbsp;failed"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;result
+end
+print&nbsp;`date`
+print&nbsp;`data`
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Sun&nbsp;Jun&nbsp;&nbsp;9&nbsp;00:08:26&nbsp;CDT&nbsp;2002
+prog.rb:3:&nbsp;command&nbsp;not&nbsp;found:&nbsp;data
+prog.rb:5:in&nbsp;``':&nbsp;Command&nbsp;data&nbsp;failed&nbsp;(RuntimeError)
+	from&nbsp;prog.rb:10
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S3">Assignment</a></h2>
+<P></P>
+Just about every example we've given so far in this book has featured
+assignment. Perhaps it's about time we said something about it.
+<P></P>
+An assignment statement sets the variable or attribute on its left
+side (the <em>lvalue</em>) to refer to the value on the right (the
+<em>rvalue</em>).
+It then returns that value as the result of the
+assignment expression.  This means that you can chain assignments and
+that you can
+perform assignments in some unexpected places.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;b&nbsp;=&nbsp;1&nbsp;+&nbsp;2&nbsp;+&nbsp;3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>6</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>6</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>a&nbsp;=&nbsp;(b&nbsp;=&nbsp;1&nbsp;+&nbsp;2)&nbsp;+&nbsp;3</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>6</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>b</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>3</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>File.open(name&nbsp;=&nbsp;gets.chomp)</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+There are two basic forms of assignment in Ruby. The first assigns an
+object reference to a variable or constant.  This form of assignment
+is hard-wired into the language.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+instrument&nbsp;=&nbsp;"piano"
+MIDDLE_A&nbsp;&nbsp;&nbsp;=&nbsp;440
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The second form of assignment involves having an object attribute or
+element reference on the left-hand side. 
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+aSong.duration&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;234
+instrument["ano"]&nbsp;=&nbsp;"ccolo"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+These forms are special, because they are implemented by calling
+methods in the lvalues, which means you can override them.
+<P></P>
+We've already seen how to define a writable object attribute. Simply
+define a method name ending in an equals sign. This method receives as 
+its parameter the assignment's rvalue.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Song
+&nbsp;&nbsp;def&nbsp;duration=(newDuration)
+&nbsp;&nbsp;&nbsp;&nbsp;@duration&nbsp;=&nbsp;newDuration
+&nbsp;&nbsp;end
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There is no reason that these attribute setting methods must
+correspond with internal instance variables, or that there has to be
+an attribute reader for every attribute writer (or vice versa).
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Amplifier
+&nbsp;&nbsp;def&nbsp;volume=(newVolume)
+&nbsp;&nbsp;&nbsp;&nbsp;self.leftChannel&nbsp;=&nbsp;self.rightChannel&nbsp;=&nbsp;newVolume
+&nbsp;&nbsp;end
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<p></p>
+    <table width="500" border="2" cellpadding="15" bgcolor="#ffe0e0" align="center">
+      <tr>
+        <td align="center">
+          <b>Sidebar: Using Accessors Within a Class</b>
+        </td>
+      </tr>
+      <tr>
+        <td>
+<P></P>
+  Why did we write <code>self.leftChannel</code> in the example on page
+  74? Well, there's a hidden gotcha with writable
+  attributes. Normally, methods within a class can invoke other
+  methods in the same class and its superclasses in functional form
+  (that is, with an implicit receiver of <code>self</code>). However, this
+  doesn't work with attribute writers. Ruby sees the assignment and
+  decides that the name on the left must be a local variable, not a
+  method call to an attribute writer.    
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+                <code>class&nbsp;BrokenAmplifier</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>&nbsp;&nbsp;attr_accessor&nbsp;:leftChannel,&nbsp;:rightChannel</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>&nbsp;&nbsp;def&nbsp;volume=(vol)</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>&nbsp;&nbsp;&nbsp;&nbsp;leftChannel&nbsp;=&nbsp;self.rightChannel&nbsp;=&nbsp;vol</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>&nbsp;&nbsp;end</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>end</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code></code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>ba&nbsp;=&nbsp;BrokenAmplifier.new</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>ba.leftChannel&nbsp;=&nbsp;ba.rightChannel&nbsp;=&nbsp;99</code>
+              </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+                <code>ba.volume&nbsp;=&nbsp;5</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>ba.leftChannel</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>99</code>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>ba.rightChannel</code>
+              </td>
+  <td valign="top">»</td>
+  <td valign="top">
+                <code>5</code>
+              </td>
+</tr>
+</table>
+<P></P>
+
+We forgot to put ``<code>self.</code>'' in front of the assignment to
+<code>leftChannel</code>, so Ruby stored the new value in a local variable of
+method <code>volume=</code>; the object's attribute never got updated.
+This can be a tricky bug to track down.
+<P></P>
+</td>
+      </tr>
+    </table>
+    <p></p>
+<h3><a name="UC">Parallel Assignment</a></h3>
+<P></P>
+During your first week in a programming course (or the second semester
+if it was a party school), you may have had to write code to swap the
+values in two variables:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+int&nbsp;a&nbsp;=&nbsp;1;
+int&nbsp;b&nbsp;=&nbsp;2;
+int&nbsp;temp;
+<P></P>
+temp&nbsp;=&nbsp;a;
+a&nbsp;=&nbsp;b;
+b&nbsp;=&nbsp;temp;
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You can do this much more cleanly in Ruby:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a,&nbsp;b&nbsp;=&nbsp;b,&nbsp;a
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Ruby assignments are effectively performed in parallel, so the values
+assigned are not affected by the assignment itself.  The values on the
+right-hand side are evaluated in the order in which they appear before any
+assignment is made to variables or attributes on the left. A somewhat
+contrived example illustrates this. The second line assigns to the
+variables <code>a</code>, <code>b</code>, and <code>c</code> the values of the expressions
+<code>x</code>, <code>x+=1</code>, and <code>x+=1</code>, respectively.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>x&nbsp;=&nbsp;0</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>0</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a,&nbsp;b,&nbsp;c&nbsp;&nbsp;&nbsp;=&nbsp;&nbsp;&nbsp;x,&nbsp;(x&nbsp;+=&nbsp;1),&nbsp;(x&nbsp;+=&nbsp;1)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[0,&nbsp;1,&nbsp;2]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+When an assignment has more than one lvalue, the assignment expression
+returns an array of the rvalues.
+If an assignment contains more lvalues than rvalues, the excess
+lvalues are
+set to <code>nil</code>. If a multiple assignment contains more rvalues than
+lvalues, the extra rvalues are ignored. As of Ruby 1.6.2, if an
+assignment has one lvalue and multiple rvalues, the rvalues are
+converted to an array and assigned to the lvalue.
+<P></P>
+You can collapse and expand arrays using Ruby's parallel assignment
+operator.  If the last lvalue is preceded by an asterisk, all the
+remaining rvalues will be collected and assigned to that lvalue as an
+array. Similarly, if the last rvalue is an array, you can prefix it
+with an asterisk, which effectively expands it into its constituent
+values in place.  (This is not necessary if the rvalue is the only
+thing on the right-hand side---the array will be expanded
+automatically.)
+<P></P>
+
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+<td colspan="4" valign="top">
+          <code>a = [1, 2, 3, 4]</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;&nbsp;c&nbsp;=&nbsp;a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;*c&nbsp;=&nbsp;a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == [2, 3, 4]</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;&nbsp;c&nbsp;=&nbsp;99,&nbsp;&nbsp;a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 99,</td>
+  <td valign="top">c == [1, 2, 3, 4]</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;*c&nbsp;=&nbsp;99,&nbsp;&nbsp;a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 99,</td>
+  <td valign="top">c == [[1, 2, 3, 4]]</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;&nbsp;c&nbsp;=&nbsp;99,&nbsp;*a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 99,</td>
+  <td valign="top">c == 1</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;*c&nbsp;=&nbsp;99,&nbsp;*a</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 99,</td>
+  <td valign="top">c == [1, 2, 3, 4]</td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UD">Nested Assignments</a></h3>
+<P></P>
+Parallel assignments have one more feature worth mentioning.
+The left-hand side of an assignment may contain a parenthesized list of
+terms. Ruby treats these terms as if they were a nested assignment
+statement. It extracts out the corresponding rvalue, assigning it to
+the parenthesized terms, before continuing with the higher-level
+assignment.
+<P></P>
+
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top">b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,2,3,4</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2,</td>
+  <td valign="top">d == nil,</td>
+  <td valign="top">e == 3</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;[1,2,3,4]</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2,</td>
+  <td valign="top">d == nil,</td>
+  <td valign="top">e == 3</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,[2,3],4</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2,</td>
+  <td valign="top">d == 3,</td>
+  <td valign="top">e == 4</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;(c,&nbsp;d),&nbsp;e&nbsp;=&nbsp;1,[2,3,4],5</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2,</td>
+  <td valign="top">d == 3,</td>
+  <td valign="top">e == 5</td>
+</tr>
+<tr>
+  <td valign="top">b,&nbsp;(c,*d),&nbsp;e&nbsp;=&nbsp;1,[2,3,4],5</td>
+  <td valign="top"> »</td>
+  <td valign="top">b == 1,</td>
+  <td valign="top">c == 2,</td>
+  <td valign="top">d == [3, 4],</td>
+  <td valign="top">e == 5</td>
+</tr>
+</table>
+<P></P>
+
+<h3><a name="UE">Other Forms of Assignment</a></h3>
+<P></P>
+In common with many other languages, Ruby has a syntactic shortcut:
+<code>a=a+2</code> may be written as <code>a+=2</code>.
+<P></P>
+The second form is converted internally to the first. This means that
+operators that you have defined as methods in your own classes work as
+you'd expect.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>class&nbsp;Bowdlerize</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;initialize(aString)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@value&nbsp;=&nbsp;aString.gsub(/[aeiou]/,&nbsp;'*')</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;+(other)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;Bowdlerize.new(self.to_s&nbsp;+&nbsp;other.to_s)</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;def&nbsp;to_s</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;&nbsp;&nbsp;@value</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code></code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;=&nbsp;Bowdlerize.new("damn&nbsp;")</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>d*mn</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>a&nbsp;+=&nbsp;"shame"</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>d*mn&nbsp;sh*m*</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<h2><a name="S4">Conditional Execution</a></h2>
+<P></P>
+Ruby has several different mechanisms for conditional execution of
+code; most of them should feel familiar, and many have some neat
+twists. Before we get into them, though, we need to spend a short time 
+looking at boolean expressions.
+<h3><a name="UF">Boolean Expressions</a></h3>
+<P></P>
+Ruby has a simple definition of truth. Any value that is not <code>nil</code> or
+the constant <code>false</code> is true. You'll find that the library
+routines use this fact consistently. For example, <a href="ref_c_io.html#IO.gets">
+      <code>IO#gets</code>
+    </a>,
+which returns the next line from a file, returns <code>nil</code> at end of
+file, enabling you to write loops such as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+while&nbsp;line&nbsp;=&nbsp;gets
+&nbsp;&nbsp;#&nbsp;process&nbsp;line
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+However, there's a trap here for C, C++, and Perl
+programmers. The number zero is <em>not</em> interpreted as a false
+value. Neither is a zero-length string. This can be a tough habit to
+break.
+<h3><a name="UG">Defined?, And, Or, and Not</a></h3>
+<P></P>
+Ruby supports all the standard boolean operators and introduces the
+new operator <code>defined?</code>.
+<P></P>
+Both ``<code>and</code>'' and ``<code>&amp;&amp;</code>''
+evaluate to true only if both operands are
+true. They evaluate the second operand only if the first is true
+(this is sometimes known as ``short-circuit evaluation'').  The only
+difference in the two forms is precedence (``<code>and</code>'' binds lower than
+``<code>&amp;&amp;</code>'').
+<P></P>
+Similarly, both ``<code>or</code>'' and ``<code>||</code>''
+evaluate to true if either operand
+is true.  They evaluate their second operand only if the first is
+false.  As with ``<code>and</code>'', the only difference between ``<code>or</code>'' and
+``<code>||</code>'' is their precedence.
+<P></P>
+Just to make life interesting, ``<code>and</code>'' and ``<code>or</code>'' have the
+same precedence, while ``<code>&amp;&amp;</code>'' has a higher precedence than
+``<code>||</code>''.
+<P></P>
+``<code>not</code>'' and ``<code>!</code>''
+return the opposite of their operand (false if the
+operand is true, and true if the operand is false). And, yes, ``<code>not</code>''
+and ``<code>!</code>'' differ only in precedence.
+<P></P>
+All these precedence rules are summarized in Table
+18.4 on page 219.
+<P></P>
+The <code>defined?</code>
+operator returns <code>nil</code> if its argument (which can be
+an arbitrary expression) is not defined, otherwise it returns a
+description of that argument. If the argument is <code>yield</code>,
+<code>defined?</code> returns the string ``yield'' if a code block is
+associated with the current context.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;1</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"expression"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;dummy</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;printf</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"method"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;String</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"constant"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;$&amp;</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>nil</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;$_</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"global-variable"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;Math::PI</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"constant"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;(&nbsp;c,d&nbsp;=&nbsp;1,2&nbsp;)</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"assignment"</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>defined?&nbsp;42.abs</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>"method"</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+In addition to the boolean operators, Ruby objects support comparison
+using the methods <code>==</code>, <code>===</code>, <code>&lt;=&gt;</code>, <code>=~</code>, <code>eql?</code>,
+and <code>equal?</code> (see Table 7.1 on page 79). All but <code>&lt;=&gt;</code>
+are defined in class <code>Object</code> but are often overridden by
+descendents to provide appropriate semantics. For example, class
+<code>Array</code> redefines <code>==</code> so that two array objects are equal if
+they have the same number of elements and corresponding elements are
+equal.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0">
+      <tr>
+        <td>
+  <b>Common comparison operators</b>            
+  <table class="codebox" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top">
+                <b>Operator</b>
+              </td>
+  <td valign="top">
+                <b>Meaning</b>
+              </td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>==</code>
+              </td>
+  <td valign="top">Test for equal value.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>===</code>
+              </td>
+  <td valign="top">Used to test equality within a <code>when</code> clause of a
+                <code>case</code> statement.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>&lt;=&gt;</code>
+              </td>
+  <td valign="top">General comparison operator. Returns -1, 0, or +1,
+                depending on whether its receiver is less than, equal to, or
+                greater than its argument.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&gt;</code>
+              </td>
+  <td valign="top">Comparison operators for less than, less than or
+                equal, greater than or equal, and greater than.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>=~</code>
+              </td>
+  <td valign="top">Regular expression pattern match.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>eql?</code>
+              </td>
+  <td valign="top">True if the receiver and argument have both the same
+                type and equal values. 1 == 1.0 returns <code>true</code>, 
+                but 1.eql?(1.0) is <code>false</code>.</td>
+</tr>
+<tr>
+  <td valign="top">
+                <code>equal?</code>
+              </td>
+  <td valign="top">True if the receiver and argument have the same
+                object id.</td>
+</tr>
+<tr>
+              <td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td>
+            </tr>
+          </table>
+<P></P>
+</td>
+      </tr>
+    </table>
+<P></P>
+Both <code>==</code> and <code>=~</code> have negated forms, <code>!=</code> and <code>!~</code>.
+However, these are converted by Ruby when your program is read.
+<code>a!=b</code> is equivalent to <code>!(a==b)</code>,
+and <code>a!~b</code> is the
+same as <code>!(a=~b)</code>.  This means that if you write a class that
+overrides <code>==</code> or <code>=~</code> you get a working <code>!=</code> and <code>!~</code>
+for free. But on the flip side, this also means that you cannot define 
+<code>!=</code> and <code>!~</code> independent of <code>==</code> and <code>=~</code>, respectively.
+<P></P>
+You can use a Ruby range as a boolean expression.
+A
+range such as <code>exp1..exp2</code> will evaluate as false
+until <code>exp1</code> becomes true. The range will then evaluate as true
+until <code>exp2</code> becomes true. Once this happens, the range resets,
+ready to fire again. We show some examples of this
+on page 82. 
+<P></P>
+Finally, you can use a bare regular expression as a boolean
+expression. Ruby expands it to <code>$_=~/re/</code>.
+<h3><a name="UH">If and Unless Expressions</a></h3>
+<P></P>
+An <code>if</code> expression in Ruby is pretty similar to ``if'' statements
+in other languages.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+If you lay out your <code>if</code> statements on multiple lines, you can
+leave off the <code>then</code> keyword.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else
+&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+However, if you lay your code out more tightly, the <code>then</code> keyword
+is necessary to separate the boolean expression from the following
+statements.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then&nbsp;&nbsp;handle&nbsp;=&nbsp;"Dizzy"
+elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then&nbsp;&nbsp;handle&nbsp;=&nbsp;"Bird"
+else&nbsp;&nbsp;handle&nbsp;=&nbsp;"unknown"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+You can have zero or more <code>elsif</code> clauses and an optional
+<code>else</code> clause.
+<P></P>
+As we've said before, <code>if</code> is
+an expression, not a statement---it returns a value.  You don't have
+to use the value of an <code>if</code> expression, but it can come in handy.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+handle&nbsp;=&nbsp;if&nbsp;aSong.artist&nbsp;==&nbsp;"Gillespie"&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Dizzy"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elsif&nbsp;aSong.artist&nbsp;==&nbsp;"Parker"&nbsp;then
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Bird"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"unknown"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Ruby also has a negated form of the <code>if</code> statement:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+unless&nbsp;aSong.duration&nbsp;&gt;&nbsp;180&nbsp;then
+&nbsp;&nbsp;cost&nbsp;=&nbsp;.25
+else
+&nbsp;&nbsp;cost&nbsp;=&nbsp;.35
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Finally, for the C fans out there, Ruby also supports the C-style
+conditional expression:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+cost&nbsp;=&nbsp;aSong.duration&nbsp;&gt;&nbsp;180&nbsp;?&nbsp;.35&nbsp;:&nbsp;.25
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The conditional expression returns the value of either the expression
+before or the expression after the colon, depending on whether the
+boolean expression before the question mark evaluates to <code>true</code>
+or <code>false</code>. In this case, if the song duration is greater than 3 
+minutes, the expression returns .35. For shorter songs, it returns
+.25. Whatever the result, it is then assigned to <code>cost</code>.
+<h3><a name="UI">If and Unless Modifiers</a></h3>
+<P></P>
+Ruby shares a neat feature with Perl. Statement modifiers let you tack
+conditional statements onto the end of a normal statement.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+mon,&nbsp;day,&nbsp;year&nbsp;=&nbsp;$1,&nbsp;$2,&nbsp;$3&nbsp;if&nbsp;/(\d\d)-(\d\d)-(\d\d)/
+puts&nbsp;"a&nbsp;=&nbsp;#{a}"&nbsp;if&nbsp;fDebug
+print&nbsp;total&nbsp;unless&nbsp;total&nbsp;==&nbsp;0
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+For an <code>if</code> modifier, the preceding expression will be evaluated only
+if the condition is true. <code>unless</code> works the other way around.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+while&nbsp;gets
+&nbsp;&nbsp;next&nbsp;if&nbsp;/^#/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Skip&nbsp;comments
+&nbsp;&nbsp;parseLine&nbsp;unless&nbsp;/^$/&nbsp;&nbsp;&nbsp;#&nbsp;Don't&nbsp;parse&nbsp;empty&nbsp;lines
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Because <code>if</code> itself is an expression, you can get really obscure
+with statements such as:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+if&nbsp;artist&nbsp;==&nbsp;"John&nbsp;Coltrane"
+&nbsp;&nbsp;artist&nbsp;=&nbsp;"'Trane"
+end&nbsp;unless&nbsp;nicknames&nbsp;==&nbsp;"no"
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+This path leads to the gates of madness.
+<h2><a name="S5">Case Expressions</a></h2>
+<P></P>
+The Ruby <code>case</code> expression is a powerful beast: a multiway <code>if</code>
+on steroids.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+case&nbsp;inputLine
+<P></P>
+&nbsp;&nbsp;when&nbsp;"debug"
+&nbsp;&nbsp;&nbsp;&nbsp;dumpDebugInfo
+&nbsp;&nbsp;&nbsp;&nbsp;dumpSymbols
+<P></P>
+&nbsp;&nbsp;when&nbsp;/p\s+(\w+)/
+&nbsp;&nbsp;&nbsp;&nbsp;dumpVariable($1)
+<P></P>
+&nbsp;&nbsp;when&nbsp;"quit",&nbsp;"exit"
+&nbsp;&nbsp;&nbsp;&nbsp;exit
+<P></P>
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Illegal&nbsp;command:&nbsp;#{inputLine}"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+As with <code>if</code>, <code>case</code> returns the value of the last expression
+executed, and you also need a <code>then</code> keyword if the
+expression is on the same line as the condition.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+kind&nbsp;=&nbsp;case&nbsp;year
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1850..1889&nbsp;then&nbsp;"Blues"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1890..1909&nbsp;then&nbsp;"Ragtime"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1910..1929&nbsp;then&nbsp;"New&nbsp;Orleans&nbsp;Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1930..1939&nbsp;then&nbsp;"Swing"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;1940..1950&nbsp;then&nbsp;"Bebop"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<code>case</code> operates by comparing the target (the expression after the
+keyword <code>case</code>) with each of the comparison expressions after the
+<code>when</code> keywords.  This test is done using
+<em>comparison</em>&nbsp;<code>===</code>&nbsp;<em>target</em>. 
+As long as a class defines
+meaningful semantics for <code>===</code> (and all the built-in classes do),
+objects of that class can be used in case expressions.
+<P></P>
+For example, regular expressions define <code>===</code> as a simple pattern match.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+case&nbsp;line
+&nbsp;&nbsp;when&nbsp;/title=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Title&nbsp;is&nbsp;#$1"
+&nbsp;&nbsp;when&nbsp;/track=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Track&nbsp;is&nbsp;#$1"
+&nbsp;&nbsp;when&nbsp;/artist=(.*)/
+&nbsp;&nbsp;&nbsp;&nbsp;puts&nbsp;"Artist&nbsp;is&nbsp;#$1"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Ruby classes are instances of class <code>Class</code>, which defines <code>===</code>
+as a test to see if the argument is an instance of the class or one of
+its superclasses. So (abandoning the benefits of polymorphism and
+bringing the gods of refactoring down around your ears), you can test
+the class of objects:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+case&nbsp;shape
+&nbsp;&nbsp;when&nbsp;Square,&nbsp;Rectangle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;when&nbsp;Circle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;when&nbsp;Triangle
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S6">Loops</a></h2>
+<P></P>
+Don't tell anyone, but Ruby has pretty primitive built-in looping
+constructs.
+<P></P>
+The <code>while</code> loop executes its body zero or more times as long as
+its condition is true. For example, this common idiom reads until
+the input is exhausted.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+while&nbsp;gets
+&nbsp;&nbsp;#&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There's also a negated form that executes the body until the
+condition becomes true.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+until&nbsp;playList.duration&nbsp;&gt;&nbsp;60
+&nbsp;&nbsp;playList.add(songList.pop)
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+As with <code>if</code> and <code>unless</code>, both of the loops can also be used
+as statement modifiers.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+a&nbsp;*=&nbsp;2&nbsp;while&nbsp;a&nbsp;&lt;&nbsp;100
+a&nbsp;-=&nbsp;10&nbsp;until&nbsp;a&nbsp;&lt;&nbsp;100
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+On page 78 in the section on boolean
+expressions,
+we said that a range can be used as a kind of flip-flop, returning true
+when some event happens and then staying true until a second event occurs.
+This facility is normally used within loops. In the example that
+follows, we read a text file containing the first ten ordinal numbers
+(``first,'' ``second,'' and so on)
+but only print the lines starting with the one that matches
+``third'' and ending with the one that matches ``fifth.''
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+file&nbsp;=&nbsp;File.open("ordinal")
+while&nbsp;file.gets
+&nbsp;&nbsp;print&nbsp;&nbsp;if&nbsp;/third/&nbsp;..&nbsp;/fifth/
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+third
+fourth
+fifth
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The elements of a range used in a boolean expression can themselves be
+expressions. These are evaluated each time the overall boolean
+expression is evaluated. For example, the following code uses the fact 
+that the variable <code>$.</code> contains the current input line number to 
+display line numbers one through three and those between a match of
+<code>/eig/</code> and <code>/nin/</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+file&nbsp;=&nbsp;File.open("ordinal")
+while&nbsp;file.gets
+&nbsp;&nbsp;print&nbsp;if&nbsp;($.&nbsp;==&nbsp;1)&nbsp;||&nbsp;/eig/&nbsp;..&nbsp;($.&nbsp;==&nbsp;3)&nbsp;||&nbsp;/nin/
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+first
+second
+third
+eighth
+ninth
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+There's one wrinkle when <code>while</code> and <code>until</code> are used as statement
+modifiers. If the statement they are modifying is a
+<code>begin</code>/<code>end</code> block,
+the code in the block will always execute
+at least one time, regardless of the value of the boolean expression.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+print&nbsp;"Hello\n"&nbsp;while&nbsp;false
+begin
+&nbsp;&nbsp;print&nbsp;"Goodbye\n"
+end&nbsp;while&nbsp;false
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Goodbye
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UJ">Iterators</a></h3>
+<P></P>
+If you read the beginning of the previous section, you might have been
+discouraged. ``Ruby has pretty primitive built-in looping
+constructs,'' it said. Don't despair, gentle reader, for there's good
+news. Ruby doesn't need any sophisticated built-in loops, because all
+the fun stuff is implemented using Ruby iterators.
+<P></P>
+For example, Ruby doesn't have a ``for'' loop---at least not the kind
+you'd find in C, C++, and Java. Instead, Ruby uses methods defined in
+various built-in classes to provide equivalent, but less error-prone,
+functionality.
+<P></P>
+Let's look at some examples.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+3.times&nbsp;do
+&nbsp;&nbsp;print&nbsp;"Ho!&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Ho!&nbsp;Ho!&nbsp;Ho!
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+It's easy to avoid fencepost and off-by-1 errors; this loop will
+execute three times, period.  In addition to <code>times</code>, integers
+can loop over specific ranges by calling <code>downto</code>,
+<code>upto</code>, and <code>step</code>. For instance, a traditional ``for''
+loop that runs from 0 to 9 (something like <code>i=0; i &lt; 10; i++</code>)
+is written as follows.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0.upto(9)&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;print&nbsp;x,&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4&nbsp;5&nbsp;6&nbsp;7&nbsp;8&nbsp;9
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+A loop from 0 to 12 by 3 can be written as follows.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0.step(12,&nbsp;3)&nbsp;{|x|&nbsp;print&nbsp;x,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0&nbsp;3&nbsp;6&nbsp;9&nbsp;12
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Similarly, iterating over arrays and other containers is made easy
+using their <code>each</code> method.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+[&nbsp;1,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;5&nbsp;].each&nbsp;{|val|&nbsp;print&nbsp;val,&nbsp;"&nbsp;"&nbsp;}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+1&nbsp;1&nbsp;2&nbsp;3&nbsp;5
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+And once a class supports <code>each</code>, the additional methods in the
+<code>Enumerable</code> module (documented beginning on page 403
+and summarized on pages 102--103)
+become available. For example, the <code>File</code> class provides an
+<code>each</code> method, which returns each line of a file in turn. Using
+the <code>grep</code> method in <code>Enumerable</code>, we could iterate over only
+those lines that meet a certain condition.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+File.open("ordinal").grep&nbsp;/d$/&nbsp;do&nbsp;|line|
+&nbsp;&nbsp;print&nbsp;line
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+second
+third
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Last, and probably least, is the most basic loop of all. Ruby provides 
+a built-in iterator called <code>loop</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+loop&nbsp;{
+&nbsp;&nbsp;#&nbsp;block&nbsp;...
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The <code>loop</code> iterator calls the associated block forever (or at
+least until you break out of the loop, but you'll have to read ahead
+to find out how to do that).
+<h3><a name="UK">For ... In</a></h3>
+<P></P>
+Earlier we said that the only built-in Ruby looping primitives were
+<code>while</code> and <code>until</code>. What's this ``<code>for</code>'' thing, then?
+Well, <code>for</code> is almost a lump of syntactic sugar. When you write
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+for&nbsp;aSong&nbsp;in&nbsp;songList
+&nbsp;&nbsp;aSong.play
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Ruby translates it into something like:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+songList.each&nbsp;do&nbsp;|aSong|
+&nbsp;&nbsp;aSong.play
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+The only difference between the <code>for</code> loop and the <code>each</code>
+form is the scope of local variables that are defined in the body.
+This is discussed on page 87.
+<P></P>
+You can use <code>for</code>
+to iterate over any object that responds to the method <code>each</code>, such
+as an <code>Array</code> or a <code>Range</code>.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+for&nbsp;i&nbsp;in&nbsp;['fee',&nbsp;'fi',&nbsp;'fo',&nbsp;'fum']
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+for&nbsp;i&nbsp;in&nbsp;1..3
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+for&nbsp;i&nbsp;in&nbsp;File.open("ordinal").find_all&nbsp;{&nbsp;|l|&nbsp;l&nbsp;=~&nbsp;/d$/}
+&nbsp;&nbsp;print&nbsp;i.chomp,&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+fee&nbsp;fi&nbsp;fo&nbsp;fum&nbsp;1&nbsp;2&nbsp;3&nbsp;second&nbsp;third
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+As long as your class defines a sensible <code>each</code> method, you can use 
+a <code>for</code> loop to traverse it.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+class&nbsp;Periods
+&nbsp;&nbsp;def&nbsp;each
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Classical"
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Jazz"
+&nbsp;&nbsp;&nbsp;&nbsp;yield&nbsp;"Rock"
+&nbsp;&nbsp;end
+end
+<P></P>
+periods&nbsp;=&nbsp;Periods.new
+for&nbsp;genre&nbsp;in&nbsp;periods
+&nbsp;&nbsp;print&nbsp;genre,&nbsp;"&nbsp;"
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Classical&nbsp;Jazz&nbsp;Rock
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UL">Break, Redo, and Next</a></h3>
+<P></P>
+The loop control constructs <code>break</code>, <code>redo</code>, and <code>next</code>
+let you alter the normal flow through a loop or iterator.
+<P></P>
+<code>break</code> terminates the immediately enclosing loop; control resumes
+at the statement following the block.  <code>redo</code> repeats the loop from
+the start, but without reevaluating the condition or fetching the
+next element (in an iterator).  <code>next</code> skips to the end of the
+loop, effectively starting the next iteration.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+while&nbsp;gets
+&nbsp;&nbsp;next&nbsp;if&nbsp;/^\s*#/&nbsp;&nbsp;&nbsp;#&nbsp;skip&nbsp;comments
+&nbsp;&nbsp;break&nbsp;if&nbsp;/^END/&nbsp;&nbsp;&nbsp;#&nbsp;stop&nbsp;at&nbsp;end
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;substitute&nbsp;stuff&nbsp;in&nbsp;backticks&nbsp;and&nbsp;try&nbsp;again
+&nbsp;&nbsp;redo&nbsp;if&nbsp;gsub!(/`(.*?)`/)&nbsp;{&nbsp;eval($1)&nbsp;}
+&nbsp;&nbsp;#&nbsp;process&nbsp;line&nbsp;...
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+These keywords can also be used with any of the iterator-based
+looping mechanisms:
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+i=0
+loop&nbsp;do
+&nbsp;&nbsp;i&nbsp;+=&nbsp;1
+&nbsp;&nbsp;next&nbsp;if&nbsp;i&nbsp;&lt;&nbsp;3
+&nbsp;&nbsp;print&nbsp;i
+&nbsp;&nbsp;break&nbsp;if&nbsp;i&nbsp;&gt;&nbsp;4
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+345
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h3><a name="UM">Retry</a></h3>
+<P></P>
+The <code>redo</code> statement causes a loop to repeat the current
+iteration. Sometimes, though, you need to wind the loop right back to
+the very beginning. The <code>retry</code> statement is just the
+ticket. <code>retry</code> restarts any kind of iterator loop.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+for&nbsp;i&nbsp;in&nbsp;1..100
+&nbsp;&nbsp;print&nbsp;"Now&nbsp;at&nbsp;#{i}.&nbsp;Restart?&nbsp;"
+&nbsp;&nbsp;retry&nbsp;if&nbsp;gets&nbsp;=~&nbsp;/^y/i
+end
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+Running this interactively, you might see
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+Now&nbsp;at&nbsp;1.&nbsp;Restart?&nbsp;n
+Now&nbsp;at&nbsp;2.&nbsp;Restart?&nbsp;y
+Now&nbsp;at&nbsp;1.&nbsp;Restart?&nbsp;n
+&nbsp;.&nbsp;.&nbsp;.
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+<code>retry</code> will reevaluate any arguments to the iterator before
+restarting it. The online Ruby documentation has the following example
+of a do-it-yourself <em>until</em> loop.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+def&nbsp;doUntil(cond)
+&nbsp;&nbsp;yield
+&nbsp;&nbsp;retry&nbsp;unless&nbsp;cond
+end
+<P></P>
+i&nbsp;=&nbsp;0
+doUntil(i&nbsp;&gt;&nbsp;3)&nbsp;{
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+&nbsp;&nbsp;i&nbsp;+=&nbsp;1
+}
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<h2><a name="S7">Variable Scope and Loops</a></h2>
+<P></P>
+The <code>while</code>, <code>until</code>, and <code>for</code> loops are built into the
+language and do not introduce new scope; previously existing locals
+can be used in the loop, and any new locals created will be available
+afterward.
+<P></P>
+The blocks used by iterators (such as <code>loop</code> and <code>each</code>) are
+a little different.  Normally, the local variables created in these
+blocks are not accessible outside the block.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;].each&nbsp;do&nbsp;|x|
+&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1
+end
+[&nbsp;x,&nbsp;y&nbsp;]
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<em>produces:</em>
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="400">
+      <tr>
+        <td>
+          <pre>
+prog.rb:4: undefined local variable or method `x'<br>for #&lt;Object:0x401c2ce0&gt; (NameError)
+</pre>
+        </td>
+      </tr>
+    </table>
+
+<P></P>
+However, if at the time the block executes a local variable
+already exists with the same name as that of a
+variable in the block, the existing local variable will be used in the 
+block. Its value will therefore be available after the block finishes.
+As the following example shows, this applies both to normal variables in the
+block and to the block's parameters.
+<P></P>
+
+<table class="codebox" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top">
+          <code>x&nbsp;=&nbsp;nil</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>y&nbsp;=&nbsp;nil</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;].each&nbsp;do&nbsp;|x|</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>&nbsp;&nbsp;y&nbsp;=&nbsp;x&nbsp;+&nbsp;1</code>
+        </td>
+</tr>
+<tr>
+<td colspan="3" valign="top">
+          <code>end</code>
+        </td>
+</tr>
+<tr>
+  <td valign="top">
+          <code>[&nbsp;x,&nbsp;y&nbsp;]</code>
+        </td>
+  <td valign="top">»</td>
+  <td valign="top">
+          <code>[3,&nbsp;4]</code>
+        </td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+
+<p></p>
+    <hr>
+    <table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0">
+      <tr>
+        <td width="33%" align="left">
+          <a class="pickaxe/subheader" href="tut_methods.html">Previous &lt;</a>
+        </td>
+        <td width="33%" align="center" valign="middle">
+          <a class="pickaxe/subheader" href="/pickaxe">Contents ^</a>
+          <br>
+        </td>
+        <td width="33%" align="right">
+          <a class="pickaxe/subheader" href="tut_exceptions.html">Next &gt;</a>
+          <br>
+        </td>
+      </tr>
+    </table>
+    <p></p>
+    <font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font>
+    <br>
+    <font size="-3">
+      Copyright
+      &#169;
+2001 by Addison Wesley Longman, Inc. This material may
+be distributed only subject to the terms and conditions set forth in
+the Open Publication License, v1.0 or later (the latest version is
+presently available at
+      <a href="http://www.opencontent.org/openpub/">http://www.opencontent.org/openpub/</a>)).
+        <p></p>
+Distribution of substantively modified versions of this document is
+prohibited without the explicit permission of the copyright holder.
+          <p></p>
+Distribution of the work or derivative of the work in any standard
+(paper) book form is prohibited unless prior permission is obtained
+from the copyright holder.
+        <br>
+    </font>
+  </body>
+</html>
