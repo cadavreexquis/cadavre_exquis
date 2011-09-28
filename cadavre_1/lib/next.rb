@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# encoding: UTF-8
 
 codersFolower={"etienne" => "pascal@grange.nom.fr",
   "pascal" => "luc@mazardo.com",
