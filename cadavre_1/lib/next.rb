@@ -1,10 +1,9 @@
 #!/usr/bin/ruby
 # encoding: UTF-8
 
-codersFolower={"etienne" => "pascal@grange.nom.fr",
+codersFollower={"etienne" => "pascal@grange.nom.fr",
   "pascal" => "luc@mazardo.com",
-  "luc" => "cbegot@gmail.com",
-  "christophe" => "etienne.charignon@gmail.com"}
+  "luc" => "etienne.charignon@gmail.com"}
   
 
 if $0 == __FILE__
@@ -12,5 +11,5 @@ if $0 == __FILE__
     puts "usage : next.rb <votre prénom>"
     exit 1
   end
-  puts $*[0].capitalize + ", le codeur suivant est : " + codersFolower[$*[0]]
+  puts $*[0].capitalize + ", le codeur suivant est : " + codersFollower[$*[0]]
 end
