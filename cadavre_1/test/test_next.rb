@@ -25,10 +25,14 @@ class Next < Test::Unit::TestCase
   end
   
   def test_read_coder_property
-    assert_equal(["pascal@grange.nom.fr", "luc@mazardo.com", "etienne.charignon@gmail.com"], 
+    assert_equal(
+      %w{pascal@grange.nom.fr 
+         luc@mazardo.com 
+         etienne.charignon@gmail.com}, 
       read_coders_property('coders="pascal@grange.nom.fr luc@mazardo.com etienne.charignon@gmail.com"'))
   end
   
+
   def test_read_firstname_from_email
     assert_equal("pascal", read_firstname("pascal@grange.nom.fr"))
     assert_equal("etienne", read_firstname("etienne.charignon@gmail.com"))
