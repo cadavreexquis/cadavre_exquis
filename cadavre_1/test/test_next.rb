@@ -31,7 +31,6 @@ class Next < Test::Unit::TestCase
          etienne.charignon@gmail.com}, 
       read_coders_property('coders="pascal@grange.nom.fr luc@mazardo.com etienne.charignon@gmail.com"'))
   end
-  
 
   def test_read_firstname_from_email
     assert_equal("pascal", read_firstname("pascal@grange.nom.fr"))
