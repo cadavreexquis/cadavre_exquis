@@ -1,8 +1,8 @@
-#!/usr/bin/env irb
+#!/usr/bin/env ruby
 # encoding: UTF-8
 
 require "test/unit"
-require "next.rb"
+require "lib/next.rb"
 
 class Next < Test::Unit::TestCase
 
