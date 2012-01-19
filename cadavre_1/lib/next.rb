@@ -22,15 +22,16 @@ def init_follower_map
   return result_map
 end
 
-def main(prenom)
+def main(firstname)
   codersFollower=init_follower_map
-  if prenom == nil
-    puts "usage : next.rb <votre prénom>"
-    exit 1
+  if firstname == nil
+    return ["usage : next.rb <votre prénom>", 1]
   end
-  puts prenom.capitalize + ", le codeur suivant est : " + codersFollower[prenom]
+  [firstname.capitalize + ", le codeur suivant est : " + codersFollower[firstname], 0]
 end
 
 if $0 == __FILE__
-  main $*[0]
+  (output, exit_code) = main $*[0]
+  puts output
+  exit exit_code
 end
