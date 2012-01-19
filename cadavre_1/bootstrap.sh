@@ -1,2 +1,3 @@
-sudo gem install autotest-rails autotest-growl
-#sudo gem install redgreen
+sudo gem install bundler
+bundle install
+

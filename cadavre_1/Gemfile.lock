@@ -1,0 +1,14 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    ZenTest (4.5.0)
+    autotest-growl (0.2.16)
+    autotest-rails (4.1.1)
+      ZenTest (= 4.5)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  autotest-growl
+  autotest-rails

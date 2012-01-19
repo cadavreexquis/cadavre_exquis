@@ -1,8 +1,8 @@
-#!/usr/bin/env irb
+#!/usr/bin/env ruby
 # encoding: UTF-8
 
 require "test/unit"
-require "next.rb"
+require "lib/next.rb"
 
 class Next < Test::Unit::TestCase
 
@@ -10,18 +10,18 @@ class Next < Test::Unit::TestCase
     File.delete("result.txt") if File.exist?("result.txt")
   end
 
-  def check_output_of_next(params, expected_exit_code, expected_result)
-	  assert_equal(expected_exit_code, system("lib/next.rb" +" " + params + "> result.txt"))
-	  assert_equal([expected_result + "\n"], IO.readlines("result.txt"))	 
+  def check_output_of_main(firstname, expected_output)
+	  assert_equal(expected_output, main(firstname)[0])
   end
   
   def test_usage
-    check_output_of_next("", false, "usage : next.rb <votre prénom>")
+	  assert_equal(false, system("lib/next.rb > result.txt"))
+	  assert_equal(["usage : next.rb <votre prénom>" + "\n"], IO.readlines("result.txt"))	 
   end
     
-  def test_next_give_the_next_player_given_your_first_name_in_parameter
-    check_output_of_next("etienne", true, "Etienne, le codeur suivant est : pascal@grange.nom.fr")
-    check_output_of_next("luc", true, "Luc, le codeur suivant est : etienne.charignon@gmail.com")
+  def test_next_give_the_next_player_given_your_firstname_in_parameter
+    check_output_of_main("etienne", "Etienne, le codeur suivant est : pascal@grange.nom.fr")
+    check_output_of_main("luc", "Luc, le codeur suivant est : etienne.charignon@gmail.com")
   end
   
   def test_read_coder_property
@@ -31,7 +31,6 @@ class Next < Test::Unit::TestCase
          etienne.charignon@gmail.com}, 
       read_coders_property('coders="pascal@grange.nom.fr luc@mazardo.com etienne.charignon@gmail.com"'))
   end
-  
 
   def test_read_firstname_from_email
     assert_equal("pascal", read_firstname("pascal@grange.nom.fr"))
