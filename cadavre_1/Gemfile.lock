@@ -5,6 +5,7 @@ GEM
     autotest-growl (0.2.16)
     autotest-rails (4.1.1)
       ZenTest (= 4.5)
+    redgreen (1.2.2)
 
 PLATFORMS
   ruby
@@ -12,3 +13,4 @@ PLATFORMS
 DEPENDENCIES
   autotest-growl
   autotest-rails
+  redgreen
