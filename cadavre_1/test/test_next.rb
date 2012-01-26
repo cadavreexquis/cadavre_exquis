@@ -24,6 +24,19 @@ class Next < Test::Unit::TestCase
     check_output_of_main("luc", "Luc, le codeur suivant est : etienne.charignon@gmail.com")
   end
   
+  def test_next_ignore_e_trema
+    check_output_of_main("raphaël", "Raphaël, le codeur suivant est : luc@mazardo.com")
+  end
+  
+  def test_next_accept_capitalized_first_name
+    check_output_of_main("Etienne", "Etienne, le codeur suivant est : pascal@grange.nom.fr")
+  end
+  
+  def test_next_with_unknown_user_respond_degage
+    check_output_of_main("inconnu", 'Inconnu, tu ne fait pas parti du jeu. Tu peux faire un "pull request".')
+    check_output_of_main("autreinconnu", 'Autreinconnu, tu ne fait pas parti du jeu. Tu peux faire un "pull request".')
+  end
+  
   def test_read_coder_property
     assert_equal(
       %w{pascal@grange.nom.fr 

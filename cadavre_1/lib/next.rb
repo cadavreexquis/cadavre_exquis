@@ -27,7 +27,11 @@ def main(firstname)
   if firstname == nil
     return ["usage : next.rb <votre prénom>", 1]
   end
-  [firstname.capitalize + ", le codeur suivant est : " + codersFollower[firstname], 0]
+  key = firstname.tr_s('ë','e').downcase 
+  if(codersFollower[key] == nil)
+    return [firstname.capitalize + ", tu ne fait pas parti du jeu. Tu peux faire un \"pull request\".", 0]
+  end
+  [firstname.capitalize + ", le codeur suivant est : " + codersFollower[key], 0]
 end
 
 if $0 == __FILE__
