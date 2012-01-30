@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
+FileUnderTest = "bin/next.rb"
+
 require "test/unit"
-require "bin/next.rb"
+require FileUnderTest
 
 class Next < Test::Unit::TestCase
 
@@ -15,7 +17,7 @@ class Next < Test::Unit::TestCase
   end
   
   def test_usage
-	  assert_equal(false, system("bin/next.rb > result.txt"))
+	  assert_equal(false, system(FileUnderTest +  " > result.txt"))
 	  assert_equal(["usage : next.rb <votre prénom>" + "\n"], IO.readlines("result.txt"))	 
   end
     
