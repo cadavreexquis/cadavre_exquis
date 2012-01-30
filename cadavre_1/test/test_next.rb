@@ -2,7 +2,7 @@
 # encoding: UTF-8
 
 require "test/unit"
-require "lib/next.rb"
+require "bin/next.rb"
 
 class Next < Test::Unit::TestCase
 
@@ -15,7 +15,7 @@ class Next < Test::Unit::TestCase
   end
   
   def test_usage
-	  assert_equal(false, system("lib/next.rb > result.txt"))
+	  assert_equal(false, system("bin/next.rb > result.txt"))
 	  assert_equal(["usage : next.rb <votre prénom>" + "\n"], IO.readlines("result.txt"))	 
   end
     

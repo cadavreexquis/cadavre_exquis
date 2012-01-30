@@ -17,13 +17,13 @@ def init_follower_map
   coders.length.times do |coder_index|
     follower_index = coder_index + 1
     follower_index = 0 if follower_index == coders.length 
-    result_map[read_firstname(coders[coder_index])]= coders[follower_index] 
+    result_map[read_firstname(coders[coder_index])] = coders[follower_index] 
   end  
   return result_map
 end
 
 def main(firstname)
-  codersFollower=init_follower_map
+  codersFollower = init_follower_map
   if firstname == nil
     return ["usage : next.rb <votre prénom>", 1]
   end
