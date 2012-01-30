@@ -25,7 +25,7 @@ end
 def main(firstname)
   codersFollower = init_follower_map
   if firstname == nil
-    return ["usage : next.rb <votre prénom>", 1]
+    return ["usage : " + $0 + " <votre prénom>", 1]
   end
   key = firstname.tr_s('ë','e').downcase 
   if(codersFollower[key] == nil)

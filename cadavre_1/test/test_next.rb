@@ -18,7 +18,7 @@ class Next < Test::Unit::TestCase
   
   def test_usage
 	  assert_equal(false, system(FileUnderTest +  " > result.txt"))
-	  assert_equal(["usage : next.rb <votre prénom>" + "\n"], IO.readlines("result.txt"))	 
+	  assert_equal(["usage : " + FileUnderTest + " <votre prénom>" + "\n"], IO.readlines("result.txt"))	 
   end
     
   def test_next_give_the_next_player_given_your_firstname_in_parameter
